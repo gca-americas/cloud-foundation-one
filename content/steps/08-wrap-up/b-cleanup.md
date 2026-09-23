@@ -1,3 +1,16 @@
+:::section kicker="What you built" headline="The shape of the system"
+Five things, each added for a reason you can now give.
+
+:::figure id="architecture" caption="Each badge is the step that added that piece."
+:::
+
+Read it as a sentence: a player's browser reaches **Cloud Run**, which is
+running your game. Cloud Run reads and writes the leaderboard in **Firestore**,
+and asks **Gemini** for a dino. Your code got there because **Cloud Build**
+turned it into a container and **Artifact Registry** kept it. All of it sits
+inside one project — one bill, one set of permissions.
+:::
+
 :::section kicker="The bill" headline="What you are charged for"
 Four things, and everyone is surprised by exactly one of them.
 
@@ -37,19 +50,4 @@ deletion and can be restored during that window, and then it is gone.
 
 What is not deleted: your **billing account**, which belongs to you rather than
 to the project, and any other project you own.
-:::
-
-:::section kicker="The habit" headline="Delete what you stopped using"
-The budget alert from step 2 tells you afterwards. Deleting what you stopped
-using is what stops it ever firing.
-
-This is the part that does not show up in a tutorial and does show up on a
-bill. A database left running after a demo, a cluster from a workshop last
-month, an instance somebody spun up to test something — none of it announces
-itself, and all of it is charged for.
-
-:::key
-Owning meant the machine was there whether you used it or not. Renting means
-this step exists, and it takes two minutes.
-:::
 :::

@@ -11,6 +11,7 @@ import { StagedRun } from "./StagedRun";
 import { ProvisionTask } from "./ProvisionTask";
 import { BillingTask } from "./BillingTask";
 import { BudgetAssist, ServicesAssist } from "./BudgetTask";
+import { DeleteProjectAssist } from "./DeleteProjectAssist";
 import { Widget } from "../widgets";
 
 /* The exercise is the second half of every step: concepts above, practice below.
@@ -393,6 +394,7 @@ function ConsoleTask({ task, color }: { task: Task; color: string }) {
         </a>
         {task.assist === "budget" && <BudgetAssist />}
         {task.assist === "services" && <ServicesAssist />}
+        {task.assist === "delete-project" && <DeleteProjectAssist />}
       </div>
       <div className="mt-1.5 text-xs" style={{ color: "var(--fg-faint)" }}>
         Opens in a new tab. Return here when you're done.

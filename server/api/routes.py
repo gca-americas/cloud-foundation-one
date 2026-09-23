@@ -166,6 +166,12 @@ def project_confirm() -> dict[str, Any]:
     return project.confirm()
 
 
+@router.post("/project/delete")
+def project_delete(body: dict = Body(default={})) -> dict[str, Any]:
+    """Shut down the course's project. Only ever reached from the cleanup step."""
+    return project.shut_down(str(body.get("project", "")).strip())
+
+
 @router.get("/billing")
 def billing_status() -> dict[str, Any]:
     return billing.status()

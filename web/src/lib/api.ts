@@ -80,7 +80,7 @@ export interface Task {
   stages?: Stage[];
   expect?: string[];
   widget?: string;
-  assist?: "budget" | "services";
+  assist?: "budget" | "services" | "delete-project";
 }
 
 export interface Exercise {
@@ -239,6 +239,13 @@ export const api = {
     }),
   projectStatus: () => json<ProjectStatus>("/api/project"),
   projectCreate: () => json<ProjectStatus>("/api/project/create", { method: "POST" }),
+
+  projectDelete: (project: string) =>
+    json<{ ok: boolean; detail: string; project?: string }>("/api/project/delete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ project }),
+    }),
   projectConfirm: () => json<ProjectStatus>("/api/project/confirm", { method: "POST" }),
   billingStatus: () => json<BillingStatus>("/api/billing"),
   billingLink: () => json<BillingStatus>("/api/billing/link", { method: "POST" }),

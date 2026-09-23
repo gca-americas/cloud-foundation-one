@@ -126,3 +126,30 @@ def create() -> dict[str, Any]:
 
     return {**status(), "ok": False,
             "detail": last or "could not create the project"}
+
+
+def shut_down(project_id: str) -> dict[str, Any]:
+    """Delete the project, for a student who would rather not use the console.
+
+    The terminal refuses `projects delete` on purpose, and that stays true:
+    nothing a student types can do this. This runs only when they ask for it
+    from the cleanup step, and only for the project the course recorded, so a
+    mistyped id cannot take something else with it.
+
+    Deletion is reversible for 30 days. It is not a backup, and the step says
+    so.
+    """
+    expected = remembered() or find()
+    if not expected:
+        return {"ok": False, "detail": "no project is recorded for this course"}
+    if project_id != expected:
+        return {"ok": False,
+                "detail": f"that is not the project this course made ({expected})"}
+
+    code, _, error = _gcloud("projects", "delete", project_id, "--quiet", timeout=180)
+    if code:
+        first = (error.splitlines() or [""])[0][:200]
+        return {"ok": False, "detail": first or "could not delete the project"}
+
+    return {"ok": True, "project": project_id,
+            "detail": f"{project_id} is scheduled for deletion, recoverable for 30 days"}
