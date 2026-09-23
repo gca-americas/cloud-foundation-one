@@ -1,0 +1,89 @@
+slug: what-is-cloud
+title: Cloud computing
+kicker: Step 1
+part: understand
+minutes: 20
+color: sky
+summary: Renting computing resources instead of owning them.
+
+parts:
+  - id: a
+    label: Renting
+    headline: Renting compute instead of owning it
+    body: a-renting.md
+    exercise:
+      title: Compare what each one costs
+      intro: >
+        Nothing to install for this one. Two sliders: how much traffic you
+        serve, and how much busier your busiest hour is than the average. Watch
+        what each way of paying costs as you grow.
+      tasks:
+        - kind: widget
+          id: cost
+          title: Running it yourself compared with renting it
+          widget: cost-curve
+          explain: >
+            Red is running it yourself, blue is renting. Start at the far left,
+            where you have no users at all, then drag right and watch what has
+            to be bought on each side.
+
+  - id: b
+    label: Cost and setup
+    headline: Cost, trade-offs, and your project
+    body: b-trade-offs.md
+    exercise:
+      title: Set up your corner of Google Cloud
+      intro: >
+        Everything you build from here needs somewhere to put it, and a command
+        line that knows which account and which project it is working with.
+      tasks:
+        - kind: placeholder
+          id: diagram-billing
+          title: How an account, a project and a bill fit together
+          note: diagram goes here
+        - kind: project
+          id: create-project
+          title: Create your project
+          explain: >
+            Everything you create in this course lives in a project. Make one
+            in the Google Cloud console with the name below, then press
+            "I made it" and the workbench will go and look for it. If you would
+            rather not, press "Do it for me" and it will be created for you.
+        - kind: terminal
+          id: auth
+          title: Confirm your account and project
+          expect:
+            - gcloud auth list
+            - gcloud config get-value project
+          explain: >
+            The console and the command line reach the same resources. The
+            first command shows which account the command line is using; the
+            second shows which project your commands will apply to. In Cloud
+            Shell you are signed in already, so neither of these signs you in —
+            they report. If no account is listed, run `gcloud auth login` in a
+            Cloud Shell tab of your own: it waits for a code to be pasted back,
+            which this terminal has no way to do.
+    checks:
+      - id: signed-in
+        label: You're signed in to Google Cloud
+        probe: gcloud config get-value account
+        assert: nonempty
+        hint: >
+          Run the sign-in command in the terminal above. If it completed and
+          this still fails, run `gcloud auth list` to see which accounts the
+          CLI recognises.
+      - id: project-exists
+        label: Your project exists
+        probe: gcloud projects list --filter=projectId:$PROJECT_NAME* --format=value(projectId)
+        assert: nonempty
+        hint: >
+          Create it in the console and press "I made it", or press "Do it for
+          me".
+      - id: project-recorded
+        label: Its id is recorded for the rest of the course
+        probe: cat ~/project_id.txt
+        assert: contains
+        value: $PROJECT_NAME
+        hint: >
+          Press "I made it" or "Do it for me" — that is what writes the id to
+          ~/project_id.txt.

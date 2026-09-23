@@ -1,0 +1,25 @@
+slug: where-it-is
+title: Regions
+kicker: Step 3
+part: corner
+minutes: 20
+color: violet
+summary: Where cloud resources physically run, and how to choose a place for yours.
+
+parts:
+  - id: a
+    label: Regions
+    headline: Data centers and regions
+    body: a-regions.md
+    exercise:
+      title: Choose a region
+      intro: >
+        Four situations. One right answer each, except the last.
+      tasks:
+        - kind: widget
+          id: quiz
+          title: Four situations
+          widget: region-quiz
+          explain: >
+            One right answer each, except the last. Read why the wrong ones are
+            wrong — that is where the lesson is.

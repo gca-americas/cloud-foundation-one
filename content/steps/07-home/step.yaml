@@ -1,0 +1,96 @@
+slug: home
+title: Give your app a home
+kicker: Step 7
+part: ship
+minutes: 30
+color: emerald
+summary: "Serverless: your container runs, scales, and costs nothing while idle."
+
+parts:
+  - id: a
+    label: Cloud Run
+    headline: Somewhere to run
+    body: a-cloud-run.md
+    exercise:
+      title: Put it on the cloud
+      intro: >
+        One request, then a few minutes of waiting, then an address anyone can
+        open.
+      tasks:
+        - kind: deploy
+          id: deploy-app
+          title: Give the app a public address
+          example: Deploy DinoQuest to Cloud Run so anyone can play it
+          prompt: >
+            DinoQuest only runs while your terminal is open. Describe what you
+            want done about that.
+          expect:
+            goal: Deploy the app to Cloud Run.
+            requires:
+              - [deploy, publish, host, put, ship, launch, release, running, available, up, make, get]
+              - [cloud run, cloud, online, public, internet, live, serverless]
+            rejects:
+              - [virtual machine, vm, compute engine, server for me]
+            feedback:
+              missing_0: Not enough to act on — say what should happen to the app.
+              missing_1: >-
+                Say where it should end up — on Cloud Run, online, somewhere
+                anyone can reach.
+              rejected: >
+                A virtual machine is a machine you keep. This is a container
+                that runs when asked and costs nothing when it is not.
+              accepted: >
+                Building the container and creating the service. The first
+                deployment takes a few minutes.
+          stages:
+            - title: Permission
+              note: roles granted
+              at: Granting the service account
+            - title: Upload
+              note: app/ sent off
+              at: Deploying dinoquest
+            - title: Build
+              note: into a container
+              at: Building|Uploading
+            - title: Running
+              note: with an address
+              at: Service URL
+          command: python3 scripts/deploy_app.py
+          explain: >
+            The log is hidden because almost none of it is worth reading. Open
+            it if the deployment stops, or if you want to watch the four stages
+            go by.
+        - kind: reflect
+          id: same-app
+          title: Confirm it is the same app
+          prompt: >
+            Open the address and play a round. The leaderboard is the same
+            Firestore database your laptop was writing to, and the dino is drawn
+            by the same model. Nothing about the code changed to make that work.
+          checklist:
+            - The game loads at the public address
+            - A score you set there survives a reload
+            - A generated dino appears
+
+    checks:
+      - id: service-live
+        label: The app has a public URL
+        probe: gcloud run services describe dinoquest --region=$REGION --format=value(status.url)
+        assert: contains
+        value: run.app
+        hint: >
+          Complete the deploy task. If it stopped, open the log — the reason is
+          in there.
+      - id: service-answers
+        label: The URL answers
+        probe: gcloud run services describe dinoquest --region=$REGION --format=value(status.conditions[0].status)
+        assert: contains
+        value: "True"
+        hint: Give it a few seconds after the deployment finishes, then check again.
+      - id: scales-to-zero
+        label: It is set to cost nothing while idle
+        probe: gcloud run services describe dinoquest --region=$REGION --format=value(spec.template.metadata.annotations)
+        assert: succeeds
+        hint: >
+          Cloud Run scales to zero by default. Nothing to do here — this check
+          is showing you where that setting lives.

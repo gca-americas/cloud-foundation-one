@@ -1,0 +1,30 @@
+slug: draw-it
+title: Review and next steps
+kicker: Step 9
+part: run
+minutes: 15
+color: rose
+summary: Draw the system you built, then review what the course left out.
+draft: true
+
+exercise:
+  title: Draw your architecture
+  intro: >
+    No notes, no scrolling back. Draw what you built and how the pieces reach
+    each other.
+  tasks:
+    - kind: draw
+      id: final-drawing
+      title: Draw the system from memory
+      prompt: >
+        Show: your project, your region, your container, your database, the
+        model, and who is allowed to talk to whom. Then draw the user arriving.
+      stamps: [project, region, zone, container, database, bucket, model, user, key]
+    - kind: reflect
+      id: whats-next
+      title: Identify what the course left out
+      prompt: >
+        Name one thing this course deliberately skipped and say why you think
+        it was skipped.
+
+checks: []

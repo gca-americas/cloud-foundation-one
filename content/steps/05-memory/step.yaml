@@ -1,0 +1,124 @@
+slug: memory
+title: Give your app a memory
+kicker: Step 5
+part: grow
+minutes: 30
+color: fuchsia
+summary: A managed database, in the region you chose, with no server to run.
+
+parts:
+  - id: a
+    label: Databases
+    headline: Where records live
+    body: a-databases.md
+    exercise:
+      title: Lose the leaderboard, then keep it
+      intro: >
+        Five things in order. The first one is meant to go wrong. Where a box
+        asks for a request, describe the outcome you want in your own words —
+        the way you would put it to an assistant — and the workbench works out
+        the command.
+      tasks:
+        - kind: app
+          id: lose-it
+          title: Watch a score disappear
+          appTitle: DinoQuest
+          explain: >
+            Start the app and play a round so there is a score on the board.
+            Then press Stop, then Start again, and look at the leaderboard.
+            It is empty. The score was in the process, and the process ended.
+        - kind: provision
+          id: create-db
+          title: Make the score survive a restart
+          example: Set up a Firestore database in my region to keep the scores
+          prompt: >
+            You just watched the leaderboard empty itself. Describe what you
+            want set up so that stops happening.
+          expect:
+            goal: Create a Firestore database in the student's region.
+            requires:
+              - [database, firestore, datastore, records, storage, persist]
+              - [create, make, set up, need, want, add, new, give]
+            rejects:
+              - [bucket, file storage, object storage]
+            feedback:
+              missing_0: >
+                Not enough to act on — name the kind of thing that should hold
+                the scores.
+              missing_1: "Say what should happen to it: create it, set it up, add one."
+              rejected: >
+                A bucket holds files you hand back whole. A leaderboard is
+                records — rows you read, sort and add to.
+              accepted: >
+                Creating a Firestore database in your region. This takes a
+                minute or two.
+          command: bash scripts/create_database.sh
+        - kind: files
+          id: connect
+          title: Get the app writing to it
+          example: Change the app to save scores in Firestore instead of the list
+          start: app
+          open: app/main.py
+          expect:
+            goal: Change app/main.py to use Firestore instead of the in-memory list.
+            requires:
+              - [firestore, database, db]
+              - [use, connect, write, save, store, point, switch, change, instead]
+            feedback:
+              missing_0: Not enough to act on — name what the app should be talking to.
+              missing_1: >-
+                Say what should change — connect it, point it at the database,
+                save there instead.
+              accepted: >
+                Rewriting the store section of app/main.py and installing the
+                client library. Watch the file on the right change.
+          command: python3 scripts/connect_firestore.py
+          explain: >
+            The database exists, and the app still does not know about it. Read
+            what changes — it is one section of one file, and the game is not
+            part of it.
+        - kind: reflect
+          id: keep-it
+          title: Now watch it survive
+          linkTo: lose-it
+          linkLabel: Back to DinoQuest, at the top of this exercise
+          prompt: >
+            Go back to the same panel you used at the start. Start the app,
+            play a round, then Stop and Start again. This time the leaderboard
+            is still there — nothing about the game changed, only where the
+            score went.
+          checklist:
+            - You set a score
+            - You stopped and started the app
+            - The score is still on the board
+    checks:
+      - id: firestore-db
+        label: A Firestore database exists
+        probe: gcloud firestore databases list --format=value(name)
+        assert: nonempty
+        hint: >
+          Complete the "Ask for somewhere to keep it" task. If it failed, open
+          the log — the reason will be in there.
+      - id: db-region
+        label: It is in the region you chose
+        probe: gcloud firestore databases list --format=value(locationId)
+        assert: nonempty
+        hint: A database lives somewhere, like everything else.
+      - id: app-uses-firestore
+        label: The app writes to Firestore, not to a list
+        probe: cat app/main.py
+        assert: contains
+        value: firestore.Client()
+        hint: Complete the "Now point the app at it" task.
+      - id: app-reports-firestore
+        label: The running app agrees
+        probe: curl -s http://127.0.0.1:8080/api/health
+        assert: contains
+        value: in Firestore
+        hint: >
+          Start the app again after the change — it has to be restarted to pick
+          up new code.
+    after:
+      action: stop-app
+      label: Stop the app
+      note: Step 7 gives it a home that does not depend on your terminal.

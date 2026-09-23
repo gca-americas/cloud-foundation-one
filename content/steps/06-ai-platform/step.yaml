@@ -1,0 +1,133 @@
+slug: ai-platform
+title: The AI platform
+kicker: Step 6
+part: grow
+minutes: 35
+color: fuchsia
+summary: Google hosts the models. Calling one is the same arrangement as everything else.
+
+parts:
+  - id: a
+    label: The platform
+    headline: Renting a model
+    body: a-platform.md
+  - id: b
+    label: Your turn
+    headline: A dino drawn by Gemini
+    body: b-generate.md
+    exercise:
+      title: Let a model draw the dino
+      intro: >
+        Three things in order: the settings, the code, then a dino that did not
+        exist before you asked for it.
+      tasks:
+        - kind: intent
+          id: settings
+          title: Get the app ready to reach a model
+          example: Set up what the app needs to call Gemini
+          prompt: >
+            Nothing in DinoQuest knows how to reach Gemini yet. Describe the
+            setup you want — no code changes, not yet.
+          expect:
+            goal: Write app/.env and install the Gen AI SDK.
+            requires:
+              - [gemini, model, vertex, ai, agent platform, llm]
+              - [set up, setup, configure, connect, prepare, settings, environment, env, ready, install, add]
+            rejects:
+              - [api key, key, token, secret]
+            feedback:
+              missing_0: Not enough to act on — name what the app should be calling.
+              missing_1: >-
+                Say what should happen — set it up, configure it, get it ready.
+              rejected: >
+                There is no API key here. The request is signed with the Google
+                Cloud credentials this machine already has.
+              accepted: >
+                Writing app/.env and installing the Gen AI SDK. Read the four
+                settings it prints — one of them is the global endpoint.
+          stages:
+            - title: Settings
+              note: written to app/.env
+              at: wrote app/\.env
+            - title: Endpoint
+              note: the global one
+              at: GOOGLE_CLOUD_LOCATION
+            - title: The SDK
+              note: google-genai
+              at: installed
+            - title: Ready
+              note: nothing called yet
+              at: reads this file
+          command: python3 scripts/setup_gemini_env.py
+          explain: >
+            Nothing is called yet, and no code changes. This only writes down
+            what the next step will need.
+        - kind: files
+          id: connect-gemini
+          title: Have the model draw the dino
+          example: Change the code so Gemini draws a new dino when I ask
+          start: app
+          open: app/main.py
+          expect:
+            goal: Change app/main.py so Gemini draws the dino.
+            requires:
+              - [dino, sprite, character, picture, image]
+              - [generate, draw, create, make, new, change, add, wire, connect]
+            rejects:
+              - [download, stock, clip art, upload]
+            feedback:
+              missing_0: Not enough to act on — name what should be made.
+              missing_1: >-
+                Say what should happen to it — draw a new one, generate one on
+                request.
+              rejected: >
+                Nothing is being fetched from the internet. A model is being
+                asked to invent one.
+              accepted: >
+                Rewriting the dino section of app/main.py. Watch the file on the
+                right — the game, the routes and the leaderboard are untouched.
+          command: python3 scripts/connect_gemini.py
+          explain: >
+            One marked section changes, the same way step 5 changed one marked
+            section. Read what arrives: the request, the shape of the answer,
+            and the retries.
+        - kind: app
+          id: generate
+          title: Run it and ask for a dino
+          appTitle: DinoQuest
+          explain: >
+            Start the app. A "Draw me a new dino" box is there now, because the
+            app reports that it can. Describe one, press Generate, and wait — a
+            first call takes a few seconds. Then play a round with it.
+    checks:
+      - id: ai-enabled
+        label: The platform API is enabled
+        probe: gcloud services list --enabled --filter=aiplatform.googleapis.com --format=value(config.name)
+        assert: contains
+        value: aiplatform.googleapis.com
+        hint: >
+          Step 2 enabled it. If it is off, run the enable task in step 2 again.
+      - id: sdk-installed
+        label: The Gen AI SDK is a dependency of the app
+        probe: cat app/requirements.txt
+        assert: contains
+        value: google-genai
+        hint: Complete the "Ask for the settings" task.
+      - id: app-calls-gemini
+        label: The app asks a model for the dino
+        probe: cat app/main.py
+        assert: contains
+        value: genai.Client(
+        hint: Complete the "Now ask for the code" task.
+      - id: app-reports-dino
+        label: The running app agrees
+        probe: curl -s http://127.0.0.1:8080/api/health
+        assert: contains
+        value: '"dino": true'
+        hint: >
+          Start the app again after the change — it has to be restarted to pick
+          up new code.
+    after:
+      action: stop-app
+      label: Stop the app
+      note: Step 7 gives it a home that does not depend on your terminal.

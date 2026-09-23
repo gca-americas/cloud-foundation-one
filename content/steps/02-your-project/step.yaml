@@ -1,0 +1,129 @@
+slug: your-project
+title: Projects and billing
+kicker: Step 2
+part: corner
+minutes: 30
+color: violet
+summary: The container for cloud resources, the account that pays for them, and budget alerts.
+
+parts:
+  - id: a
+    label: Projects and billing
+    headline: Projects, identifiers, and billing accounts
+    body: a-the-box.md
+    exercise:
+      title: Put billing on your project
+      intro: >
+        The project already exists — step 1 created it. What it does not have
+        yet is an account to charge things to.
+      tasks:
+        - kind: billing
+          id: link-billing
+          title: Link a billing account
+          explain: >
+            A billing account is a separate resource, so a project has to be
+            linked to one. This uses the credit you claimed for this session if
+            you have one, and whichever open account you already have if you do
+            not.
+    checks:
+      - id: billing-linked
+        label: A billing account is linked
+        probe: gcloud billing projects describe $PROJECT --format=value(billingEnabled)
+        assert: contains
+        value: "True"
+        hint: >
+          Press "Do it for me". If it says there is no open billing account,
+          claim your credit first — claiming it is what creates the account.
+
+  - id: b
+    label: Budget alerts
+    headline: Budget alerts
+    body: b-budget.md
+    exercise:
+      title: Create a budget alert
+      tasks:
+        - kind: console
+          id: set-budget
+          title: Create a budget alert
+          url: https://console.cloud.google.com/billing/budgets
+          assist: budget
+          explain: >
+            Create a budget on your billing account. Pick a small amount:
+            billing data arrives in batches, so a low threshold is what makes
+            up for an alert that can be hours behind.
+          checklist:
+            - The budget is scoped to your project
+            - A low amount, such as 5 or 10 — low enough that a late alert still helps
+            - You kept the default alert thresholds
+            - Your email address is on the alert
+    checks:
+      - id: budget-set
+        label: A budget alert exists
+        probe: python3 scripts/probe_budget.py
+        assert: matches
+        value: BUDGETS=[1-9]
+        hint: >
+          Budgets belong to the billing account rather than the project, which
+          is why you set them on a different console page.
+
+  - id: c
+    label: Enabling services
+    headline: Enabling services
+    body: c-switches.md
+    exercise:
+      title: Let's enable them together
+      intro: >
+        Switch on everything the course needs, then go and see the result from
+        the command line.
+      tasks:
+        - kind: console
+          id: enable-console
+          title: Enable the APIs in the console
+          url: https://console.cloud.google.com/apis/library
+          assist: services
+          explain: >
+            Search for each service below and press **Enable**. It is a switch
+            on this project and nothing else, and enabling one costs nothing —
+            you are charged for what you use. If seven searches is more clicking
+            than you want, the second button does the same thing.
+          checklist:
+            - "Cloud Run — somewhere to run your code"
+            - "Cloud Build — turns your source into a container"
+            - "Artifact Registry — stores the built container"
+            - "Firestore — the leaderboard, in step 5"
+            - "Gemini Enterprise Agent Platform — the model, in step 6"
+        - kind: terminal
+          id: list-services
+          title: List what is enabled
+          expect:
+            - gcloud services list --enabled --format=value(config.name)
+          explain: >
+            The console shows this too, one page at a time. One command shows
+            the lot. If something is missing, go back and enable it — this is
+            also the command to come back to whenever a later step reports that
+            an API is not enabled.
+    checks:
+      - id: run-enabled
+        label: Cloud Run is enabled
+        probe: gcloud services list --enabled --filter=run.googleapis.com --format=value(config.name)
+        assert: contains
+        value: run.googleapis.com
+        hint: Complete the "Request the services this course uses" task.
+      - id: build-enabled
+        label: Cloud Build and Artifact Registry are enabled
+        probe: gcloud services list --enabled "--filter=cloudbuild.googleapis.com OR artifactregistry.googleapis.com" --format=value(config.name)
+        assert: contains
+        value: artifactregistry.googleapis.com
+        hint: These two are what turn your source into something Cloud Run can run.
+      - id: firestore-enabled
+        label: Firestore is enabled
+        probe: gcloud services list --enabled --filter=firestore.googleapis.com --format=value(config.name)
+        assert: contains
+        value: firestore.googleapis.com
+        hint: Step 5 gives the leaderboard somewhere to live.
+      - id: ai-enabled
+        label: The AI platform is enabled
+        probe: gcloud services list --enabled --filter=aiplatform.googleapis.com --format=value(config.name)
+        assert: contains
+        value: aiplatform.googleapis.com
+        hint: Step 6 uses this to draw a new dino.

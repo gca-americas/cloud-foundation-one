@@ -1,0 +1,91 @@
+slug: cleanup
+title: Cost and cleanup
+kicker: Step 8
+part: run
+minutes: 20
+color: rose
+summary: What the bill is made of, and deleting what you stopped using.
+draft: true
+
+exercise:
+  title: Read the bill, then take it back down
+  intro: >
+    Everything built in this course, removed in the order it was made. The
+    project stays.
+  tasks:
+    - kind: console
+      id: read-the-bill
+      title: Find your own numbers
+      url: https://console.cloud.google.com/billing
+      checklist:
+        - You found the report for this project
+        - You found a line for Cloud Run and a line for Firestore
+        - You know which line would grow if the game became popular
+    - kind: reflect
+      id: whats-still-charging
+      title: Name what still costs money with nobody playing
+      prompt: >
+        The app scales to zero, so the container costs nothing while idle. Two
+        things in this project are still charging. Name them before deleting
+        anything.
+      checklist:
+        - You named the stored container image
+        - You named the database
+    - kind: terminal
+      id: delete-service
+      title: Delete the service
+      expect:
+        - gcloud run services delete cloud101-app --region=$REGION --quiet
+      explain: >
+        Nothing points at the service, so it goes first. The container image it
+        ran is a separate thing and is still there.
+    - kind: terminal
+      id: delete-image
+      title: Delete the stored image
+      expect:
+        - gcloud artifacts repositories delete cloud-run-source-deploy --location=$REGION --quiet
+      explain: >
+        Deploying from source built an image and kept it. Storage is charged
+        whether or not anything runs it.
+    - kind: terminal
+      id: delete-database
+      title: Delete the database
+      expect:
+        - gcloud firestore databases delete --database="(default)" --quiet
+      explain: >
+        Last, because it was first. The leaderboard goes with it, which is the
+        point — a database outlives the app, so deleting the app does not
+        delete the data.
+
+    - kind: reflect
+      id: what-stays
+      title: Name what is deliberately left behind
+      prompt: >
+        Three things in this project are not part of the cleanup: the project
+        itself, the billing account, and the budget alert from step 2. Say why
+        the budget is worth keeping once everything it was watching is gone.
+      checklist:
+        - You can say what the budget costs to keep
+        - You can say what it would catch next time
+
+checks:
+  - id: service-gone
+    label: The Cloud Run service is gone
+    probe: gcloud run services list --format=value(metadata.name)
+    assert: not_contains
+    value: cloud101-app
+    hint: Complete the "Delete the service" task.
+  - id: image-gone
+    label: The stored container image is gone
+    probe: gcloud artifacts repositories list --format=value(name)
+    assert: not_contains
+    value: cloud-run-source-deploy
+    hint: >
+      The service and the image it ran are separate things, and storage is
+      charged for the image on its own.
+  - id: database-gone
+    label: The database is gone
+    probe: gcloud firestore databases list --format=value(name)
+    assert: not_contains
+    value: databases/(default)
+    hint: Complete the "Delete the database" task.

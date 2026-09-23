@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>DinoQuest</title>
+  <link rel="icon" href="dino.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main>
+    <header class="bar">
+      <h1>DinoQuest</h1>
+      <div class="bar__right">
+        <input id="name" class="name" maxlength="12" placeholder="your name"
+               aria-label="Name for the leaderboard" />
+        <span class="score" id="score">0</span>
+        <button id="sound" class="ghost" type="button" aria-pressed="false">sound off</button>
+      </div>
+    </header>
+
+    <div class="stage">
+      <canvas id="game" width="900" height="230"></canvas>
+      <div class="overlay" id="overlay">
+        <p class="overlay__title" id="overlay-title">Press space to run</p>
+        <p class="overlay__hint" id="overlay-hint">space or tap to jump</p>
+      </div>
+
+      <!-- Covers the game while a dino is being drawn, and stays until the
+           page is reloaded, because the new sprite is only really in play
+           after a reload. -->
+      <div class="veil" id="veil" hidden>
+        <p class="veil__text" id="veil-text">Drawing your dino…</p>
+        <button id="veil-action" class="primary" type="button" hidden>Reload to play</button>
+      </div>
+    </div>
+
+    <section class="maker" id="maker" hidden>
+      <label class="maker__label" for="idea">Draw me a new dino</label>
+      <div class="maker__row">
+        <input id="idea" class="idea" maxlength="120"
+               placeholder="a purple dinosaur with a yellow crest" />
+        <button id="make" class="primary" type="button">Generate</button>
+        <button id="restore" class="ghost" type="button">Original dino</button>
+      </div>
+      <p class="maker__note" id="maker-note">A model draws it. It takes a few seconds.</p>
+    </section>
+
+    <section class="board">
+      <div class="board__head">
+        <h2>Leaderboard</h2>
+        <span class="board__note" id="board-note">in memory</span>
+      </div>
+      <ol id="scores" class="board__list"><li class="empty">No scores yet.</li></ol>
+    </section>
+  </main>
+
+  <audio id="music" src="audio/track1.mp3" loop preload="auto"></audio>
+  <script src="game.js"></script>
+</body>
+</html>

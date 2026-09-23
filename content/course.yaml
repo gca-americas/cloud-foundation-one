@@ -1,0 +1,31 @@
+title: Cloud Foundation - One
+subtitle: Your first app on Google Cloud
+tagline: Google Cloud foundations
+credit: Brought to you by Google Cloud Americas' Advocacy team
+
+# The one idea the course is built to leave behind. Named in step 1, proved in
+# step 6, and referred to by name in between.
+thesis: >
+  The cloud is renting instead of owning. You rent the machine, you rent the
+  storage, and at the end you rent the intelligence.
+
+
+parts:
+  - id: understand
+    title: Understand it
+    color: sky
+  - id: corner
+    title: Set up your corner
+    color: violet
+  - id: menu
+    title: Learn what's available
+    color: amber
+  - id: grow
+    title: Make it do more
+    color: fuchsia
+  - id: ship
+    title: Put your app on the cloud
+    color: emerald
+  - id: run
+    title: Run it like a professional
+    color: rose

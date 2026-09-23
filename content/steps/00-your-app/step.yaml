@@ -1,0 +1,74 @@
+slug: your-app
+title: DinoQuest in Cloud Shell
+kicker: Step 0
+part: understand
+minutes: 10
+color: sky
+summary: The app this course puts on the internet, and why nobody else can reach it yet.
+
+parts:
+  - id: a
+    label: The app
+    headline: The app this course deploys
+    body: a-the-app.md
+    exercise:
+      title: Look at it, then run it
+      intro: >
+        Read the app before you start it. Then start it the way you would on
+        any machine: by typing the command.
+      tasks:
+        - kind: files
+          id: look
+          title: Look at the app
+          start: app
+          open: app/main.py
+          explain: >
+            This is everything the app is made of. `main.py` is open on the
+            right — the server and the leaderboard are both in it, and it is
+            short. Click anything else you are curious about. Nothing here can
+            be edited yet.
+        - kind: terminal
+          id: start
+          title: Start the app
+          expect:
+            - cd app
+            - python3 main.py
+          explain: >
+            Move into the app folder, then run the file you just read. Two
+            commands: `cd app`, then `python3 main.py`. `ls` and `cat` work
+            too, if you want to look around from here instead.
+        - kind: app
+          id: play
+          title: DinoQuest
+          appTitle: DinoQuest
+          explain: >
+            Once it is running it appears here. Space or a click jumps. Put a
+            name in the field if you want your score labelled, and turn the
+            sound on.
+    checks:
+      - id: app-answers
+        label: The app is running and answering
+        probe: curl -s -o /dev/null -w %{http_code} http://127.0.0.1:8080/api/health
+        assert: contains
+        value: "200"
+        hint: Start the app from the terminal above.
+    after:
+      action: stop-app
+      label: Stop the app
+      note: >
+        It keeps running until you stop it. Leaving it on costs nothing here,
+        but the habit is worth having.
+
+  - id: b
+    label: Requirements
+    headline: Requirements for a public app
+    body: b-requirements.md
+    checks:
+      - id: gcloud-present
+        label: The Google Cloud CLI is available
+        probe: gcloud version
+        assert: contains
+        value: Google Cloud SDK
+        hint: >
+          In Cloud Shell the CLI is already installed. If you're running this
+          workbench on your own computer, install the Google Cloud CLI first.

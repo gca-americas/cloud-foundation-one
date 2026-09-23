@@ -1,0 +1,314 @@
+"""Looking around the project, and a small shell for doing it.
+
+Two things share one set of path rules here:
+
+  * the file explorer, which lists the tree and reads a file
+  * the terminal, which accepts a handful of commands and runs them for real
+
+Everything is confined to the repository, and the shell is an allowlist rather
+than a shell: commands are matched and carried out in Python, never handed to
+`sh`. A student can explore freely and cannot break anything or reach outside.
+"""
+
+from __future__ import annotations
+
+import os
+import re
+import shlex
+import subprocess
+from pathlib import Path
+from typing import Any
+
+from server import config
+from server.services import appproc
+
+ROOT = config.ROOT
+
+# Noise a beginner should not have to look past.
+HIDDEN = {".venv", "node_modules", "__pycache__", ".git", "dist", "runs",
+          ".pytest_cache", ".ruff_cache", "web/dist"}
+
+TEXT_SUFFIXES = {".py", ".js", ".ts", ".tsx", ".css", ".html", ".md", ".yaml",
+                 ".yml", ".json", ".sh", ".txt", ".toml", ".cfg", ""}
+
+MAX_READ = 200_000
+
+
+class OutsideWorkspace(Exception):
+    """A path that resolves outside the project."""
+
+
+def resolve(relative: str) -> Path:
+    """A path inside the project, or an error. Symlinks are resolved first, so
+    a link pointing outward is refused like any other outside path."""
+    candidate = (ROOT / relative.strip().lstrip("/")).resolve()
+    if candidate != ROOT and ROOT not in candidate.parents:
+        raise OutsideWorkspace(relative)
+    return candidate
+
+
+def _hidden(path: Path) -> bool:
+    name = path.name
+    if name.startswith(".") and name not in {".env.example"}:
+        return True
+    return name in HIDDEN
+
+
+def _display(cwd: Path) -> str:
+    """What the prompt shows: ~/101 rather than a long absolute path."""
+    relative = "" if cwd == ROOT else str(cwd.relative_to(ROOT))
+    return f"~/{ROOT.name}" + (f"/{relative}" if relative else "")
+
+
+def tree(start: str = "", depth: int = 3) -> dict[str, Any]:
+    """The project as nested entries, directories first."""
+
+    def walk(directory: Path, left: int) -> list[dict[str, Any]]:
+        entries = []
+        for child in sorted(directory.iterdir(),
+                            key=lambda p: (p.is_file(), p.name.lower())):
+            if _hidden(child):
+                continue
+            relative = str(child.relative_to(ROOT))
+            if child.is_dir():
+                entries.append({
+                    "name": child.name,
+                    "path": relative,
+                    "kind": "dir",
+                    "children": walk(child, left - 1) if left > 1 else None,
+                })
+            else:
+                entries.append({
+                    "name": child.name,
+                    "path": relative,
+                    "kind": "file",
+                    "size": child.stat().st_size,
+                    "readable": child.suffix.lower() in TEXT_SUFFIXES,
+                })
+        return entries
+
+    base = resolve(start) if start else ROOT
+    return {
+        "root": str(base.relative_to(ROOT)) if base != ROOT else "",
+        # What to show above the tree, so it is obvious which folder is being
+        # listed when the explorer is rooted somewhere other than the project.
+        "display": _display(base),
+        "entries": walk(base, depth),
+    }
+
+
+def read(relative: str) -> dict[str, Any]:
+    path = resolve(relative)
+    if not path.is_file():
+        return {"path": relative, "error": "not a file"}
+    if path.suffix.lower() not in TEXT_SUFFIXES:
+        return {"path": relative, "error": "not a text file"}
+
+    raw = path.read_bytes()[:MAX_READ]
+    try:
+        text = raw.decode()
+    except UnicodeDecodeError:
+        return {"path": relative, "error": "not a text file"}
+
+    return {
+        "path": str(path.relative_to(ROOT)),
+        "language": path.suffix.lstrip(".") or "text",
+        "lines": text.split("\n"),
+        "truncated": path.stat().st_size > MAX_READ,
+    }
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# The terminal
+#
+# Not a shell. Each command is recognised and carried out here, so there is no
+# interpreter to escape from and nothing destructive to reach.
+# ─────────────────────────────────────────────────────────────────────────────
+
+HELP = """Available commands:
+  pwd                 print the current folder
+  ls [path]           list files
+  cd <path>           change folder
+  cat <file>          print a file
+  gcloud ...          the real Google Cloud CLI
+  python3 <file.py>   run the app, or one of the course's scripts
+  clear               clear the screen"""
+
+# gcloud runs for real, deletes included: cleaning up what you made is part of
+# the course, and deleting a service you made is reversible. What a typo may never reach is the account
+# and the project itself -- everything inside one can be made again.
+NEVER = [
+    ("projects", "delete"),
+    ("projects", "undelete"),
+    ("auth", "revoke"),
+    ("billing", "accounts"),
+    ("organizations",),
+    ("resource-manager",),
+]
+
+# Commands that stop and wait for something to be typed at them. There is no
+# keyboard attached to this terminal, so they would simply hang.
+INTERACTIVE = {("auth", "login"), ("auth", "application-default", "login"),
+               ("init",), ("beta", "interactive")}
+
+GCLOUD_TIMEOUT = 240
+SCRIPT_TIMEOUT = 180
+
+
+def prompt(cwd_relative: str = "") -> str:
+    return _display(resolve(cwd_relative) if cwd_relative else ROOT)
+
+
+def _ls(target: Path) -> str:
+    if target.is_file():
+        return target.name
+    names = []
+    for child in sorted(target.iterdir(), key=lambda p: (p.is_file(), p.name.lower())):
+        if _hidden(child):
+            continue
+        names.append(child.name + ("/" if child.is_dir() else ""))
+    return "  ".join(names) if names else ""
+
+
+def _expand(line: str) -> str:
+    """$PROJECT and $REGION, filled the way an exported shell variable would be.
+
+    A real shell would expand these from the environment; this terminal has no
+    shell, so it does the same job here rather than passing a literal `$REGION`
+    to gcloud.
+    """
+    from server.services import environment  # late: environment imports project
+
+    values = environment.as_substitutions()
+
+    def one(match: re.Match[str]) -> str:
+        return values.get(match.group(1) or match.group(2), match.group(0))
+
+    return re.sub(r"\$\{(\w+)\}|\$(\w+)", one, line)
+
+
+def run(line: str, cwd_relative: str = "") -> dict[str, Any]:
+    """Carry out one command line. Returns the output and the new folder."""
+    line = _expand(line)
+    cwd = resolve(cwd_relative) if cwd_relative else ROOT
+    relative_cwd = "" if cwd == ROOT else str(cwd.relative_to(ROOT))
+    reply = {"cwd": relative_cwd, "prompt": _display(cwd), "output": "",
+             "started": False, "cleared": False}
+
+    try:
+        parts = shlex.split(line.strip())
+    except ValueError:
+        return {**reply, "output": "unbalanced quotes"}
+
+    if not parts:
+        return reply
+
+    command, args = parts[0], parts[1:]
+
+    if command == "clear":
+        return {**reply, "cleared": True}
+
+    if command == "help":
+        return {**reply, "output": HELP}
+
+    if command == "pwd":
+        return {**reply, "output": _display(cwd)}
+
+    if command == "ls":
+        try:
+            target = resolve(str(Path(relative_cwd) / args[0])) if args else cwd
+        except OutsideWorkspace:
+            return {**reply, "output": f"ls: {args[0]}: outside the project"}
+        if not target.exists():
+            return {**reply, "output": f"ls: {args[0]}: no such file or directory"}
+        return {**reply, "output": _ls(target)}
+
+    if command == "cd":
+        if not args or args[0] == "~":
+            return {**reply, "cwd": "", "prompt": _display(ROOT)}
+        try:
+            target = resolve(str(Path(relative_cwd) / args[0]))
+        except OutsideWorkspace:
+            return {**reply, "output": f"cd: {args[0]}: outside the project"}
+        if not target.is_dir():
+            return {**reply, "output": f"cd: {args[0]}: no such file or directory"}
+        moved = "" if target == ROOT else str(target.relative_to(ROOT))
+        return {**reply, "cwd": moved, "prompt": _display(target)}
+
+    if command == "cat":
+        if not args:
+            return {**reply, "output": "cat: give it a file name"}
+        try:
+            target = resolve(str(Path(relative_cwd) / args[0]))
+        except OutsideWorkspace:
+            return {**reply, "output": f"cat: {args[0]}: outside the project"}
+        found = read(str(target.relative_to(ROOT)))
+        if "error" in found:
+            return {**reply, "output": f"cat: {args[0]}: {found['error']}"}
+        return {**reply, "output": "\n".join(found["lines"])}
+
+    if command == "gcloud":
+        verbs = tuple(a for a in args if not a.startswith("-"))
+
+        for shape in NEVER:
+            if all(verb in verbs for verb in shape):
+                return {**reply, "output":
+                        f"gcloud: this workbench will not run `{' '.join(shape)}` commands.\n"
+                        "Everything inside a project can be made again; the project and the\n"
+                        "account cannot. Run it in a Cloud Shell tab of your own if you mean it."}
+
+        for shape in INTERACTIVE:
+            if verbs[: len(shape)] == shape:
+                joined = " ".join(shape)
+                return {**reply, "output":
+                        f"gcloud {joined} needs a keyboard, and this terminal does not have one.\n\n"
+                        "Open a Cloud Shell tab and run it there:\n"
+                        f"  gcloud {' '.join(args)}\n\n"
+                        "In Cloud Shell you are usually signed in already. To check, run:\n"
+                        "  gcloud auth list"}
+
+        done = subprocess.run(
+            ["gcloud", *args], cwd=cwd, capture_output=True, text=True,
+            timeout=GCLOUD_TIMEOUT,
+            env={**os.environ, "CLOUDSDK_CORE_DISABLE_PROMPTS": "1"},
+        )
+        out = (done.stdout + ("\n" if done.stdout and done.stderr else "") + done.stderr).strip()
+        return {**reply, "output": out or "(no output)"}
+
+    if command in {"python3", "python"}:
+        script = args[0] if args else ""
+        try:
+            target = resolve(str(Path(relative_cwd) / script)) if script else None
+        except OutsideWorkspace:
+            return {**reply, "output": f"python3: {script}: outside the project"}
+
+        # The course's own scripts run for real. Anything else in the project
+        # does not: this is a terminal for the exercises, not an interpreter.
+        if target is not None and target.parent == (ROOT / "scripts") and target.is_file():
+            done = subprocess.run(
+                ["python3", str(target)], cwd=ROOT, capture_output=True,
+                text=True, timeout=SCRIPT_TIMEOUT,
+                env={**os.environ, "PYTHONUNBUFFERED": "1"},
+            )
+            out = (done.stdout + ("\n" if done.stdout and done.stderr else "")
+                   + done.stderr).strip()
+            return {**reply, "output": out or "(no output)"}
+
+        if target == (ROOT / "app" / "main.py"):
+            # appproc picks the app's own interpreter when there is one.
+            outcome = appproc.start()
+            if outcome["running"]:
+                return {
+                    **reply,
+                    "started": True,
+                    "output": (f"DinoQuest is running on http://localhost:{outcome['port']}\n"
+                               "open it with Web Preview at the top of the Cloud Shell window\n\n"
+                               "leave this running and play below — Ctrl+C stops it"),
+                }
+            return {**reply, "output": "the app did not start; check runs/app.log"}
+        if script:
+            return {**reply, "output": f"python3: can't open file '{script}': "
+                                       "no such file in this folder"}
+        return {**reply, "output": "python3: give it a file to run"}
+
+    return {**reply, "output": f"{command}: command not found\n\n{HELP}"}

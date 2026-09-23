@@ -1,0 +1,35 @@
+# ── build output and dependencies ────────────────────────────────────────────
+.venv/
+app/.venv/
+node_modules/
+web/dist/
+*.tsbuildinfo
+__pycache__/
+*.pyc
+
+# ── run-time state, local to one machine ─────────────────────────────────────
+runs/
+app/.env
+
+# ── editor and AI coding assistant working files ─────────────────────────────
+# None of these belong in a teaching repository: they are about how the course
+# was written, not about the course.
+.claude/
+CLAUDE.md
+.cursor/
+.cursorrules
+.cursorignore
+.antigravity/
+.agents/
+.gemini/
+.aider*
+.windsurf/
+.continue/
+.github/copilot-instructions.md
+.vscode/
+.idea/
+*.code-workspace
+
+# ── operating system noise ───────────────────────────────────────────────────
+.DS_Store
+Thumbs.db

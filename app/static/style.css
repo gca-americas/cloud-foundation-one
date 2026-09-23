@@ -1,0 +1,249 @@
+:root {
+  --ink: #12151c;
+  --paper: #eef1f6;
+  --line: #c9cfdb;
+  --accent: #43a047;
+  --muted: #667085;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e9ecf5;
+    --paper: #10131b;
+    --line: #2a3140;
+    --accent: #5cc46a;
+    --muted: #8b93a7;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: start center;
+  padding: clamp(12px, 3vw, 32px);
+  background: var(--paper);
+  color: var(--ink);
+  font: 16px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+main { width: min(900px, 100%); }
+
+.bar {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.bar h1 {
+  margin: 0;
+  font-size: clamp(1.25rem, 3vw, 1.6rem);
+  letter-spacing: -0.02em;
+}
+
+.bar__right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.score {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 1.3rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.name {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font: inherit;
+  font-size: 0.8rem;
+  width: 8.5rem;
+}
+.name::placeholder { color: var(--muted); }
+
+.ghost {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.ghost:not([disabled]):hover { color: var(--ink); }
+
+/* A disabled button has to look disabled. Without this the maker's buttons
+   kept their hover and read as clickable while a request was in flight. */
+.ghost[disabled] { opacity: 0.45; cursor: default; }
+
+.stage { position: relative; }
+
+canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: transparent;
+  touch-action: manipulation;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  gap: 6px;
+  pointer-events: none;
+}
+.overlay[hidden] { display: none; }
+
+.overlay__title { margin: 0; font-size: 1.15rem; font-weight: 650; }
+.overlay__hint { margin: 0; font-size: 0.85rem; color: var(--muted); }
+
+.board { margin-top: 24px; }
+
+.board__head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 6px;
+}
+
+.board__head h2 { margin: 0; font-size: 0.95rem; letter-spacing: 0.02em; }
+
+.board__note {
+  margin-left: auto;
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.board__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: rank;
+}
+
+.board__list li {
+  counter-increment: rank;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--line);
+  font-variant-numeric: tabular-nums;
+}
+.board__list li:last-child { border-bottom: 0; }
+
+.board__list li::before {
+  content: counter(rank);
+  width: 1.4rem;
+  color: var(--muted);
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 0.8rem;
+}
+
+.board__list .who { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.board__list .points { font-family: ui-monospace, Menlo, monospace; }
+.board__list .empty { color: var(--muted); }
+.board__list .empty::before { content: ""; width: 0; }
+.board__list .me { color: var(--accent); font-weight: 650; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+/* ── the dino maker ───────────────────────────────────────────────────────
+   Step 6 switches this on. Until the app can call a model it stays hidden,
+   so the page never offers something that would only fail. */
+
+.maker {
+  margin: 18px auto 0;
+  max-width: 900px;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.maker__label {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #9aa0a6;
+  margin-bottom: 8px;
+}
+
+.maker__row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.idea {
+  flex: 1 1 260px;
+  min-width: 0;
+  padding: 9px 12px;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(0, 0, 0, 0.3);
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+}
+
+.primary {
+  padding: 9px 18px;
+  border: 0;
+  border-radius: 9px;
+  background: #43a047;
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary[disabled] { opacity: 0.55; cursor: default; }
+
+.idea[disabled] { opacity: 0.55; cursor: default; }
+
+.maker__note { margin: 8px 0 0; font-size: 12px; color: #9aa0a6; }
+
+/* ── the veil ─────────────────────────────────────────────────────────────
+   While the model is drawing, the game is not playable: a jump started here
+   would be lost the moment the page reloads with the new sprite. */
+
+.veil {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 12px;
+  text-align: center;
+  border-radius: 14px;
+  background: rgba(8, 8, 11, 0.72);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 2;
+}
+
+.veil[hidden] { display: none; }
+
+.veil__text {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #f5f3f0;
+}
