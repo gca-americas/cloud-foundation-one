@@ -381,20 +381,24 @@ and the rows in Firestore are still there.
 Open the [billing report](https://console.cloud.google.com/billing) and find
 the line items above in your own numbers.
 
-### Delete in reverse order
+### Delete the box, not the contents
 
-```bash
-gcloud run services delete dinoquest --region=$REGION --quiet
-gcloud artifacts repositories delete cloud-run-source-deploy --location=$REGION --quiet
-gcloud firestore databases delete --database='(default)' --quiet
-```
+A project is the box everything went in: one bill, one set of permissions, one
+namespace. Deleting it removes the Cloud Run service, the container image, the
+Firestore database and everything else, in one action.
 
-Nothing should be deleted while something still points at it, which is why the
-order is the reverse of the order you built.
+Open [project settings](https://console.cloud.google.com/iam-admin/settings),
+check the project name at the top, choose **Shut down** and confirm with the
+project id.
 
-Positive
-: The project, the billing account and the budget alert stay. Deleting what you
-stopped using is the habit that makes the budget alert never fire.
+Negative
+: This is the one step that cannot be undone. A service, a database or an image
+can be made again; a project id cannot be reused, and after the 30-day grace
+period the contents are gone. Do this when you have finished.
+
+Your **billing account** is not deleted — it belongs to you, not to the
+project. Deleting what you stopped using is the habit that makes a budget alert
+never fire.
 
 ## What's next
 Duration: 0:10:00
@@ -407,6 +411,30 @@ arrangement three times, which is the whole idea.
 From memory, draw what you built: the project, the region, the container, the
 database, the model, and who talks to whom. Structure matters, neatness does
 not.
+
+### Doing this without doing it by hand
+
+Most of what you just built can be done for you, and having built it by hand is
+what lets you tell whether the result is right.
+
+**Google AI Studio** has a Build mode: describe an application and it writes
+and deploys one. Each deployment creates a **Cloud Run service**, and if the
+app needs to store something the agent offers to provision **Firestore** with
+Firebase Authentication, or **Cloud SQL for PostgreSQL**, and wires it in. On
+the free Starter Tier, Google creates and runs the project for you; to go
+further you point it at your own project with billing enabled.
+
+**Google Antigravity** is an agent platform for writing software — a desktop
+app, a CLI, an IDE and an SDK over one agent. Two parts matter here. Through
+**MCP** it can use the **Google Developer Knowledge MCP server**, the official
+Google Cloud, Android and Firebase documentation, re-indexed within a day of
+any change. And an **agent skill** — a folder with a `SKILL.md` plus any
+scripts it needs — teaches it your way of working.
+
+Positive
+: Both do what you just did by hand. Knowing what a Cloud Run service, a
+Firestore database and a service account are is what makes their output
+reviewable rather than magic.
 
 ### What this course deliberately skipped
 

@@ -1,6 +1,6 @@
 # Cloud Foundation - One
 
-A Google Cloud foundations lab for people who have never used it. Ten steps,
+A Google Cloud foundations lab for people who have never used it. Nine steps,
 around four hours, ending with a deployed app that calls a model.
 
 Brought to you by Google Cloud Americas' Advocacy team.
@@ -268,8 +268,13 @@ Restart the workbench itself only after changing something under `server/`.
 
 ### Reset cloud resources
 
-Step 8 walks students through deleting what they made, in reverse order. To do
-it yourself:
+Step 8 ends by having students **delete the project**, which removes the Cloud
+Run service, the container image and the Firestore database with it. That is
+done in the console, not the workbench: `gcloud projects delete` is on the
+refused list, because a project id cannot be reused and a service can always be
+made again.
+
+To take down one student's resources without deleting their project:
 
 ```bash
 gcloud run services delete dinoquest --region=$REGION --quiet
@@ -277,8 +282,8 @@ gcloud artifacts repositories delete cloud-run-source-deploy --location=$REGION 
 gcloud firestore databases delete --database='(default)' --quiet
 ```
 
-The project, the billing account and the budget alert are deliberately left
-alone.
+A billing account belongs to the person, not the project, and survives either
+way.
 
 ### Running it for a room
 
@@ -306,7 +311,7 @@ alone.
 | Learn what's available | 4 What's on the menu |
 | Make it do more | 5 Give your app a memory · 6 The AI platform |
 | Put your app on the cloud | 7 Give your app a home |
-| Run it like a professional | 8 Cost and cleanup · 9 Review and next steps |
+| Run it like a professional | 8 Review and cleanup |
 
 Two ideas carry through every step:
 

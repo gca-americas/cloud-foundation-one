@@ -1,0 +1,82 @@
+slug: wrap-up
+title: Review and cleanup
+kicker: Step 8
+part: run
+minutes: 30
+color: rose
+summary: What you built, the tools that build it for you, and taking it back down.
+
+parts:
+  - id: a
+    label: Review
+    headline: What you built
+    body: a-review.md
+    exercise:
+      title: Draw it from memory
+      intro: >
+        No notes, no scrolling back. Structure matters here, neatness does not.
+      tasks:
+        - kind: draw
+          id: final-drawing
+          title: Draw the system from memory
+          prompt: >
+            Show your project, your region, the container, the database and the
+            model, and who talks to whom. Then draw a player arriving.
+          stamps: [project, region, container, database, model, user]
+        - kind: reflect
+          id: say-the-thesis
+          title: Say what the cloud rented you
+          prompt: >
+            Three times in this course you rented something instead of owning
+            it. Name all three, and say what owning each one would have meant.
+          checklist:
+            - You named the machine, the storage and the model
+            - You can say what you would have bought instead
+
+  - id: b
+    label: What's next
+    headline: Tools that build this for you
+    body: b-whats-next.md
+
+  - id: c
+    label: Cleanup
+    headline: What it cost, and taking it down
+    body: c-cleanup.md
+    exercise:
+      title: Take it all down
+      intro: >
+        One action removes everything you made. Do this last.
+      tasks:
+        - kind: console
+          id: delete-project
+          title: Delete the project
+          url: https://console.cloud.google.com/iam-admin/settings
+          explain: >
+            Check the project name at the top of the console before you do
+            this. Choose Shut down, type the project id to confirm, and
+            everything inside it goes with it — the service, the image, the
+            database.
+          checklist:
+            - You checked you are in the right project
+            - You chose Shut down and confirmed with the project id
+            - The console says the project is scheduled for deletion
+        - kind: reflect
+          id: what-survives
+          title: Name what deleting the project did not touch
+          prompt: >
+            Two things you set up in step 2 are still there afterwards. Name
+            them, and say why they are not inside the project.
+          checklist:
+            - You named your billing account
+            - You can say why it belongs to you rather than to the project
+
+    checks:
+      - id: project-going
+        label: The project is scheduled for deletion
+        probe: gcloud projects describe $PROJECT --format=value(lifecycleState)
+        assert: not_contains
+        value: ACTIVE
+        hint: >
+          Complete the delete task in the console. The workbench will not run
+          this one for you — it is the only thing in the course that cannot be
+          undone.
