@@ -45,7 +45,9 @@ A cloud service is defined by three core operational characteristics:
 :::section kicker="Distinction" headline="Server hosting versus cloud computing"
 Traditional dedicated server hosting differs fundamentally from cloud computing. With traditional hosting, you sign a fixed-term lease for a specific machine, pay a flat monthly fee regardless of utilization, and manage operating system maintenance yourself.
 
+Beyond elastic capacity, cloud platforms provide an extensive catalog of pre-integrated, production-tuned managed services—including globally distributed databases, object storage, load balancers, security guardrails, and hosted AI foundation models—ready to consume on demand. In a self-hosted environment, your team must independently procure, install, configure, tune, patch, and maintain every database, runtime, and software dependency yourself.
+
 :::note
-Cloud computing is distinguished not just by running workloads off-premises, but by elastic provisioning, consumption-based metering, and managed operations.
+Cloud computing is distinguished not just by running workloads off-premises, but by elastic provisioning, consumption-based metering, managed operations, and immediate access to production-ready platform services.
 :::
 :::

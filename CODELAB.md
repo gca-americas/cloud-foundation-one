@@ -197,7 +197,7 @@ Three characteristics distinguish cloud computing from traditional fixed-term se
 
 1. **On-demand self-service**: Compute, storage, and foundation models are provisioned programmatically in seconds without manual contracts or procurement workflows.
 2. **Consumption-based metering**: Services bill by the second, gigabyte, or API request. Scaling a resource to zero or deleting it immediately stops resource charges.
-3. **Provider-managed operations**: The cloud provider operates the physical facilities, power distribution, cooling, physical security, networking, and hardware replacement.
+3. **Provider-managed operations and pre-tuned platform services**: Beyond operating physical facilities, power, cooling, and hardware replacement, a cloud platform provides a broad catalog of production-tuned managed services (databases, object storage, load balancers, IAM, and hosted AI models). In a self-hosted environment, your team must purchase, install, configure, tune, and maintain each software layer yourself.
 
 Cloud infrastructure is most cost-effective when demand is variable, spiky, uncertain, or growing—characteristic of nearly all new applications. Owned hardware can become cost-competitive only when a workload is large, continuous, and highly predictable over multi-year periods with consistently high utilization.
 
