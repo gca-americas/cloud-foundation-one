@@ -51,9 +51,7 @@ export function BillingTask({ task, color }: { task: Task; color: string }) {
 
   const enabled = status?.enabled ?? false;
   const candidate = status?.candidate;
-  const billingUrl = status?.project
-    ? `https://console.cloud.google.com/billing?project=${encodeURIComponent(status.project)}`
-    : "https://console.cloud.google.com/billing";
+  const billingUrl = "https://console.cloud.google.com/billing?cloudshell=true";
 
   return (
     <>
