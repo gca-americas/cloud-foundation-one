@@ -25,9 +25,23 @@ if [ ! -d .venv ]; then
 fi
 uv sync --quiet
 
-if [ ! -d web/dist ]; then
-  echo "· building the page"
-  (cd web && npm install --silent && npm run build)
+if [ ! -d web/node_modules ]; then
+  echo "· installing frontend dependencies"
+  (cd web && npm install --silent)
+fi
+echo "· building the page"
+(cd web && npm run build --silent)
+
+# Pre-enable the Cloud Billing Budget API if a project is already configured.
+ACTIVE_PROJECT=""
+if [ -f "$HOME/project_id.txt" ]; then
+  ACTIVE_PROJECT="$(tr -d '[:space:]' < "$HOME/project_id.txt")"
+fi
+if [ -z "$ACTIVE_PROJECT" ]; then
+  ACTIVE_PROJECT="$(gcloud config get-value project 2>/dev/null || true)"
+fi
+if [ -n "$ACTIVE_PROJECT" ] && [ "$ACTIVE_PROJECT" != "(unset)" ]; then
+  nohup gcloud services enable billingbudgets.googleapis.com cloudbilling.googleapis.com --project="$ACTIVE_PROJECT" --quiet >/dev/null 2>&1 < /dev/null &
 fi
 
 nohup .venv/bin/python -m uvicorn server.main:app --host 0.0.0.0 --port "$PORT" --log-level warning > "$LOG_FILE" 2>&1 < /dev/null &

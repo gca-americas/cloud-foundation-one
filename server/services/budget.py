@@ -15,6 +15,7 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+import time
 from typing import Any
 
 from server.services import billing
@@ -29,7 +30,6 @@ def _gcloud(*args: str, timeout: int = 120) -> tuple[int, str, str]:
         done = subprocess.run(
             ["gcloud", *args, "--quiet"], capture_output=True, text=True,
             timeout=timeout,
-            # Without this, gcloud stops to ask whether to enable an API.
             env={**os.environ, "CLOUDSDK_CORE_DISABLE_PROMPTS": "1"},
         )
     except subprocess.TimeoutExpired:
@@ -39,28 +39,50 @@ def _gcloud(*args: str, timeout: int = 120) -> tuple[int, str, str]:
     return done.returncode, done.stdout.strip(), done.stderr.strip()
 
 
-def _readable(error: str) -> str:
-    """gcloud's failures are long. Say the useful part."""
-    if "SERVICE_DISABLED" in error or "has not been used in project" in error:
-        return "the Budget API is not enabled on this project yet"
-    if "does not have permission" in error or "PERMISSION_DENIED" in error:
-        return ("this login cannot manage budgets on that billing account — "
-                "an administrator owns it")
-    first = next((line for line in error.splitlines() if line.strip()), "")
-    return first.removeprefix("ERROR: ").strip()[:240] or "it did not work"
-
-
-def _budgets(account: str) -> tuple[list[dict[str, Any]], str]:
-    code, out, error = _gcloud(
-        "billing", "budgets", "list", f"--billing-account={account}",
-        "--format=json", timeout=60,
+def _enable_budget_api(project_id: str) -> tuple[int, str]:
+    if not project_id:
+        return 1, "No active project ID found."
+    code, _, error = _gcloud(
+        "services", "enable", API, "cloudbilling.googleapis.com",
+        f"--project={project_id}", timeout=180,
     )
+    return code, error
+
+
+def _readable(error: str) -> str:
+    """Return a concise, professional error message."""
+    if "SERVICE_DISABLED" in error or "has not been used in project" in error:
+        return "The Cloud Billing Budget API is still activating on this project. Wait a few seconds and try again."
+    if "does not have permission" in error or "PERMISSION_DENIED" in error:
+        return ("This Google account does not have permission to create budgets on the "
+                "billing account via the API.")
+    first = next((line for line in error.splitlines() if line.strip()), "")
+    return first.removeprefix("ERROR: ").strip()[:240] or "Budget request failed."
+
+
+def _budgets(account: str, project_id: str = "") -> tuple[list[dict[str, Any]], str]:
+    args = [
+        "billing", "budgets", "list", f"--billing-account={account}",
+        "--format=json",
+    ]
+    if project_id:
+        args.append(f"--billing-project={project_id}")
+
+    code, out, error = _gcloud(*args, timeout=60)
+    if code and ("SERVICE_DISABLED" in error or "has not been used in project" in error) and project_id:
+        _enable_budget_api(project_id)
+        for _ in range(3):
+            time.sleep(2)
+            code, out, error = _gcloud(*args, timeout=60)
+            if not code:
+                break
+
     if code:
         return [], _readable(error)
     try:
         return json.loads(out) if out else [], ""
     except json.JSONDecodeError:
-        return [], "could not read the budget list"
+        return [], "Could not parse the budget list."
 
 
 def status() -> dict[str, Any]:
@@ -71,9 +93,9 @@ def status() -> dict[str, Any]:
     if not account:
         return {"project": project_id, "account": "", "budgets": [],
                 "count": 0, "ready": False,
-                "detail": "link a billing account first"}
+                "detail": "Link a billing account to your project first."}
 
-    found, problem = _budgets(account)
+    found, problem = _budgets(account, project_id)
     return {
         "project": project_id,
         "account": account,
@@ -91,24 +113,23 @@ def create() -> dict[str, Any]:
     project_id = where["project"]
 
     if not project_id:
-        return {**status(), "ok": False, "detail": "no project yet"}
+        return {**status(), "ok": False, "detail": "Create a Google Cloud project first."}
     if not account:
         return {**status(), "ok": False,
-                "detail": "this project has no billing account yet"}
+                "detail": "Link an active billing account to this project first."}
 
-    # The API first, or the create command stops to ask about it.
-    code, _, error = _gcloud("services", "enable", API, timeout=180)
+    code, error = _enable_budget_api(project_id)
     if code:
         return {**status(), "ok": False,
-                "detail": f"could not enable the Budget API: {_readable(error)}"}
+                "detail": f"Could not enable the Cloud Billing Budget API: {_readable(error)}"}
 
-    existing, problem = _budgets(account)
+    existing, problem = _budgets(account, project_id)
     if problem:
         return {**status(), "ok": False, "detail": problem}
 
-    name = f"Cloud 101 · {project_id}"
-    if any(b.get("displayName") == name for b in existing):
-        return {**status(), "ok": True, "detail": "that budget already exists"}
+    name = f"Cloud 101 ({project_id})"
+    if any(b.get("displayName") in (name, f"Cloud 101 · {project_id}") for b in existing):
+        return {**status(), "ok": True, "detail": "A budget alert is already configured for this project."}
 
     args = [
         "billing", "budgets", "create",
@@ -116,11 +137,18 @@ def create() -> dict[str, Any]:
         f"--display-name={name}",
         f"--budget-amount={AMOUNT}",
         f"--filter-projects=projects/{project_id}",
+        f"--billing-project={project_id}",
     ]
     for rule in THRESHOLDS:
         args.append(f"--threshold-rule={rule}")
 
     code, _, error = _gcloud(*args, timeout=120)
+    if code and ("SERVICE_DISABLED" in error or "has not been used in project" in error):
+        for _ in range(3):
+            time.sleep(2)
+            code, _, error = _gcloud(*args, timeout=120)
+            if not code:
+                break
     if code:
         return {**status(), "ok": False, "detail": _readable(error)}
 

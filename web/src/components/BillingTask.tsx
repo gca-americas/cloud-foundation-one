@@ -139,7 +139,7 @@ export function BillingTask({ task, color }: { task: Task; color: string }) {
 
         {!enabled && candidate && (
           <p className="mt-3 text-sm" style={{ color: "var(--fg-muted)" }}>
-            It will use <strong>{candidate.display}</strong> — {candidate.why}.
+            Selected billing account: <strong>{candidate.display}</strong> ({candidate.why}).
           </p>
         )}
 
@@ -154,7 +154,7 @@ export function BillingTask({ task, color }: { task: Task; color: string }) {
 
         {enabled && (
           <p className="mt-3 text-sm" style={{ color: "var(--fg-muted)" }}>
-            The Cloud Billing account remains independent of the project boundary. If you unlink the billing account, the project retains its configuration, while billable services are suspended until billing is re-enabled.
+            The Cloud Billing account and the Google Cloud project are managed independently. If you unlink the billing account, the project retains its resources and configuration, while billable services pause until an active billing account is linked again.
           </p>
         )}
       </div>

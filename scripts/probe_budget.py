@@ -39,12 +39,17 @@ def main() -> int:
     account_id = account.rsplit("/", 1)[-1]
 
     code, raw = gcloud("billing", "budgets", "list",
-                       f"--billing-account={account_id}", "--format=json")
+                       f"--billing-account={account_id}",
+                       f"--billing-project={project}", "--format=json")
     if code:
-        # Almost always the Budget API not being enabled, which is worth saying
-        # out loud rather than reporting as "no budgets".
-        print("BUDGETS=unknown (could not list budgets -- "
-              "billingbudgets.googleapis.com may not be enabled)")
+        gcloud("services", "enable", "billingbudgets.googleapis.com",
+               f"--project={project}", "--quiet")
+        code, raw = gcloud("billing", "budgets", "list",
+                           f"--billing-account={account_id}",
+                           f"--billing-project={project}", "--format=json")
+    if code:
+        print("BUDGETS=unknown (could not list budgets; "
+              "verify billingbudgets.googleapis.com is enabled)")
         return 0
 
     try:

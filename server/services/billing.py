@@ -122,10 +122,15 @@ def link() -> dict[str, Any]:
 
     if not now["project"]:
         return {**now, "ok": False,
-                "detail": "no project yet — create one in step 1 first"}
+                "detail": "No active project found. Create a project first."}
 
     if now["enabled"]:
-        return {**now, "ok": True, "detail": "already linked"}
+        subprocess.Popen(
+            ["gcloud", "services", "enable", "billingbudgets.googleapis.com",
+             "cloudbilling.googleapis.com", f"--project={now['project']}", "--quiet"],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        )
+        return {**now, "ok": True, "detail": "A billing account is already linked to this project."}
 
     choice = now["candidate"]
     if not choice:
@@ -133,9 +138,9 @@ def link() -> dict[str, Any]:
             return {**now, "ok": False, "detail": now["problem"]}
         return {
             **now, "ok": False,
-            "detail": ("No open billing account on this login. If you were given "
-                       "a credit, claim it first — that is what creates the "
-                       "billing account. Otherwise a free trial works: "
+            "detail": ("No open billing account was found for this Google account. "
+                       "If you received a workshop credit link, redeem it first to create "
+                       "the billing account, or activate a free trial at "
                        "https://console.cloud.google.com/freetrial"),
         }
 
@@ -145,7 +150,13 @@ def link() -> dict[str, Any]:
     )
     if code:
         return {**status(), "ok": False,
-                "detail": error or "could not link the billing account"}
+                "detail": error or "Could not link the billing account."}
+
+    subprocess.Popen(
+        ["gcloud", "services", "enable", "billingbudgets.googleapis.com",
+         "cloudbilling.googleapis.com", f"--project={now['project']}", "--quiet"],
+        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+    )
 
     return {**status(), "ok": True,
-            "detail": f"linked {choice['display']} to {now['project']}"}
+            "detail": f"Linked {choice['display']} to {now['project']}."}
