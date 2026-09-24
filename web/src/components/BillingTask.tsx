@@ -12,7 +12,7 @@ import { api, type BillingStatus, type Task } from "../lib/api";
 
 export function BillingTask({ task, color }: { task: Task; color: string }) {
   const [status, setStatus] = useState<BillingStatus | null>(null);
-  const [busy, setBusy] = useState(false);
+  const [busy, setBusy] = useState<"" | "link" | "check">("");
   const [said, setSaid] = useState("");
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export function BillingTask({ task, color }: { task: Task; color: string }) {
   }, []);
 
   async function link() {
-    setBusy(true);
+    setBusy("link");
     setSaid("");
     try {
       const next = await api.billingLink();
@@ -29,12 +29,31 @@ export function BillingTask({ task, color }: { task: Task; color: string }) {
     } catch {
       setSaid("the workbench could not reach gcloud");
     } finally {
-      setBusy(false);
+      setBusy("");
+    }
+  }
+
+  async function check() {
+    setBusy("check");
+    setSaid("");
+    try {
+      const next = await api.billingStatus();
+      setStatus(next);
+      if (!next.enabled) {
+        setSaid("No active billing account is linked to this project yet.");
+      }
+    } catch {
+      setSaid("the workbench could not reach gcloud");
+    } finally {
+      setBusy("");
     }
   }
 
   const enabled = status?.enabled ?? false;
   const candidate = status?.candidate;
+  const billingUrl = status?.project
+    ? `https://console.cloud.google.com/billing?project=${encodeURIComponent(status.project)}`
+    : "https://console.cloud.google.com/billing";
 
   return (
     <>
@@ -48,6 +67,18 @@ export function BillingTask({ task, color }: { task: Task; color: string }) {
         className="mt-3 rounded-2xl border p-4"
         style={{ borderColor: "var(--hairline)", background: "var(--overlay)" }}
       >
+        <div className="mb-3 flex flex-wrap items-center gap-3">
+          <a
+            href={billingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-lg border px-3 py-1.5 text-sm font-medium"
+            style={{ borderColor: color, color }}
+          >
+            Open Cloud Billing console ↗
+          </a>
+        </div>
+
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
           <span
             className="inline-block h-[7px] w-[7px] rounded-full"
@@ -62,15 +93,26 @@ export function BillingTask({ task, color }: { task: Task; color: string }) {
               : "no billing account linked"}
           </span>
 
-          <button
-            type="button"
-            onClick={link}
-            disabled={busy || enabled || !status?.project}
-            className="ml-auto rounded-lg px-3 py-1.5 text-sm font-medium text-white disabled:opacity-50"
-            style={{ background: color }}
-          >
-            {busy ? "Linking…" : enabled ? "Already linked" : "Do it for me"}
-          </button>
+          <div className="ml-auto flex items-center gap-2">
+            <button
+              type="button"
+              onClick={check}
+              disabled={busy !== "" || !status?.project}
+              className="rounded-lg border px-3 py-1.5 text-sm disabled:opacity-50"
+              style={{ borderColor: "var(--hairline-strong)", color: "var(--fg-muted)" }}
+            >
+              {busy === "check" ? "Checking…" : "I linked it"}
+            </button>
+            <button
+              type="button"
+              onClick={link}
+              disabled={busy !== "" || enabled || !status?.project}
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-white disabled:opacity-50"
+              style={{ background: color }}
+            >
+              {busy === "link" ? "Linking…" : enabled ? "Already linked" : "Do it for me"}
+            </button>
+          </div>
         </div>
 
         {!enabled && candidate && (

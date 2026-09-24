@@ -41,6 +41,9 @@ A **Cloud Billing account** is an organization-level or user-level financial res
 
 While a project can be created without a billing account, most Google Cloud services require an active linked billing account before resources can be provisioned.
 
+:::console url="https://console.cloud.google.com/billing" label="Open Cloud Billing in the console" note="View your billing accounts and linked projects."
+:::
+
 :::note
 Separating billing accounts from projects allows organizations to let engineering teams create isolated projects while consolidating invoices under a central billing account.
 :::
