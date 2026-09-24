@@ -42,6 +42,8 @@ parts:
           title: Configure a budget alert
           url: https://console.cloud.google.com/billing/budgets
           assist: budget
+          image: /img/alert.png
+          note: "This is what your Budgets & alerts page should look like once configured:"
           explain: >
             Create a monthly budget alert on your billing account scoped to your project. Set a low threshold (such as $5 or $10) so notifications trigger early despite batched billing updates.
           checklist:

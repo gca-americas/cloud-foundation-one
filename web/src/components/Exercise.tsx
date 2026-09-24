@@ -400,6 +400,19 @@ function ConsoleTask({ task, color }: { task: Task; color: string }) {
         Opens in a new tab. Return here when you're done.
       </div>
       {task.checklist && <Checklist items={task.checklist} />}
+      {task.image && (
+        <div className="mt-4">
+          <p className="mb-2 text-xs font-medium" style={{ color: "var(--fg-muted)" }}>
+            {task.note ?? "This is what your configuration should look like:"}
+          </p>
+          <img
+            src={task.image}
+            alt={task.title}
+            className="block w-full rounded-2xl border"
+            style={{ borderColor: "var(--hairline)" }}
+          />
+        </div>
+      )}
     </>
   );
 }
