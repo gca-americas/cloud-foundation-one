@@ -163,8 +163,10 @@ cloud-foundation-one/
 ## Summary
 
 <aside class="special">
-<p><strong>Complete the hands-on exercises in the Cloud 101 Workbench (<code>http://localhost:4800</code>).</strong> The <strong>Cloud 101 Workbench</strong> tab you opened in the previous step guides you step by step through running DinoQuest, provisioning your Google Cloud project and billing guardrails, creating a Firestore database, integrating Gemini sprite generation, and deploying to Cloud Run. Use the sections below as a conceptual reference while working in the workbench, and follow the <strong>Clean up your environment</strong> section at the bottom of this page when you finish.</p>
+<p><strong>Complete the hands-on exercises in the Cloud 101 Workbench (<code>http://localhost:4800</code>).</strong> The <strong>Cloud 101 Workbench</strong> tab you opened in the previous step guides you step by step through running DinoQuest, provisioning your Google Cloud project and billing guardrails, creating a Firestore database, integrating Gemini sprite generation, and deploying to Cloud Run. Use the sections below as a conceptual reference while working in the workbench, and follow the <a href="#clean-up-your-environment"><strong>Clean up your environment</strong></a> section at the bottom of this page when you finish.</p>
 </aside>
+
+Already finished the workshop? **[Jump directly to Clean up your environment](#clean-up-your-environment)**.
 
 ### Local processes versus cloud infrastructure
 
@@ -332,6 +334,7 @@ When evaluating the monthly Cloud Billing invoice for a serverless architecture,
 
 Because all compute services, databases, and container registries created during this course reside inside a single Google Cloud project boundary, **shutting down the project** deletes every provisioned resource at once and stops all ongoing storage and compute charges—while leaving your external **Cloud Billing account** intact for future projects.
 
+<a id="clean-up-your-environment"></a>
 ### Clean up your environment
 
 When you have finished exploring DinoQuest and the **Cloud 101 Workbench**, complete the following steps to stop your local background processes, remove the workshop files from Cloud Shell, and delete your Google Cloud project so no ongoing storage or compute charges accrue.
