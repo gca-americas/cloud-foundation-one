@@ -22,6 +22,8 @@ The backend server is implemented in `app/main.py` and performs two primary func
 :::section kicker="Environment" headline="About Cloud Shell"
 Google Cloud Shell provides a browser-accessible Linux environment preconfigured with the Google Cloud CLI (`gcloud`), Python, and standard development tools. You use Cloud Shell to run the local application and execute Google Cloud commands throughout this course.
 
+![Activate Cloud Shell in the Google Cloud console](/img/02-cloud-shell.png)
+
 :::note
 Starting the application from the workbench terminal runs `python3 main.py` as an independent operating system process. Stopping the process terminates the local web server.
 :::
