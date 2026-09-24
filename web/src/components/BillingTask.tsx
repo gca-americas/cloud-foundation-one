@@ -61,6 +61,30 @@ export function BillingTask({ task, color }: { task: Task; color: string }) {
         </p>
       )}
 
+      <img
+        src={task.image ?? "/img/billing.png"}
+        alt="Billing account management in the Google Cloud console"
+        className="mt-3 block w-full rounded-2xl border"
+        style={{ borderColor: "var(--hairline)" }}
+      />
+
+      <div
+        className="mt-3 rounded-2xl border p-4 text-sm"
+        style={{ borderColor: "var(--hairline)", background: "var(--overlay)", color: "var(--fg-muted)" }}
+      >
+        <p className="font-medium" style={{ color: "var(--fg)" }}>
+          Choose either method to link your billing account:
+        </p>
+        <ol className="mt-2 list-decimal space-y-1.5 pl-5">
+          <li>
+            <strong>Automatic (recommended):</strong> Click <strong>Do it for me</strong> below to link your active workshop billing account to <code className="font-mono">{status?.project || "your project"}</code> automatically.
+          </li>
+          <li>
+            <strong>In the Google Cloud console:</strong> Click <strong>Open Cloud Billing console ↗</strong> to open the <strong>Billing account management</strong> page. Confirm your active credit appears under <strong>Your billing accounts</strong>, switch to the <strong>Your projects</strong> tab, open the <strong>Actions (⋮)</strong> menu next to <code className="font-mono">{status?.project || "your project"}</code>, select <strong>Change billing</strong>, choose your billing account, and click <strong>Set account</strong>. Then return here and click <strong>I linked it</strong>.
+          </li>
+        </ol>
+      </div>
+
       <div
         className="mt-3 rounded-2xl border p-4"
         style={{ borderColor: "var(--hairline)", background: "var(--overlay)" }}

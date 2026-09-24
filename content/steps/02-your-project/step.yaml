@@ -18,8 +18,9 @@ parts:
         - kind: billing
           id: link-billing
           title: Link a billing account
+          image: /img/billing.png
           explain: >
-            A Cloud Billing account is a separate resource linked to your project. Click "Do it for me" to link your open workshop billing account automatically, or link it in the Google Cloud console and click "I linked it".
+            A Cloud Billing account is an independent financial resource linked to your project. Link your active billing account in the Google Cloud console or click "Do it for me" to link it automatically.
     checks:
       - id: billing-linked
         label: An active billing account is linked to the project
