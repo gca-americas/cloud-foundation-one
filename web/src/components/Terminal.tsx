@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { api } from "../lib/api";
+import { Ticks } from "./Ticks";
 
 /* A terminal, as far as the student is concerned.
 
@@ -130,7 +131,7 @@ export function Terminal({
     <div className="mt-4">
       {explain && (
         <p className="mb-3 text-sm" style={{ color: "var(--fg-muted)" }}>
-          {explain}
+          <Ticks>{explain}</Ticks>
         </p>
       )}
 
@@ -191,7 +192,7 @@ export function Terminal({
         >
           {lines.length === 0 && (
             <div style={{ color: "rgba(255,255,255,0.4)" }}>
-              Type a command. `help` lists the ones this terminal knows.
+              Type a command. Try help to see the ones this terminal knows.
             </div>
           )}
 

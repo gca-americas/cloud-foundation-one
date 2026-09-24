@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { api, type BillingStatus, type Task } from "../lib/api";
+import { Ticks } from "./Ticks";
 
 /* Linking a billing account to the project.
 
@@ -57,7 +58,7 @@ export function BillingTask({ task, color }: { task: Task; color: string }) {
     <>
       {task.explain && (
         <p className="mt-2 text-sm" style={{ color: "var(--fg-muted)" }}>
-          {task.explain}
+          <Ticks>{task.explain}</Ticks>
         </p>
       )}
 

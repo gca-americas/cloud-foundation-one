@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { api, onRunEvent, type Task } from "../lib/api";
 import { watchRun } from "../lib/watchRun";
 import { HelpMe } from "./HelpMe";
+import { Ticks } from "./Ticks";
 
 /* Asking for something to be built, and watching it happen.
 
@@ -137,7 +138,7 @@ export function ProvisionTask({ slug, task, color }: {
     <>
       {task.prompt && (
         <p className="mt-2 text-sm" style={{ color: "var(--fg-muted)" }}>
-          {task.prompt}
+          <Ticks>{task.prompt}</Ticks>
         </p>
       )}
 
@@ -199,7 +200,7 @@ export function ProvisionTask({ slug, task, color }: {
           <span className="mr-2 font-semibold" style={{ color: "var(--bad)" }}>
             Not yet.
           </span>
-          {verdict.feedback}
+          <Ticks>{verdict.feedback}</Ticks>
         </div>
       )}
 

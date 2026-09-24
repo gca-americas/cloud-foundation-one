@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { api, type AfterAction, type CheckCard, type CheckResult } from "../lib/api";
+import { Ticks } from "./Ticks";
 
 /* The verify panel never asks the student whether they did the thing.
 
@@ -33,11 +34,11 @@ function Row({ card, result }: { card: CheckCard; result?: CheckResult }) {
 
         <span className="min-w-0 flex-1">
           <span className="text-[0.93rem]" style={{ color: known && !passed ? "var(--fg)" : "var(--fg-muted)" }}>
-            {card.label}
+            <Ticks>{card.label}</Ticks>
           </span>
           {known && !passed && (result?.hint || card.hint) && (
             <span className="mt-1 block text-sm" style={{ color: "var(--fg-faint)" }}>
-              {result?.hint || card.hint}
+              <Ticks>{result?.hint || card.hint}</Ticks>
             </span>
           )}
         </span>

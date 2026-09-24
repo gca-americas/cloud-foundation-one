@@ -226,6 +226,18 @@ img { max-width: 100%; }
   width: 100%;
 }
 
+/* Inline code outside .prose: task prompts, hints, feedback, checklists.
+   Same treatment as the markdown renderer gives backticks in a step body. */
+.tick {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.86em;
+  background: var(--overlay);
+  border: 1px solid var(--hairline);
+  border-radius: 0.35em;
+  padding: 0.1em 0.35em;
+  color: var(--fg);
+}
+
 .prose code {
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
   font-size: 0.86em;

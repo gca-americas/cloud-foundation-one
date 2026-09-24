@@ -4,6 +4,7 @@ import { api, onRunEvent, type Task } from "../lib/api";
 import { watchRun } from "../lib/watchRun";
 import { HelpMe } from "./HelpMe";
 import { StagePipeline, stageFromLog } from "./StagePipeline";
+import { Ticks } from "./Ticks";
 
 /* Asking for the app to be deployed, and watching it happen.
 
@@ -97,7 +98,7 @@ export function DeployTask({ slug, task, color }: {
     <>
       {task.prompt && (
         <p className="mt-2 text-sm" style={{ color: "var(--fg-muted)" }}>
-          {task.prompt}
+          <Ticks>{task.prompt}</Ticks>
         </p>
       )}
 
@@ -140,7 +141,7 @@ export function DeployTask({ slug, task, color }: {
           <span className="mr-2 font-semibold" style={{ color: "var(--bad)" }}>
             Not yet.
           </span>
-          {verdict}
+          <Ticks>{verdict}</Ticks>
         </div>
       )}
 

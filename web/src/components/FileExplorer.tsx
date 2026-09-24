@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { api, type FileNode, type Task } from "../lib/api";
 import { HelpMe } from "./HelpMe";
+import { Ticks } from "./Ticks";
 
 /* A read-only look around the project.
 
@@ -225,7 +226,7 @@ export function FileExplorer({
     <div className="mt-4">
       {explain && (
         <p className="mb-3 text-sm" style={{ color: "var(--fg-muted)" }}>
-          {explain}
+          <Ticks>{explain}</Ticks>
         </p>
       )}
 
@@ -268,7 +269,7 @@ export function FileExplorer({
               style={{ color: verdict.ok ? "var(--fg-muted)" : "var(--bad)" }}
             >
               {verdict.ok ? "" : "Not yet. "}
-              {verdict.feedback}
+              <Ticks>{verdict.feedback}</Ticks>
             </p>
           )}
 

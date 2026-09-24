@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { api, type AppStatus } from "../lib/api";
+import { Ticks } from "./Ticks";
 
 /* The student's app, embedded.
 
@@ -104,7 +105,7 @@ export function AppPanel({ title, explain, color }: {
     <div className="mt-4">
       {explain && (
         <p className="mb-3 text-sm" style={{ color: "var(--fg-muted)" }}>
-          {explain}
+          <Ticks>{explain}</Ticks>
         </p>
       )}
 

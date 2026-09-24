@@ -14,6 +14,7 @@ import { BillingTask } from "./BillingTask";
 import { BudgetAssist, ServicesAssist } from "./BudgetTask";
 import { DeleteProjectAssist } from "./DeleteProjectAssist";
 import { Widget } from "../widgets";
+import { Ticks } from "./Ticks";
 
 /* The exercise is the second half of every step: concepts above, practice below.
 
@@ -76,7 +77,7 @@ function Checklist({ items }: { items: string[] }) {
               >
                 {done ? "✓" : ""}
               </span>
-              <span className={done ? "line-through" : ""}>{item}</span>
+              <span className={done ? "line-through" : ""}><Ticks>{item}</Ticks></span>
             </button>
           </li>
         );
@@ -255,7 +256,7 @@ function IntentTask({ slug, task, color }: { slug: string; task: Task; color: st
     <>
       {task.prompt && (
         <p className="mt-2 text-sm" style={{ color: "var(--fg-muted)" }}>
-          {task.prompt}
+          <Ticks>{task.prompt}</Ticks>
         </p>
       )}
 
@@ -307,7 +308,7 @@ function IntentTask({ slug, task, color }: { slug: string; task: Task; color: st
           >
             {verdict.ok ? "Running it." : "Not yet."}
           </span>
-          {verdict.feedback}
+          <Ticks>{verdict.feedback}</Ticks>
         </div>
       )}
 
@@ -358,7 +359,7 @@ function CommandTask({ slug, task, color }: { slug: string; task: Task; color: s
     <>
       {task.explain && (
         <p className="mt-2 text-sm" style={{ color: "var(--fg-muted)" }}>
-          {task.explain}
+          <Ticks>{task.explain}</Ticks>
         </p>
       )}
       <CommandLine command={command} onEdit={task.editable ? setCommand : undefined} />
@@ -393,7 +394,7 @@ function ConsoleTask({ task, color }: { task: Task; color: string }) {
     <>
       {task.explain && (
         <p className="mt-2 text-sm" style={{ color: "var(--fg-muted)" }}>
-          {task.explain}
+          <Ticks>{task.explain}</Ticks>
         </p>
       )}
       <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -437,7 +438,7 @@ function ReflectTask({ task }: { task: Task }) {
     <>
       {task.prompt && (
         <p className="mt-2 text-sm" style={{ color: "var(--fg-muted)" }}>
-          {task.prompt}
+          <Ticks>{task.prompt}</Ticks>
         </p>
       )}
 
@@ -471,7 +472,7 @@ function PlaceholderTask({ task, kind }: { task: Task; kind: string }) {
       style={{ borderColor: "var(--hairline-strong)", color: "var(--fg-faint)" }}
     >
       <strong style={{ color: "var(--fg-muted)" }}>{kind} task</strong> — not built yet.
-      {task.prompt && <div className="mt-1.5">{task.prompt}</div>}
+      {task.prompt && <div className="mt-1.5"><Ticks>{task.prompt}</Ticks></div>}
       {task.file && <div className="mt-1.5 font-mono text-xs">{task.file}</div>}
     </div>
   );
@@ -519,7 +520,7 @@ export function Exercise({
                   <>
                     {task.explain && (
                       <p className="mt-2 text-sm" style={{ color: "var(--fg-muted)" }}>
-                        {task.explain}
+                        <Ticks>{task.explain}</Ticks>
                       </p>
                     )}
                     <Widget id={task.widget ?? ""} />
