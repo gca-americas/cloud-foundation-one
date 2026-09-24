@@ -103,7 +103,8 @@ export function ProvisionTask({ slug, task, color }: {
   // The stream can be missed; the record cannot.
   useEffect(() => {
     if (state !== "running" || !token.current) return;
-    return watchRun(token.current, finish);
+    return watchRun(token.current, finish, (log) =>
+      setLines(log.split("\n").filter(Boolean)));
   }, [state, finish]);
 
   useEffect(() => {

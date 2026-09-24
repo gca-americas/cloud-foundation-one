@@ -10,6 +10,14 @@ set -uo pipefail
 REGION="$(gcloud config get-value run/region 2>/dev/null)"
 [ -z "$REGION" ] || [ "$REGION" = "(unset)" ] && REGION="us-central1"
 
+# Say who and where before doing anything. A workbench on one machine and a
+# gcloud signed in as someone else is an easy state to be in and a hard one to
+# notice: the commands succeed, against the wrong project.
+ACCOUNT="$(gcloud config get-value account 2>/dev/null)"
+PROJECT="$(gcloud config get-value project 2>/dev/null)"
+echo "· acting as ${ACCOUNT:-no account} on project ${PROJECT:-no project}"
+echo
+
 echo "· enabling the Firestore API"
 if ! gcloud services enable firestore.googleapis.com --quiet; then
   echo "  could not enable the API. Check that billing is linked (step 3)."

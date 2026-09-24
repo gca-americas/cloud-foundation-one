@@ -120,11 +120,15 @@ function useRunStream() {
   // The stream is the fast path; this is the one that cannot be missed.
   useEffect(() => {
     if (state !== "running" || !token.current) return;
-    return watchRun(token.current, (code, log) => {
-      setState("done");
-      setCode(code);
-      setLines(log.split("\n").filter(Boolean));
-    });
+    return watchRun(
+      token.current,
+      (code, log) => {
+        setState("done");
+        setCode(code);
+        setLines(log.split("\n").filter(Boolean));
+      },
+      (log) => setLines(log.split("\n").filter(Boolean)),
+    );
   }, [state]);
 
   const fail = useCallback((message: string) => {

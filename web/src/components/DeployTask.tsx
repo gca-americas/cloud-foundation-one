@@ -57,7 +57,8 @@ export function DeployTask({ slug, task, color }: {
   // A deployment runs for minutes, which is plenty of time to lose the stream.
   useEffect(() => {
     if (state !== "running" || !token.current) return;
-    return watchRun(token.current, finish);
+    return watchRun(token.current, finish, (log) =>
+      setLines(log.split("\n").filter(Boolean)));
   }, [state, finish]);
 
   async function send() {
