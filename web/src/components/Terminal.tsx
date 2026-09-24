@@ -75,23 +75,20 @@ export function Terminal({
     setRecall(-1);
     if (line) setHistory((previous) => [line, ...previous].slice(0, 50));
 
+    // Echo before asking, not after. The round trip can take a second or two
+    // on a slow connection, and a terminal that swallows what you typed and
+    // shows nothing looks broken -- you cannot tell whether it heard you.
     const echoed: Line[] = [{ kind: "prompt", text: `${label}$ ${line}` }];
-    if (!line) {
-      setLines((previous) => [...previous, ...echoed]);
-      return;
-    }
+    setLines((previous) => [...previous, ...echoed]);
+    if (!line) return;
 
     setBusy(true);
     try {
       const reply = await api.shell(line, cwd);
       if (reply.cleared) {
         setLines([]);
-      } else {
-        setLines((previous) => [
-          ...previous,
-          ...echoed,
-          ...(reply.output ? [{ kind: "out" as const, text: reply.output }] : []),
-        ]);
+      } else if (reply.output) {
+        setLines((previous) => [...previous, { kind: "out" as const, text: reply.output }]);
       }
       setCwd(reply.cwd);
       setLabel(reply.prompt);
@@ -99,7 +96,6 @@ export function Terminal({
     } catch {
       setLines((previous) => [
         ...previous,
-        ...echoed,
         { kind: "out", text: "the workbench did not answer" },
       ]);
     } finally {
@@ -207,6 +203,19 @@ export function Terminal({
               {line.text}
             </div>
           ))}
+
+          {busy && (
+            <div
+              className="dot-pulse"
+              style={{ color: "rgba(255,255,255,0.55)" }}
+              aria-live="polite"
+              aria-label="Running"
+            >
+              <span>.</span>
+              <span>.</span>
+              <span>.</span>
+            </div>
+          )}
 
           <div className="flex items-baseline gap-2">
             <span style={{ color: busy ? "rgba(255,255,255,0.35)" : "var(--ok)" }}>
