@@ -172,6 +172,8 @@ Already finished the workshop? **[Jump directly to Clean up your environment](#c
 
 ### Local processes versus cloud infrastructure
 
+![Run the application locally in the Cloud 101 Workbench](img/step0.png)
+
 A local application running in a development terminal combines static file serving and in-memory state inside a single operating system process. While convenient during development, a local terminal process has two fundamental architectural constraints:
 
 - **Loopback network isolation**: Binding a server to `localhost` (`127.0.0.1`) restricts network traffic to the local loopback interface on the host machine. Even when accessed through a developer tunnel such as Cloud Shell Web Preview, access is gated behind personal session authentication rather than a public HTTPS endpoint.
@@ -180,6 +182,8 @@ A local application running in a development terminal combines static file servi
 Transitioning a prototype into a public web service requires four operational capabilities: infrastructure that stays on independently of a developer's laptop, a publicly routable HTTPS address, continuous physical data center maintenance (power, cooling, networking, and hardware replacement), and a governance boundary for cost accounting and access control.
 
 ### Cloud computing and the consumption model
+
+![What cloud computing is in the Cloud 101 Workbench](img/step1.png)
 
 Cloud computing replaces upfront capital investment in physical servers with the on-demand consumption of compute, storage, and AI platform services over the network.
 
@@ -202,6 +206,8 @@ Three characteristics distinguish cloud computing from traditional fixed-term se
 Cloud infrastructure is most cost-effective when demand is variable, spiky, uncertain, or growing—characteristic of nearly all new applications. Owned hardware can become cost-competitive only when a workload is large, continuous, and highly predictable over multi-year periods with consistently high utilization.
 
 ### Projects, billing, and cost governance
+
+![Projects and billing in the Cloud 101 Workbench](img/step2.png)
 
 Every Google Cloud resource belongs to exactly one **project**. The project acts as the foundational organizational and security container, establishing five boundaries around everything inside it:
 
@@ -226,6 +232,8 @@ A **budget alert** monitors monthly spend on a billing account or project and se
 
 ### Global infrastructure and region selection
 
+![Regions and global infrastructure in the Cloud 101 Workbench](img/step3.png)
+
 Google Cloud resources execute inside physical facilities distributed globally:
 
 - **Data centers** are physical buildings housing thousands of servers, storage arrays, power systems, and cooling equipment.
@@ -248,6 +256,8 @@ When selecting a region for your application and database, apply three rules in 
 3. **Proximity to end users**: Within those constraints, always select the region closest to your **end users**—not the region closest to the developer—so every user request travels the shortest possible physical distance. When users are distributed across multiple continents, deploy across multiple regions behind a global load balancer.
 
 ### Core service taxonomy and compute models
+
+![Core cloud services in the Cloud 101 Workbench](img/step4.png)
 
 Although Google Cloud offers more than two hundred products, almost all application architectures are built from five durable service categories:
 
@@ -272,6 +282,8 @@ Within compute, Google Cloud offers three primary execution models differentiate
 
 ### Managed databases and Firestore
 
+![Persist data with Firestore in the Cloud 101 Workbench](img/step5.png)
+
 To make application state durable across server restarts, crashes, and container scale-downs, state must be moved out of process memory into an external managed database. Google Cloud provides specialized databases tailored to distinct data shapes:
 
 | Database Service | Data Model and Strengths | Primary Workload Fit |
@@ -285,6 +297,8 @@ To make application state durable across server restarts, crashes, and container
 For an application like DinoQuest, **Firestore** provides durable document persistence in the chosen region without requiring dedicated database instances, disk sizing, or idle hourly compute charges. Decoupling data access behind a clean storage interface allows an application to switch from an in-memory list to Firestore without modifying HTTP route handlers or frontend code.
 
 ### Hosted foundation models and the Gemini Enterprise Agent Platform
+
+![Generate sprites with Gemini in the Cloud 101 Workbench](img/step6.png)
 
 Calling a foundation model on Google Cloud follows the same serverless consumption pattern as managed compute and databases: Google operates the accelerators and model weights, and your application sends stateless requests over HTTPS metered per token.
 
@@ -306,6 +320,8 @@ When integrating Gemini into a cloud application using the **Google Gen AI SDK**
 
 ### Serverless container deployment on Cloud Run
 
+![Deploy to Cloud Run in the Cloud 101 Workbench](img/step7.png)
+
 Deploying an application to **Cloud Run** packages the application into a **container image**—an immutable artifact containing the source code, language runtime, and library dependencies—so it executes identically on any machine. Using Google Cloud buildpacks, source deployments automatically inspect `requirements.txt` and `Procfile` to build and deploy the service across four pipeline stages:
 
 1. **Upload**: Source files are uploaded to **Cloud Build**.
@@ -321,6 +337,8 @@ Understanding four operational behaviors of Cloud Run is essential for productio
 - **Externalized runtime configuration**: Local `.env` files are never committed or baked into container images; environment variables (`GOOGLE_GENAI_USE_VERTEXAI`, `GOOGLE_CLOUD_LOCATION`, `DINO_MODEL`) are configured directly on the Cloud Run service definition.
 
 ### AI developer tools, billing dimensions, and resource cleanup
+
+![Review and cleanup in the Cloud 101 Workbench](img/step8.png)
 
 Once you understand how projects, IAM service accounts, Firestore, Gemini, and Cloud Run fit together, AI-assisted development tools can automate the scaffolding and deployment of those exact components:
 
