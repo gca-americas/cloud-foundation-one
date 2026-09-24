@@ -15,6 +15,8 @@ This codelab introduces the foundational architecture of Google Cloud by guiding
 
 **DinoQuest** is a Python web application that serves a browser game over `localhost:8080` and records player high scores. While running a local server in a terminal is sufficient for initial development, four operational limitations prevent external users from playing the game:
 
+![DinoQuest gameplay and leaderboard](img/the-game.png)
+
 - **Process fragility**: The application terminates as soon as the terminal session closes or Cloud Shell shuts down, and every leaderboard score held in process memory is wiped on restart.
 - **Private loopback addressing**: `localhost:8080` only accepts traffic originating on the same machine, and Cloud Shell Web Preview requires authentication with your personal Google account.
 - **Physical infrastructure operations**: Serving public internet traffic continuously requires redundant power, cooling, physical network routing, and automated hardware replacement.
