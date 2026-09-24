@@ -1,6 +1,6 @@
 slug: what-is-cloud
 title: What cloud computing is
-kicker: Understand it
+kicker: Cloud fundamentals
 part: understand
 color: sky
 summary: Renting computing resources instead of owning them.
@@ -11,7 +11,7 @@ parts:
     headline: Renting instead of owning
     body: a-renting.md
     exercise:
-      title: Compare what each one costs
+      title: Compare owning and renting
       intro: >
         Nothing to install for this one. Two sliders: how much traffic you
         serve, and how much busier your busiest hour is than the average. Watch
@@ -19,7 +19,7 @@ parts:
       tasks:
         - kind: widget
           id: cost
-          title: Running it yourself compared with renting it
+          title: Evaluate workload patterns
           widget: cost-curve
           explain: >
             Red is running it yourself, blue is renting. Start at the far left,
@@ -31,18 +31,18 @@ parts:
     headline: Cost and trade-offs
     body: b-trade-offs.md
     exercise:
-      title: Set up your corner of Google Cloud
+      title: Create a Google Cloud project
       intro: >
         Everything you build from here needs somewhere to put it, and a command
         line that knows which account and which project it is working with.
       tasks:
         - kind: placeholder
           id: diagram-billing
-          title: How an account, a project and a bill fit together
+          title: Account, project, and billing structure
           note: diagram goes here
         - kind: project
           id: create-project
-          title: Create your project
+          title: Create the project
           explain: >
             Everything you create in this course lives in a project. Make one
             in the Google Cloud console with the name below, then press
@@ -50,7 +50,7 @@ parts:
             rather not, press "Do it for me" and it will be created for you.
         - kind: terminal
           id: auth
-          title: Confirm your account and project
+          title: Verify the active project
           expect:
             - gcloud auth list
             - gcloud config get-value project

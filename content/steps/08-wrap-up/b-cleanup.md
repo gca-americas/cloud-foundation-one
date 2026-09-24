@@ -1,7 +1,7 @@
-:::section kicker="What you built" headline="The shape of the system"
-Five things, each added for a reason you can now give.
+:::section kicker="Architecture" headline="Completed system architecture"
+Every component in the final architecture serves a specific purpose.
 
-:::figure id="architecture" caption="Each badge is the step that added that piece."
+:::figure id="architecture" caption="How the deployed components work together."
 :::
 
 Read it as a sentence: a player's browser reaches **Cloud Run**, which is
@@ -11,8 +11,8 @@ turned it into a container and **Artifact Registry** kept it. All of it sits
 inside one project — one bill, one set of permissions.
 :::
 
-:::section kicker="The bill" headline="Understanding the bill"
-Four things, and everyone is surprised by exactly one of them.
+:::section kicker="Billing" headline="Understanding the bill"
+Cloud billing is determined by several distinct usage dimensions:
 
 - **Compute time** — the container, while it is running. Nothing while idle.
 - **Storage** — the database and the stored container image, whether or not
@@ -31,7 +31,7 @@ Firestore are not.
 :::
 
 :::section kicker="Cleanup" headline="Shutting down the project"
-Step 2 said a project is the box everything goes in: one bill, one set of
+A project is the container everything goes in: one bill, one set of
 permissions, one namespace. That is what makes cleanup simple.
 
 Deleting the project deletes the Cloud Run service, the container image, the

@@ -1,19 +1,19 @@
 slug: your-project
 title: Projects and billing
-kicker: Set up your corner
+kicker: Project setup
 part: corner
 color: violet
 summary: The container for cloud resources, the account that pays for them, and budget alerts.
 
 parts:
   - id: a
-    label: Projects, identifiers, and billing accounts
-    headline: Projects, identifiers, and billing accounts
+    label: Projects and billing accounts
+    headline: Projects and billing accounts
     body: a-the-box.md
     exercise:
-      title: Put billing on your project
+      title: Link a billing account
       intro: >
-        The project already exists — step 1 created it. What it does not have
+        The project already exists. What it does not have
         yet is an account to charge things to.
       tasks:
         - kind: billing
@@ -39,11 +39,11 @@ parts:
     headline: Budget alerts
     body: b-budget.md
     exercise:
-      title: Create a budget alert
+      title: Configure a budget alert
       tasks:
         - kind: console
           id: set-budget
-          title: Create a budget alert
+          title: Configure a budget alert
           url: https://console.cloud.google.com/billing/budgets
           assist: budget
           explain: >
@@ -70,30 +70,30 @@ parts:
     headline: Enabling services
     body: c-switches.md
     exercise:
-      title: Let's enable them together
+      title: Enable required APIs
       intro: >
-        Switch on everything the course needs, then go and see the result from
+        Switch on everything the course needs, then verify the result from
         the command line.
       tasks:
         - kind: console
           id: enable-console
-          title: Enable the APIs in the console
+          title: Enable APIs in the console
           url: https://console.cloud.google.com/apis/library
           assist: services
           explain: >
             Search for each service below and press **Enable**. It is a switch
             on this project and nothing else, and enabling one costs nothing —
-            you are charged for what you use. If seven searches is more clicking
+            you are charged for what you use. If searching individually is more clicking
             than you want, the second button does the same thing.
           checklist:
             - "Cloud Run — somewhere to run your code"
             - "Cloud Build — turns your source into a container"
             - "Artifact Registry — stores the built container"
-            - "Firestore — the leaderboard, in step 5"
-            - "Gemini Enterprise Agent Platform — the model, in step 6"
+            - "Firestore — the leaderboard database"
+            - "Gemini Enterprise Agent Platform — the hosted model"
         - kind: terminal
           id: list-services
-          title: List what is enabled
+          title: List enabled services
           expect:
             - gcloud services list --enabled --format=value(config.name)
           explain: >

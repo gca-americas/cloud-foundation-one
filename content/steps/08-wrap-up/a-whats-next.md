@@ -1,9 +1,7 @@
-:::section kicker="The tools" headline="AI developer tools"
+:::section kicker="Overview" headline="AI developer tools"
 You built each piece deliberately, one at a time. Most of it can now be done
 for you — and the reason to have built it by hand is that when a tool does it,
 you can tell what it made and whether it is right.
-
-Two of Google's are worth knowing.
 :::
 
 :::section kicker="Prototyping" headline="Google AI Studio"
@@ -16,7 +14,7 @@ goes further: describe an application and it writes one, then deploys it.
 What happens when you press deploy is the thing to notice:
 
 - **A Cloud Run service.** Each deployment creates one. The same serverless
-  hosting from step 7, with the same scaling to zero.
+  hosting you used earlier, with the same scaling to zero.
 - **A database, if the app needs one.** The agent works out that it needs to
   store something and offers to set it up — **Firestore** with Firebase
   Authentication, or **Cloud SQL for PostgreSQL**, provisioned and wired in.
@@ -36,14 +34,13 @@ services, a single region, and accounts that already have Google Cloud billing
 are not eligible for it.
 :::
 
-:::section kicker="Building" headline="Google Antigravity"
-Antigravity is an agent platform for writing software. Not one editor — four
-ways in, over a single agent.
+:::section kicker="Development" headline="Google Antigravity"
+Antigravity is an agent platform for writing software, offering a desktop app, CLI, IDE, and SDK over a single agent.
 
 :::figure id="antigravity-stack" caption="A desktop app, a CLI, an IDE and an SDK, over one agent."
 :::
 
-Two parts of it matter for work like this course's.
+Key capabilities matter for cloud engineering work:
 
 **It can read the documentation properly.** Through **MCP**, an open protocol
 for connecting agents to tools and data, it can use the **Google Developer
@@ -64,10 +61,10 @@ reviewable rather than magic.
 :::
 :::
 
-:::section kicker="Not covered" headline="What this course left out, and why"
-Each of these was left out on purpose, and each is a course of its own.
+:::section kicker="Next steps" headline="Further Google Cloud topics"
+Each of these topics builds on the foundation from this course.
 
-| Left out | Why, and when you will need it |
+| Topic | Why, and when you will need it |
 |---|---|
 | **Identity and access** | Service accounts, roles and least privilege. The deploy granted the roles for you. The first thing to learn next. |
 | **Failure and resilience** | Zonal, regional and multi-regional. Redundancy is bought deliberately; most projects should not buy it. |

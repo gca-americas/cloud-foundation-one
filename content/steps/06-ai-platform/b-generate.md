@@ -1,4 +1,4 @@
-:::section kicker="The goal" headline="Generating sprites with Gemini"
+:::section kicker="Integration" headline="Generating sprites with Gemini"
 DinoQuest runs the same character every time, because the character is a file:
 `app/static/dino.png`. Replacing that file replaces the dino, and the game
 does not need to know how it got there.
@@ -17,7 +17,7 @@ far cheaper, than asking for an image.
 :::
 
 :::section kicker="Configuration" headline="Environment configuration"
-Three things have to be known before any call can be made: that the request
+Key settings must be configured before any call can be made: that the request
 goes to Google Cloud rather than to the Gemini Developer API, which project
 pays for it, and which endpoint answers.
 
@@ -36,32 +36,31 @@ of them is specific to you.
 
 :::note
 There is no API key anywhere in this exercise. The SDK signs each request with
-the credentials Cloud Shell already has, which is why step 2's work on projects
-and billing is what makes this call possible at all.
+the credentials Cloud Shell already has.
 :::
 :::
 
-:::section kicker="An exception" headline="The global endpoint"
+:::section kicker="Routing" headline="The global endpoint"
 `GOOGLE_CLOUD_LOCATION` is set to `global` in this course, and that is not what
 a production service would do.
 
 :::figure id="global-endpoint" caption="A named region serves the request in one place. The global endpoint serves it wherever there is room."
 :::
 
-A named region is the normal choice, for exactly the reasons step 3 gave: it
+A named region is the normal choice: it
 says where the request is handled, and it is the only way to promise anything
-about that. The global endpoint gives up that control and gets capacity in
+about data locality. The global endpoint gives up that control and gets capacity in
 return — the request goes wherever the model has room right now.
 
 :::note
 A classroom is the one setting where capacity is the thing most likely to fail:
-thirty people calling the same model in the same region at the same time. That
-is why this course uses `global`, and why it is worth knowing it is a trade
+many people calling the same model in the same region at the same time. That
+is why this course uses `global`, and why it is worth knowing it is a trade-off
 rather than a default.
 :::
 :::
 
-:::section kicker="The library" headline="The Google Gen AI SDK"
+:::section kicker="SDK" headline="The Google Gen AI SDK"
 `google-genai` is the current client library for Gemini. One SDK reaches both
 the Gemini Developer API and the Gemini API on Gemini Enterprise Agent
 Platform; the `vertexai=True` flag is what chooses the second.

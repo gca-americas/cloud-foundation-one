@@ -1,5 +1,5 @@
-:::section kicker="Terminology" headline="Data centers and regions"
-Cloud resources run in specific physical places. Two words cover it.
+:::section kicker="Infrastructure" headline="Data centers and regions"
+Cloud resources run in specific physical places.
 
 **A data center is a building.** Thousands of computers in rows, a lot of
 electricity arriving, a lot of heat leaving.
@@ -9,10 +9,10 @@ enough together to behave as one place. `us-central1` is a region, in Iowa.
 `asia-northeast1` is a region, in Tokyo.
 
 When you create something in Google Cloud, you choose its region. That is the
-decision this step is about.
+decision this section is about.
 :::
 
-:::section kicker="Where they are" headline="Regions, and the network between them"
+:::section kicker="Network" headline="Global fiber network"
 :::figure id="globe" caption="Each dot is a region. The lines between them are Google's own network, not the public internet."
 :::
 
@@ -25,7 +25,7 @@ a request from London to Tokyo behaves better than the distance suggests — it
 is not taking the public internet's route.
 :::
 
-:::section kicker="Distance" headline="Distance and latency"
+:::section kicker="Performance" headline="Distance and network latency"
 Light travels through fibre at roughly 200,000 kilometres per second. That is a
 limit no hardware raises.
 
@@ -43,7 +43,7 @@ Your code runs at the same speed in all three. The only thing that changed is
 how far the request had to go.
 :::
 
-:::section kicker="Choosing" headline="Selecting a region"
+:::section kicker="Selection" headline="Criteria for selecting a region"
 :::key
 Choose the region nearest the people who will use the thing — not the region
 nearest you.
@@ -52,7 +52,7 @@ nearest you.
 That sounds obvious and it is the mistake almost everyone makes. You feel your
 own latency every time you deploy, and you never feel your users'.
 
-Two things can override it:
+Specific constraints can override it:
 
 - **Data residency.** Some data is legally required to stay in a country. When
   that applies, it decides, and you choose inside that constraint.

@@ -1,16 +1,15 @@
-:::section kicker="The problem" headline="What a terminal cannot do"
-DinoQuest has run on your machine for seven steps. Close the terminal and it
-stops. Nobody else can reach it. Nothing restarts it if it crashes, and if a
-hundred people arrived at once there is one process to serve them all.
+:::section kicker="Limitations" headline="Why a local terminal is not production"
+DinoQuest has run on your machine during development. Close the terminal and it
+stops. Nobody else can reach it. Nothing restarts it if it crashes, and if
+many players arrive at once there is only one process to serve them all.
 
-:::figure id="four-problems" caption="The four things a laptop cannot do for an app."
+:::figure id="four-problems" caption="Operational limitations of a local terminal process."
 :::
 
-Cloud Run answers all four, and the answer is the same shape as every other
-step: you do not own the machine, and you are not the one keeping it alive.
+Cloud Run addresses these requirements using the same serverless model: you do not own the machine, and you are not the one keeping it alive.
 :::
 
-:::section kicker="Definition" headline="Serverless containers"
+:::section kicker="Runtime" headline="Serverless containers"
 Cloud Run runs containers and gives each one a public address. You hand it a
 container; it starts copies when requests arrive, stops them when they stop,
 and charges for the time they were running.
@@ -24,7 +23,7 @@ That last part is worth reading twice. A server you rent bills for every hour
 it exists. A Cloud Run service with no traffic bills for nothing.
 :::
 
-:::section kicker="The unit" headline="What a container is"
+:::section kicker="Packaging" headline="Container images"
 A container is your code, the language runtime it needs, and its dependencies,
 sealed together into one image. Everything the app needs to start is inside;
 nothing about the machine underneath is.
@@ -43,11 +42,11 @@ to start, and works out the rest.
 :::
 :::
 
-:::section kicker="The process" headline="Deploying the service"
-One request turns source into a running service. Four things happen, in order,
+:::section kicker="Deployment" headline="Deploying the service"
+One request turns source into a running service. The deployment pipeline runs through distinct stages,
 and it is worth knowing which is which when one of them fails.
 
-:::figure id="deploy-pipeline" caption="Source in, address out. The middle two steps are why the first deployment is slow."
+:::figure id="deploy-pipeline" caption="Source in, address out. Building and storing the image are why the first deployment takes longer."
 :::
 
 1. **Upload.** The contents of `app/` are sent to Cloud Build.
@@ -58,11 +57,11 @@ and it is worth knowing which is which when one of them fails.
 4. **Run.** Cloud Run creates a service from that image and returns an HTTPS
    address.
 
-The first deployment takes a few minutes, almost all of it step 2. Later ones
+The first deployment takes a few minutes, almost all of it during the build. Later ones
 are faster because the build has less to redo.
 :::
 
-:::section kicker="Two things to expect" headline="Cold starts and revisions"
+:::section kicker="Scaling" headline="Cold starts and revisions"
 **Scaling to zero has a cost, and it is time.** When no copy is running, the
 first request has to wait for one to start. That pause is a cold start. It is
 the price of not paying for idle capacity, and for most applications it is a
@@ -87,11 +86,11 @@ easy to undo, and you can see which revision introduced a problem.
 :::
 :::
 
-:::section kicker="Two things that change" headline="Service accounts and runtime settings"
+:::section kicker="Security" headline="Service accounts and runtime configuration"
 Running on your machine, the app called Firestore and Gemini as **you**, and
 you already had access to both. Deployed, it runs as a **service account** — an
 identity that belongs to the service rather than to a person, and that has been
-granted nothing.
+granted nothing by default.
 
 :::figure id="what-changes-deployed" caption="The app is the same in both columns."
 :::
@@ -104,7 +103,7 @@ A file you deliberately did not commit cannot be the thing that configures
 production. Settings for a deployed service live on the service.
 :::
 
-The deployment in this step handles both: it grants the service account the two
+The deployment in this section handles both: it grants the service account the
 roles it needs, and carries the settings across. Watch the log if you want to
 see it happen.
 

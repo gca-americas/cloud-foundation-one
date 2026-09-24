@@ -1,4 +1,4 @@
-:::section kicker="Definition" headline="Process memory versus databases"
+:::section kicker="Persistence" headline="Process memory versus databases"
 A database is a program whose whole job is to keep records safe and hand them
 back when asked. It runs somewhere other than your app, on its own storage,
 and it survives everything your app does — including stopping.
@@ -15,7 +15,7 @@ to outlive a restart, it has to live outside the app.
 :::
 :::
 
-:::section kicker="The options" headline="Databases on Google Cloud"
+:::section kicker="Options" headline="Managed databases on Google Cloud"
 There are several, and they are not competing so much as holding different
 shapes of data.
 
@@ -37,7 +37,7 @@ about a billion rows, and it is the wrong thing to put behind a web request.
 :::
 :::
 
-:::section kicker="The choice" headline="Why this course uses Firestore"
+:::section kicker="Selection" headline="Choosing Firestore"
 DinoQuest needs to store a name and a number, and read back the top ten. That
 is it.
 
@@ -53,21 +53,21 @@ Cloud SQL would work too, and it would also hand you an instance to size, patch
 and remember to delete. For a leaderboard, that is a machine you did not need.
 :::
 
-:::section kicker="What changes" headline="Provisioning and connecting Firestore"
-Two things, and only two.
+:::section kicker="Implementation" headline="Provisioning and connecting Firestore"
+Connecting the application to Firestore requires provisioning the database and updating the storage code.
 
-:::figure id="two-changes" caption="One thing gets created, and one section of one file gets rewritten."
+:::figure id="two-changes" caption="One database gets created, and one section of one file gets rewritten."
 :::
 
 1. **A database has to exist.** Firestore is not on until you create it, and it
-   lives in a region — the one you thought about in step 3.
+   lives in a region.
 2. **The app has to write there instead of to a list.** One section of
-   `app/main.py` changes. The game, the page, the two API calls: untouched.
+   `app/main.py` changes. The game, the page, and the API calls remain untouched.
 
 :::key
 Moving where the data lives should not mean rewriting the application. If it
 does, the data was tangled through the code.
 :::
 
-Below, you lose a leaderboard on purpose. Then you fix it.
+Below, you observe the in-memory leaderboard reset on restart, and then connect Firestore.
 :::

@@ -1,6 +1,6 @@
 slug: ai-platform
-title: The AI platform
-kicker: Make it do more
+title: Generate sprites with Gemini
+kicker: Managed services
 part: grow
 color: fuchsia
 summary: Google hosts the models. Calling one is the same arrangement as everything else.
@@ -15,14 +15,13 @@ parts:
     headline: Generating sprites with Gemini
     body: b-generate.md
     exercise:
-      title: Let a model draw the dino
+      title: Integrate Gemini sprite generation
       intro: >
-        Three things in order: the settings, the code, then a dino that did not
-        exist before you asked for it.
+        Complete the configuration, update the application code, and generate a custom dinosaur sprite.
       tasks:
         - kind: intent
           id: settings
-          title: Get the app ready to reach a model
+          title: Configure the Gen AI SDK
           example: Set up what the app needs to call Gemini
           prompt: >
             Nothing in DinoQuest knows how to reach Gemini yet. Describe the
@@ -42,7 +41,7 @@ parts:
                 There is no API key here. The request is signed with the Google
                 Cloud credentials this machine already has.
               accepted: >
-                Writing app/.env and installing the Gen AI SDK. Read the four
+                Writing app/.env and installing the Gen AI SDK. Read the
                 settings it prints — one of them is the global endpoint.
           stages:
             - title: Settings
@@ -60,10 +59,10 @@ parts:
           command: python3 scripts/setup_gemini_env.py
           explain: >
             Nothing is called yet, and no code changes. This only writes down
-            what the next step will need.
+            what the next task will need.
         - kind: files
           id: connect-gemini
-          title: Have the model draw the dino
+          title: Implement structured sprite generation
           example: Change the code so Gemini draws a new dino when I ask
           start: app
           open: app/main.py
@@ -87,12 +86,11 @@ parts:
                 right — the game, the routes and the leaderboard are untouched.
           command: python3 scripts/connect_gemini.py
           explain: >
-            One marked section changes, the same way step 5 changed one marked
-            section. Read what arrives: the request, the shape of the answer,
+            One marked section changes. Read what arrives: the request, the shape of the answer,
             and the retries.
         - kind: app
           id: generate
-          title: Run it and ask for a dino
+          title: Test custom sprite generation
           appTitle: DinoQuest
           explain: >
             Start the app. A "Draw me a new dino" box is there now, because the

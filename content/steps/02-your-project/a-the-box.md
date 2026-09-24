@@ -1,14 +1,11 @@
 :::section kicker="Structure" headline="What a project contains"
-Step 1 created a project without explaining what one is. This is that
-explanation. Resources need a container, and costs need somewhere to be
+Resources need a container, and costs need somewhere to be
 reported. In Google Cloud that container is a project, and every resource
 belongs to exactly one.
-
-:::
 :::
 
-:::section kicker="Boundaries" headline="The five boundaries"
-:::figure id="project-box" caption="Five things a project does to whatever is inside it."
+:::section kicker="Boundaries" headline="Project boundaries"
+:::figure id="project-box" caption="Core boundaries a project defines for whatever is inside it."
 :::
 
 Costs report out of it, which is why teams keep development and production in
@@ -17,12 +14,12 @@ off until switched on here. Quota is counted here. And deleting it takes the
 contents and the bill with it — the most reliable cleanup there is.
 
 :::key
-When something does not work in Google Cloud, check three things in this order:
-the active project, whether the service is enabled, and permissions.
+When something does not work in Google Cloud, check the active project, whether
+the service is enabled, and permissions.
 :::
 :::
-:::section kicker="Identifiers" headline="Name, ID, and number"
-A project has three identifiers, and they serve different purposes.
+:::section kicker="Identifiers" headline="Project identifiers"
+A project has a display name, a project ID, and a project number, and they serve different purposes.
 
 :::figure id="three-names" caption="The project ID is the identifier that commands and URLs use."
 :::
@@ -36,7 +33,7 @@ can stay, or accept the suggested one.
 :::
 :::
 
-:::section kicker="Billing" headline="Billing accounts are separate resources"
+:::section kicker="Billing" headline="Billing accounts"
 A billing account is not part of a project. It is a separate resource, and a
 project is linked to it.
 

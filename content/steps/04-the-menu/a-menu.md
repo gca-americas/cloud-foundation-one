@@ -1,4 +1,4 @@
-:::section kicker="The problem" headline="Two hundred products, five categories"
+:::section kicker="Overview" headline="Organizing cloud products"
 Google Cloud has more than two hundred products. The list exists because the
 same platform serves banks, hospitals, game studios and you, and most of it is
 not addressed to you at all.
@@ -10,8 +10,8 @@ have not moved in twenty years.
 :::
 :::
 
-:::section kicker="The menu" headline="Five service categories"
-:::figure id="categories" caption="Every service belongs to one of these. This course uses three."
+:::section kicker="Categories" headline="Core service categories"
+:::figure id="categories" caption="Every service belongs to one of these core categories."
 :::
 
 **Somewhere to run code.** You have a program; something has to execute it.
@@ -30,7 +30,7 @@ defaults are right for an app like this one, so the course never opens it.
 train.
 :::
 
-:::section kicker="Files or records" headline="Files versus records"
+:::section kicker="Storage" headline="Object storage versus databases"
 A **file** is opaque. You put it in, you get it back, and the storage never
 looks inside. A **record** is structured: you ask questions of it, and change
 one part without rewriting the whole thing.
@@ -48,8 +48,8 @@ folder of files. Both work briefly, and both hurt later.
 :::
 :::
 
-:::section kicker="What you are building" headline="DinoQuest, finished"
-:::figure id="architecture" caption="Each badge is the step that adds that piece."
+:::section kicker="Architecture" headline="Mapping services to DinoQuest"
+:::figure id="architecture" caption="How the cloud services fit together for DinoQuest."
 :::
 
 Read it as a sentence. A player's browser reaches **Cloud Run**, which is
@@ -57,17 +57,15 @@ running your game. Cloud Run reads and writes the leaderboard in
 **Firestore**, and asks **Gemini** for a dino. Your code got there because
 **Cloud Build** turned it into a container and **Artifact Registry** kept it.
 
-All of it sits inside one project — one bill, one set of permissions. That is
-the box from step 2 doing its job.
+All of it sits inside one project — one bill, one set of permissions.
 
 :::key
-Three categories, three services of your own, and two more that exist only to
-get your code there. Nothing else in the two hundred is needed to put a real
+A few core categories and managed services are all that is needed to put a real
 application on the internet.
 :::
 :::
 
-:::section kicker="How much to manage" headline="Compute options"
+:::section kicker="Compute" headline="Comparing compute models"
 There is more than one way to run the same app, and the difference is how much
 of the machine is yours to worry about.
 
@@ -85,14 +83,14 @@ an app.
 **Cloud Run** takes your container and runs it. There is no machine in the
 picture for you, and nothing to patch.
 
-This course uses Cloud Run. Step 7 explains why.
+This course uses Cloud Run.
 :::
 
-:::section kicker="What to ignore" headline="What this course leaves out"
+:::section kicker="Scope" headline="Additional platform services"
 GKE, load balancers, VPC design, data warehouses, message queues,
 buckets, and the whole of logging and monitoring. All real, all excellent, none
 of them yours yet.
 
 Knowing what you are ignoring is the difference between a beginner and someone
-who is lost. Step 9 comes back to this and says why each one was left out.
+who is lost. The final section comes back to this and explains when each one is needed.
 :::

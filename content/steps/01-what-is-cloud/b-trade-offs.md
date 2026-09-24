@@ -1,4 +1,4 @@
-:::section kicker="Cost" headline="When renting costs less"
+:::section kicker="Economics" headline="When renting costs less"
 Cloud computing is a pricing model, and the result depends on your pattern of
 demand.
 
@@ -15,7 +15,7 @@ workloads back onto hardware they own for this reason.
 :::
 :::
 
-:::section kicker="Dependency" headline="Provider dependency"
+:::section kicker="Trade-offs" headline="Provider dependency"
 The more managed services you use, the more of your design is expressed in one
 provider's products.
 
@@ -25,7 +25,7 @@ current practice.
 :::
 :::
 
-:::section kicker="Scope" headline="Resources rented in this course"
+:::section kicker="Scope" headline="Resources used in this course"
 :::figure id="rent-three" caption="The same model applied to compute, storage, and a model."
 :::
 

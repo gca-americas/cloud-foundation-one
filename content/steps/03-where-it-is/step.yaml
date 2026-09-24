@@ -1,6 +1,6 @@
 slug: where-it-is
 title: Choose a region
-kicker: Set up your corner
+kicker: Project setup
 part: corner
 color: violet
 summary: Where cloud resources physically run, and how to choose a place for yours.
@@ -11,14 +11,14 @@ parts:
     headline: Data centers and regions
     body: a-regions.md
     exercise:
-      title: Choose a region
+      title: Select a region
       intro: >
-        Four situations. One right answer each, except the last.
+        Evaluate the following deployment scenarios to select the appropriate region.
       tasks:
         - kind: widget
           id: quiz
-          title: Four situations
+          title: Region selection scenarios
           widget: region-quiz
           explain: >
-            One right answer each, except the last. Read why the wrong ones are
+            Select the best region for each deployment scenario. Read why the wrong ones are
             wrong — that is where the lesson is.

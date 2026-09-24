@@ -12,20 +12,20 @@ thesis: >
 
 parts:
   - id: understand
-    title: Understand it
+    title: Cloud fundamentals
     color: sky
   - id: corner
-    title: Set up your corner
+    title: Project setup
     color: violet
   - id: menu
-    title: Learn what's available
+    title: Core services
     color: amber
   - id: grow
-    title: Make it do more
+    title: Managed services
     color: fuchsia
   - id: ship
-    title: Put your app on the cloud
+    title: Serverless deployment
     color: emerald
   - id: run
-    title: Run it like a professional
+    title: Operations and cleanup
     color: rose

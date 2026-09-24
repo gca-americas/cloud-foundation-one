@@ -1,5 +1,5 @@
-:::section kicker="Background" headline="From owned hardware to rented capacity"
-Step 0 listed four requirements: a computer that stays on, a public address, an
+:::section kicker="Background" headline="Owned hardware versus rented capacity"
+Running a public application requires a server that stays on, a public address, an
 operator for the building, and someone to pay.
 
 For decades, companies met those requirements by buying computers and putting
@@ -11,7 +11,7 @@ Cloud computing means renting computing resources instead of owning them.
 :::
 :::
 
-:::section kicker="Capacity" headline="Why owned capacity is sized for the peak"
+:::section kicker="Capacity" headline="Sizing for peak traffic"
 Suppose your app is busy at midday and quiet at 3 AM. If you own a computer,
 you buy one large enough for midday. You also own that computer at 3 AM.
 
@@ -21,7 +21,7 @@ you buy one large enough for midday. You also own that computer at 3 AM.
 You also buy for next year's peak, because ordering hardware takes weeks.
 :::
 
-:::section kicker="Comparison" headline="Owning compared with renting"
+:::section kicker="Comparison" headline="Comparing ownership and rental"
 | Owning | Renting |
 |---|---|
 | You buy for peak demand | You pay for current demand |
@@ -30,11 +30,11 @@ You also buy for next year's peak, because ordering hardware takes weeks.
 | You replace failed hardware | The provider replaces it |
 | You pay in advance | You pay for what you used |
 :::
-:::section kicker="Definition" headline="The three characteristics"
-Renting is the idea. These three are what make a service a cloud service rather
-than a rental agreement.
+:::section kicker="Definition" headline="Characteristics of cloud computing"
+Renting is the idea. These properties are what make a service a cloud service rather
+than a traditional rental agreement.
 
-:::figure id="three-traits" caption="A service is a cloud service when it has all three."
+:::figure id="three-traits" caption="A service is a cloud service when it has these characteristics."
 :::
 
 **On demand.** You request a resource and receive it in seconds, without a
@@ -49,7 +49,7 @@ network, failed hardware, and security updates. You rent the result rather than
 the equipment.
 :::
 
-:::section kicker="Not the same thing" headline="Hosting compared with cloud computing"
+:::section kicker="Distinction" headline="Server hosting versus cloud computing"
 A rented server in 2005 had none of those characteristics. You signed an annual
 contract, paid monthly whether you used the server or not, and applied updates
 yourself.

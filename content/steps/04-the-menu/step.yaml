@@ -1,12 +1,12 @@
 slug: the-menu
-title: What's on the menu
-kicker: Learn what's available
+title: Core cloud services
+kicker: Core services
 part: menu
 color: amber
-summary: Five categories of service, and the shape of the thing you are about to build.
+summary: Core categories of cloud services, and the architecture of the application you are building.
 
 parts:
   - id: a
-    label: Five service categories
-    headline: Five service categories
+    label: Core service categories
+    headline: Core service categories
     body: a-menu.md

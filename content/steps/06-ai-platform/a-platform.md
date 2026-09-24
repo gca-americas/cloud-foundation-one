@@ -1,12 +1,10 @@
-:::section kicker="Definition" headline="What the AI platform is"
+:::section kicker="Overview" headline="The Gemini Enterprise Agent Platform"
 Google Cloud runs large models on its own hardware and answers requests to
 them over the network. Sending a request and getting an answer back is the
 whole arrangement. No model is downloaded, no accelerator is reserved, and
 nothing is installed.
 
-This is the third time in this course that the answer has taken that shape.
-
-:::figure id="rent-intelligence" caption="A machine in step 1, a database in step 5, a model here."
+:::figure id="rent-intelligence" caption="Renting compute, storage, and intelligence on demand."
 :::
 
 :::key
@@ -15,7 +13,7 @@ and the same permission shape as every other service in this course.
 :::
 :::
 
-:::section kicker="Build or rent" headline="What training a model takes"
+:::section kicker="Economics" headline="Training versus calling a model"
 A model of this size is not something a team decides to build on a Tuesday.
 Training one means thousands of accelerators running for weeks, a dataset
 assembled over years, and people who have done it before.
@@ -23,12 +21,12 @@ assembled over years, and people who have done it before.
 :::figure id="own-a-model" caption="Both columns get you a model. Only one of them is a project."
 :::
 
-The comparison is the same one step 1 made about servers, only further along
+The comparison is the same one made earlier about servers, only further along
 the scale. Renting is not the cheap option here; it is the only option most
 teams have.
 :::
 
-:::section kicker="What you call" headline="Hosted models"
+:::section kicker="Inference" headline="Calling hosted models"
 A hosted model is one Google runs. You send a request, you get an answer, and
 you are charged for the size of both. There is nothing to install and nothing
 left running when you stop asking.
@@ -47,14 +45,14 @@ interface, and it is the part this course uses.
 :::
 :::
 
-:::section kicker="The catalogue" headline="Model Garden"
+:::section kicker="Catalog" headline="Model Garden"
 Model Garden is the list of every model the platform can serve: more than 200
 of them, in one place, with the documentation and the price next to each one.
 
-:::figure id="model-garden" caption="Three kinds of model, one catalogue, one bill."
+:::figure id="model-garden" caption="First-party, open, and partner models in one catalog."
 :::
 
-It holds three kinds of thing:
+It holds three kinds of models:
 
 - **Google models.** Gemini for text, images and audio in and out; Imagen for
   images; Veo for video; Lyria for music. These are the ones that need no setup
@@ -76,7 +74,7 @@ amount of text back in a fixed shape, which is the most ordinary thing a
 language model does.
 :::
 
-:::section kicker="Around the call" headline="The rest of the cycle"
+:::section kicker="Lifecycle" headline="Evaluation, grounding, and tuning"
 One request is the smallest piece of the platform. Everything else exists
 because a working demo and a service people depend on are not the same thing.
 
@@ -86,8 +84,8 @@ because a working demo and a service people depend on are not the same thing.
 - **Find one — Model Garden.** The catalogue just described.
 - **Try a prompt — Agent Studio.** A console workspace for writing system
   instructions and comparing prompts side by side before any code exists.
-- **Call it — the Gemini API, through the Google Gen AI SDK.** The step you are
-  about to do.
+- **Call it — the Gemini API, through the Google Gen AI SDK.** The integration you are
+  about to implement.
 - **Improve it — grounding and tuning.** Grounding gives the model facts it was
   not trained on: Google Search for the public web, Agent Search or RAG Engine
   for your own documents. Tuning changes the model itself using your examples,
@@ -107,14 +105,14 @@ solves those in an afternoon.
 :::
 :::
 
-:::section kicker="The other shape" headline="Agents"
+:::section kicker="Architecture" headline="Models and agents"
 A model answers one question. An agent is given a goal, decides which steps to
 take, calls tools to take them, and keeps going until it is done. That
 difference is small to describe and large to run: something has to host the
 agent between turns, remember what happened, and stop it doing anything you
 did not intend.
 
-:::figure id="agent-pillars" caption="The platform organizes this into four pillars."
+:::figure id="agent-pillars" caption="The platform organizes agent capabilities into core pillars."
 :::
 
 - **Build.** The Agent Development Kit — ADK — is the open-source framework
@@ -133,8 +131,7 @@ Agents reach tools over **MCP**, and reach other agents over **A2A**. Both are
 open protocols, so an agent is not confined to tools from one vendor.
 
 :::note
-Two names, close together, worth keeping apart. **Gemini Enterprise** is the
-finished product people use at work — search and an assistant over company
+**Gemini Enterprise** is the finished product people use at work — search and an assistant over company
 data. **Gemini Enterprise Agent Platform** is where developers build, and
 agents built there are delivered to people through Gemini Enterprise.
 :::
@@ -142,16 +139,14 @@ agents built there are delivered to people through Gemini Enterprise.
 This course does not build an agent. It calls a model once, which is the
 foundation everything above is built on.
 :::
-:::section kicker="The same three questions" headline="Where, who and what it costs"
-Nothing about a model call escapes the questions the earlier steps asked of
-every other service.
+:::section kicker="Operations" headline="Region, permissions, and pricing"
+Calling a model involves the same operational considerations as every other cloud service.
 
-- **Which region.** A model request is served somewhere, and step 3's reasons
-  for caring still apply. This step uses a deliberate exception, covered in a
-  moment.
+- **Which region.** A model request is served somewhere, and regional routing considerations
+  still apply. This section uses a deliberate exception, covered next.
 - **Which identity.** The call is signed by whoever is making it. At the
   command line that is your account; once the app is deployed it is the
   service account the app runs as, which will need its own permission.
 - **What it costs.** Charged per token, visible in the same billing report as
-  everything else, and covered by the budget alert set in step 2.
+  everything else, and covered by the budget alert set earlier.
 :::

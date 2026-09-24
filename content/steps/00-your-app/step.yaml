@@ -1,6 +1,6 @@
 slug: your-app
-title: Run the app where it is
-kicker: Understand it
+title: Run the application locally
+kicker: Cloud fundamentals
 part: understand
 color: sky
 summary: The app this course puts on the internet, and why nobody else can reach it yet.
@@ -11,14 +11,14 @@ parts:
     headline: The application
     body: a-the-app.md
     exercise:
-      title: Look at it, then run it
+      title: Run the application
       intro: >
         Read the app before you start it. Then start it the way you would on
         any machine: by typing the command.
       tasks:
         - kind: files
           id: look
-          title: Look at the app
+          title: Inspect the code
           start: app
           open: app/main.py
           explain: >
@@ -28,7 +28,7 @@ parts:
             be edited yet.
         - kind: terminal
           id: start
-          title: Start the app
+          title: Start the local server
           expect:
             - cd app
             - python3 main.py
@@ -38,7 +38,7 @@ parts:
             too, if you want to look around from here instead.
         - kind: app
           id: play
-          title: DinoQuest
+          title: Play DinoQuest
           appTitle: DinoQuest
           explain: >
             Once it is running it appears here. Space or a click jumps. Put a

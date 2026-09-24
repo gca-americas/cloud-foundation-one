@@ -1,6 +1,6 @@
 slug: home
 title: Deploy to Cloud Run
-kicker: Put your app on the cloud
+kicker: Serverless deployment
 part: ship
 color: emerald
 summary: "Serverless: your container runs, scales, and costs nothing while idle."
@@ -11,14 +11,14 @@ parts:
     headline: Serverless containers
     body: a-cloud-run.md
     exercise:
-      title: Put it on the cloud
+      title: Deploy the service to Cloud Run
       intro: >
-        One request, then a few minutes of waiting, then an address anyone can
+        One request, then a few minutes of building and deploying, then an address anyone can
         open.
       tasks:
         - kind: deploy
           id: deploy-app
-          title: Give the app a public address
+          title: Deploy the container
           example: Deploy DinoQuest to Cloud Run so anyone can play it
           prompt: >
             DinoQuest only runs while your terminal is open. Describe what you
@@ -57,11 +57,11 @@ parts:
           command: python3 scripts/deploy_app.py
           explain: >
             The log is hidden because almost none of it is worth reading. Open
-            it if the deployment stops, or if you want to watch the four stages
+            it if the deployment stops, or if you want to watch the stages
             go by.
         - kind: reflect
           id: same-app
-          title: Confirm it is the same app
+          title: Verify the public deployment
           prompt: >
             Open the address and play a round. The leaderboard is the same
             Firestore database your laptop was writing to, and the dino is drawn

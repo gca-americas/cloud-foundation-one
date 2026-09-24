@@ -1,4 +1,4 @@
-:::section kicker="The app" headline="DinoQuest"
+:::section kicker="Overview" headline="DinoQuest"
 A dinosaur runs, cactuses come at it, and pressing space or clicking jumps.
 When the dino hits one, the run ends and the score goes on a leaderboard.
 
@@ -7,7 +7,7 @@ command, and play a round. All of it happens on this page: the app runs in
 Cloud Shell as its own process, and the workbench shows it here.
 :::
 
-:::section kicker="Shape" headline="One process, two jobs"
+:::section kicker="Architecture" headline="How the application works"
 :::figure id="app-shape" caption="One Python file serves the page and keeps the scores."
 :::
 

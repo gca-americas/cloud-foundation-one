@@ -153,9 +153,9 @@ cloud-foundation-one/
     └── reset_app.py            # Rewinds app/ to its initial state without modifying cloud resources
 ```
 
-## Run the app where it is
+## Run the application locally
 
-In the **Cloud 101 Workbench**, navigate to **Run the app where it is** and open **The application**.
+In the **Cloud 101 Workbench**, navigate to **Run the application locally** and open **The application**.
 
 Before moving anything to Google Cloud, inspect the application as it exists on disk, start it in Cloud Shell, and observe how process memory behaves when a server stops.
 
@@ -197,8 +197,8 @@ def leaderboard() -> list[dict]:
 
 In the workbench exercise panel:
 
-1. Browse `app/main.py` and `app/static/` in the **Look at the app** file explorer.
-2. In the **Start the app** terminal panel (`server/services/workspace.py`), move into the `app` directory and start the server:
+1. Browse `app/main.py` and `app/static/` in the **Inspect the code** file explorer.
+2. In the **Start the local server** terminal panel (`server/services/workspace.py`), move into the `app` directory and start the server:
    ```bash
    cd app
    python3 main.py
@@ -287,9 +287,9 @@ Before you can provision resources, Google Cloud needs a **project** to hold the
 
 ## Projects and billing
 
-In the **Cloud 101 Workbench**, navigate to **Projects and billing** and open **Projects, identifiers, and billing accounts**.
+In the **Cloud 101 Workbench**, navigate to **Projects and billing** and open **Projects and billing accounts**.
 
-### Projects, identifiers, and billing accounts
+### Projects and billing accounts
 
 Every Google Cloud resource belongs to exactly one **project**, which establishes five boundaries around everything inside it:
 
@@ -411,20 +411,20 @@ Two constraints can override user proximity:
 - **Data residency**: Legal or regulatory requirements that mandate data remain inside a specific country or jurisdiction.
 - **Service availability**: Not every product or model is available in every region.
 
-Complete the **Four situations** (`region-quiz`) interactive widget in the workbench exercise panel, and set your default CLI region when needed:
+Complete the **Region selection scenarios** (`region-quiz`) interactive widget in the workbench exercise panel, and set your default CLI region when needed:
 
 ```bash
 gcloud config set run/region us-central1
 gcloud config set compute/region us-central1
 ```
 
-## What's on the menu
+## Core cloud services
 
-In the **Cloud 101 Workbench**, navigate to **What's on the menu** and open **Five service categories**.
+In the **Cloud 101 Workbench**, navigate to **Core cloud services** and open **Core service categories**.
 
-### Five service categories
+### Core service categories
 
-Google Cloud has more than two hundred products, but they fall into five durable categories that outlast individual product names:
+Google Cloud has more than two hundred products, but they fall into core categories that outlast individual product names:
 
 | Problem You Need Solved | Cloud Category | What DinoQuest Uses |
 |---|---|---|
@@ -434,14 +434,14 @@ Google Cloud has more than two hundred products, but they fall into five durable
 | **Somewhere to keep files** | **Storage** | *(Not needed — `dino.png` ships inside the container)* |
 | **Something to connect it** | **Networking** | *(Default HTTPS routing provided by Cloud Run)* |
 
-### Files versus records
+### Object storage versus databases
 
 - **A file is opaque**: You store it whole and hand it back whole (photos, videos, PDFs, audio). Storage never looks inside a file to sort or update a single field.
 - **A record is structured**: Your application reads, filters, sorts, and updates individual fields as it runs (user accounts, leaderboard scores, messages).
 
 Because DinoQuest's leaderboard is a sorted list of `{name, score}` entries, it requires a **database** (`Firestore`), not a file storage bucket.
 
-### Compute options
+### Comparing compute models
 
 Within **Compute**, the key architectural question is **how much machine you want to manage**:
 
@@ -449,15 +449,15 @@ Within **Compute**, the key architectural question is **how much machine you wan
 - **Kubernetes Clusters (GKE)**: You run many containers across a cluster of machines when one container is not enough.
 - **Serverless Containers (Cloud Run)**: You provide a container; Google Cloud runs copies when requests arrive, stops them when idle, and leaves you no machines to patch.
 
-## Give the app a memory
+## Persist data with Firestore
 
-In the **Cloud 101 Workbench**, navigate to **Give the app a memory** and open **Process memory versus databases**.
+In the **Cloud 101 Workbench**, navigate to **Persist data with Firestore** and open **Managed databases and Firestore**.
 
 ### Process memory versus databases
 
 Anything an application keeps in memory (`SCORES = []` in `app/main.py`) lasts only as long as that operating system process. A **database** is a separate program running outside your application on persistent storage, outliving application restarts, crashes, and container scale-downs.
 
-### Databases on Google Cloud
+### Managed databases on Google Cloud
 
 | Database Service | Data Shape & Strengths | When to Reach for It |
 |---|---|---|
@@ -473,8 +473,8 @@ Anything an application keeps in memory (`SCORES = []` in `app/main.py`) lasts o
 
 Work through the tasks in the workbench exercise panel:
 
-1. **Watch a score disappear**: Start DinoQuest in the embedded app panel, play a round to put a score on the board, click **Stop**, and click **Start** again. Observe that the leaderboard is empty.
-2. **Make the score survive a restart**: In the intent box, describe what you want provisioned in your own words:
+1. **Observe in-memory state reset**: Start DinoQuest in the embedded app panel, play a round to put a score on the board, click **Stop**, and click **Start** again. Observe that the leaderboard is empty.
+2. **Create the Firestore database**: In the intent box, describe what you want provisioned in your own words:
    ```text
    Set up a Firestore database in my region to keep the scores
    ```
@@ -482,7 +482,7 @@ Work through the tasks in the workbench exercise panel:
    ```bash
    gcloud firestore databases create --location=$(gcloud config get-value compute/region)
    ```
-3. **Get the app writing to it**: In the code intent box, describe the application change:
+3. **Update the storage code**: In the code intent box, describe the application change:
    ```text
    Change the app to save scores in Firestore instead of the list
    ```
@@ -523,13 +523,13 @@ def leaderboard() -> list[dict]:
 - **Durable scores across restarts**: Restart DinoQuest in the app panel, post a score, then click **Stop** and **Start** again. The score remains on the leaderboard because it now lives in Firestore outside the Python process.
 - **Live verification**: Run the four verification probes at the bottom of the page (`gcloud firestore databases list`, `cat app/main.py`, and `curl -s http://127.0.0.1:8080/api/health`).
 
-## The AI platform
+## Generate sprites with Gemini
 
-In the **Cloud 101 Workbench**, navigate to **The AI platform** and open **Hosted models and Model Garden**.
+In the **Cloud 101 Workbench**, navigate to **Generate sprites with Gemini** and open **Hosted models and Model Garden**.
 
 ### Hosted models and Model Garden
 
-Google Cloud runs foundation models on its own accelerators and answers requests over the network. Calling a hosted model is the third rental in this course: no weights to download, no GPUs to reserve, and nothing left running between calls.
+Google Cloud runs foundation models on its own accelerators and answers requests over the network. Calling a hosted model follows the same rental model: no weights to download, no GPUs to reserve, and nothing left running between calls.
 
 Positive
 : Google Cloud's unified AI platform was called **Vertex AI** until 2026 and is now the **Gemini Enterprise Agent Platform** (while **Gemini Enterprise** is the workplace assistant product). The API service remains `aiplatform.googleapis.com`.
@@ -552,7 +552,7 @@ Settings that change between machines belong in `app/.env` rather than in source
 | `DINO_MODEL` | `gemini-3.5-flash` | Which model in Model Garden to call |
 
 Negative
-: `GOOGLE_CLOUD_LOCATION=global` is a deliberate classroom choice. A production service names a specific region (`us-central1`) for data residency and predictable latency; `global` trades regional pinning for routing capacity so thirty students calling the same model simultaneously do not hit single-region rate limits.
+: `GOOGLE_CLOUD_LOCATION=global` is a deliberate classroom choice. A production service names a specific region (`us-central1`) for data residency and predictable latency; `global` trades regional pinning for routing capacity so many students calling the same model simultaneously do not hit single-region rate limits.
 
 ### The Google Gen AI SDK
 
@@ -584,25 +584,25 @@ There is **no API key**. With `vertexai=True`, the SDK signs requests using the 
 
 ### Generating sprites with Gemini
 
-Complete the three tasks in the workbench exercise panel:
+Complete the tasks in the workbench exercise panel:
 
-1. **Get the app ready to reach a model**: Describe the setup in the intent box:
+1. **Configure the Gen AI SDK**: Describe the setup in the intent box:
    ```text
    Set up what the app needs to call Gemini
    ```
-   If you ask for an `api key` or `secret`, the intent matcher explains why IAM credentials replace static keys. When accepted, the workbench runs `python3 scripts/setup_gemini_env.py` across four pipeline stages (**Settings** → **Endpoint** → **The SDK** → **Ready**), writing `app/.env` and installing `google-genai`.
-2. **Have the model draw the dino**: Describe the code change in the second intent box:
+   If you ask for an `api key` or `secret`, the intent matcher explains why IAM credentials replace static keys. When accepted, the workbench runs `python3 scripts/setup_gemini_env.py` across the pipeline stages (**Settings** → **Endpoint** → **The SDK** → **Ready**), writing `app/.env` and installing `google-genai`.
+2. **Implement structured sprite generation**: Describe the code change in the second intent box:
    ```text
    Change the code so Gemini draws a new dino when I ask
    ```
    The workbench runs `python3 scripts/connect_gemini.py`, rewriting the `# ── the dino ── begin dino ──` section of `app/main.py` with `make_dino()`, `restore_dino()`, retry handling, and PNG synthesis.
-3. **Run it and ask for a dino**: Start (or restart) DinoQuest in the app panel, enter a character description into **Draw me a new dino**, click **Generate**, and play a round with your custom sprite.
+3. **Test custom sprite generation**: Start (or restart) DinoQuest in the app panel, enter a character description into **Draw me a new dino**, click **Generate**, and play a round with your custom sprite.
 
 ### What to expect and why
 
 - **Schema-guaranteed JSON**: Because `response_schema=SHAPE` is passed in `GenerateContentConfig`, Gemini always returns a valid `palette` array and 24 `rows` of 24 characters that `_png()` can immediately encode into `app/static/dino.png`.
 - **Reversible changes**: Clicking **Original dino** in the game invokes `POST /api/dino/original`, which copies `app/static/dino.default.png` back over `app/static/dino.png`.
-- **Live verification**: Run the four verification checks at the bottom of the page to confirm `aiplatform.googleapis.com` is enabled, `google-genai` is in `app/requirements.txt`, `genai.Client(` is in `app/main.py`, and `/api/health` reports `"dino": true`.
+- **Live verification**: Run the verification checks at the bottom of the page to confirm `aiplatform.googleapis.com` is enabled, `google-genai` is in `app/requirements.txt`, `genai.Client(` is in `app/main.py`, and `/api/health` reports `"dino": true`.
 
 ## Deploy to Cloud Run
 
@@ -612,7 +612,7 @@ In the **Cloud 101 Workbench**, navigate to **Deploy to Cloud Run** and open **S
 
 **Cloud Run** runs containers on Google-operated infrastructure, assigns each service a public HTTPS `.run.app` address, scales copies up when requests arrive, and scales down to zero copies when idle so you pay nothing while nobody is playing.
 
-A **container** seals your code, runtime, and dependencies into a single image. DinoQuest needs no `Dockerfile`: Google Cloud buildpacks inspect `app/requirements.txt` and `app/Procfile` (`web: python3 main.py`) and build the container across four stages:
+A **container** seals your code, runtime, and dependencies into a single image. DinoQuest needs no `Dockerfile`: Google Cloud buildpacks inspect `app/requirements.txt` and `app/Procfile` (`web: python3 main.py`) and build the container across distinct stages:
 
 1. **Upload**: The contents of `app/` are uploaded to **Cloud Build**.
 2. **Build**: **Cloud Build** installs dependencies and builds the container image.
@@ -624,10 +624,10 @@ A **container** seals your code, runtime, and dependencies into a single image. 
 - **Cold starts**: When a service has scaled to zero, the first request waits a moment for a container copy to start—the latency trade-off for paying nothing while idle.
 - **Revisions**: Every deployment creates an immutable revision. Rolling back a change moves traffic back to the previous revision in seconds without rebuilding.
 
-### Service accounts and runtime settings
+### Service accounts and runtime configuration
 
 Negative
-: Two things change when your application moves from Cloud Shell to Cloud Run:
+: Key operational settings change when your application moves from Cloud Shell to Cloud Run:
 1. **Identity**: The app no longer runs as *you*; it runs as a dedicated **service account** (`PROJECT_NUMBER-compute@developer.gserviceaccount.com`) that has no permissions until granted **`roles/datastore.user`** (for Firestore) and **`roles/aiplatform.user`** (for Gemini).
 2. **Configuration**: Local `app/.env` is not inside the container; those environment variables must be set on the Cloud Run service via `--set-env-vars`.
 
@@ -645,13 +645,13 @@ gcloud run deploy dinoquest \
 
 In the workbench exercise panel:
 
-1. **Give the app a public address**: Enter your deployment request in the intent box:
+1. **Deploy the container**: Enter your deployment request in the intent box:
    ```text
    Deploy DinoQuest to Cloud Run so anyone can play it
    ```
-   The workbench runs `python3 scripts/deploy_app.py` and advances through the four pipeline stages (**Permission** → **Upload** → **Build** → **Running**). When complete, it displays your live `https://dinoquest-....run.app` link.
-2. **Confirm it is the same app**: Open the public HTTPS URL, play a round, verify that the leaderboard shows the same Firestore scores you recorded locally, and generate a new dino sprite in production.
-3. **Verify**: Run the three `gcloud run services describe dinoquest` checks at the bottom of the page.
+   The workbench runs `python3 scripts/deploy_app.py` and advances through the pipeline stages (**Permission** → **Upload** → **Build** → **Running**). When complete, it displays your live `https://dinoquest-....run.app` link.
+2. **Verify the public deployment**: Open the public HTTPS URL, play a round, verify that the leaderboard shows the same Firestore scores you recorded locally, and generate a new dino sprite in production.
+3. **Verify**: Run the `gcloud run services describe dinoquest` checks at the bottom of the page.
 
 ## Cost and cleanup
 

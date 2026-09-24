@@ -1,26 +1,26 @@
 slug: memory
-title: Give the app a memory
-kicker: Make it do more
+title: Persist data with Firestore
+kicker: Managed services
 part: grow
 color: fuchsia
 summary: A managed database, in the region you chose, with no server to run.
 
 parts:
   - id: a
-    label: Process memory versus databases
-    headline: Process memory versus databases
+    label: Managed databases and Firestore
+    headline: Managed databases and Firestore
     body: a-databases.md
     exercise:
-      title: Lose the leaderboard, then keep it
+      title: Configure Firestore persistence
       intro: >
-        Five things in order. The first one is meant to go wrong. Where a box
+        Complete the tasks below in order. Where a box
         asks for a request, describe the outcome you want in your own words —
         the way you would put it to an assistant — and the workbench works out
         the command.
       tasks:
         - kind: app
           id: lose-it
-          title: Watch a score disappear
+          title: Observe in-memory state reset
           appTitle: DinoQuest
           explain: >
             Start the app and play a round so there is a score on the board.
@@ -28,7 +28,7 @@ parts:
             It is empty. The score was in the process, and the process ended.
         - kind: provision
           id: create-db
-          title: Make the score survive a restart
+          title: Create the Firestore database
           example: Set up a Firestore database in my region to keep the scores
           prompt: >
             You just watched the leaderboard empty itself. Describe what you
@@ -54,7 +54,7 @@ parts:
           command: bash scripts/create_database.sh
         - kind: files
           id: connect
-          title: Get the app writing to it
+          title: Update the storage code
           example: Change the app to save scores in Firestore instead of the list
           start: app
           open: app/main.py
@@ -78,7 +78,7 @@ parts:
             part of it.
         - kind: reflect
           id: keep-it
-          title: Now watch it survive
+          title: Verify score persistence
           linkTo: lose-it
           linkLabel: Back to DinoQuest, at the top of this exercise
           prompt: >

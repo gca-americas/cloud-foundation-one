@@ -1,4 +1,4 @@
-:::section kicker="Defaults" headline="Services are disabled by default"
+:::section kicker="Defaults" headline="Service API switches"
 In a new project, each service is disabled. The first attempt to use one fails
 with an error naming the API and explaining how to enable it.
 
@@ -9,7 +9,7 @@ The exercise triggers that error deliberately, because reading the error is
 more useful than avoiding it.
 :::
 
-:::section kicker="Errors" headline="Reading a permission error"
+:::section kicker="Diagnostics" headline="Diagnosing disabled API errors"
 :::figure id="error-anatomy" caption="The error names the problem, the service, and the project."
 :::
 
@@ -20,14 +20,14 @@ further.
 :::
 :::
 
-:::section kicker="Cost" headline="Enabling a service is free"
+:::section kicker="Pricing" headline="Cost of enabling APIs"
 You are charged for what you use, not for what is switched on. So rather than
-coming back here every time a later step needs something, the exercise turns on
+coming back here every time a later section needs something, the exercise turns on
 the whole set at once: somewhere to run code, the build service and registry
 behind it, a database, a model, and the logs and metrics to watch it all.
 
 :::note
-Five services, one command. If a later step ever fails with "API not enabled",
+All required services can be enabled with a single command. If a later task ever fails with "API not enabled",
 this is the page to come back to.
 :::
 :::

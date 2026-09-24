@@ -1,6 +1,6 @@
 slug: wrap-up
 title: Cost and cleanup
-kicker: Run it like a professional
+kicker: Operations and cleanup
 part: run
 color: rose
 summary: The tools that build this for you, and taking what you made back down.
@@ -16,11 +16,11 @@ parts:
     headline: Understanding the bill and shutting down
     body: b-cleanup.md
     exercise:
-      title: Take it all down
+      title: Clean up project resources
       intro: >
         Optional. Leave the project in place if you want to keep playing with
-        it — the app costs nothing while nobody is using it, and the budget
-        alert from step 2 is still watching. Do this when you are finished.
+        it — the app costs nothing while nobody is using it, and your budget
+        alert is still watching. Do this when you are finished.
       tasks:
         - kind: console
           id: delete-project
@@ -39,10 +39,10 @@ parts:
             - The console says the project is scheduled for deletion
         - kind: reflect
           id: what-survives
-          title: Name what deleting the project did not touch
+          title: Verify billing account status
           prompt: >
-            Two things you set up in step 2 are still there afterwards. Name
-            them, and say why they are not inside the project.
+            Identify what resources set up earlier remain after project deletion,
+            and why they are not inside the project.
           checklist:
             - You named your billing account
             - You can say why it belongs to you rather than to the project
