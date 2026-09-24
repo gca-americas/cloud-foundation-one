@@ -65,6 +65,7 @@ export interface Task {
   prompt?: string;
   explain?: string;
   note?: string;
+  image?: string;
   editable?: boolean;
   checklist?: string[];
   stamps?: string[];

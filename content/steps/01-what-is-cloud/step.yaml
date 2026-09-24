@@ -34,7 +34,7 @@ parts:
         - kind: placeholder
           id: diagram-billing
           title: Account, project, and billing structure
-          note: diagram goes here
+          image: /img/proj-structure.jpeg
         - kind: project
           id: create-project
           title: Create the project

@@ -505,14 +505,22 @@ export function Exercise({
                 )}
                 {task.kind === "project" && <ProjectTask task={task} color={color} />}
                 {task.kind === "billing" && <BillingTask task={task} color={color} />}
-                {task.kind === "placeholder" && (
-                  <div
-                    className="mt-3 grid min-h-28 place-items-center rounded-2xl border border-dashed px-4 text-center text-sm"
-                    style={{ borderColor: "var(--hairline-strong)", color: "var(--fg-faint)" }}
-                  >
-                    {task.note ?? "diagram goes here"}
-                  </div>
-                )}
+                {task.kind === "placeholder" &&
+                  (task.image ? (
+                    <img
+                      src={task.image}
+                      alt={task.title}
+                      className="mt-3 block w-full rounded-2xl border"
+                      style={{ borderColor: "var(--hairline)" }}
+                    />
+                  ) : (
+                    <div
+                      className="mt-3 grid min-h-28 place-items-center rounded-2xl border border-dashed px-4 text-center text-sm"
+                      style={{ borderColor: "var(--hairline-strong)", color: "var(--fg-faint)" }}
+                    >
+                      {task.note ?? "diagram goes here"}
+                    </div>
+                  ))}
                 {task.kind === "files" && (
                   <FileExplorer
                     start={task.start}
