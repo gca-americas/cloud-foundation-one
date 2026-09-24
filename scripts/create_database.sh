@@ -27,17 +27,44 @@ echo "  enabled"
 
 echo
 echo "· creating a database in ${REGION}"
-if gcloud firestore databases create --location="${REGION}" --quiet 2>&1; then
-  echo "  created"
-else
-  # Re-running the step is normal, and an existing database is a success.
+
+# Firestore keeps the id "(default)" reserved for a few minutes after a
+# database is deleted, and says how long in the error. Re-running the step
+# straight after a cleanup lands here, so wait it out rather than calling it a
+# failure: the request was right, the name is just not free yet.
+create() {
+  gcloud firestore databases create --location="${REGION}" --quiet 2>&1
+}
+
+for attempt in 1 2 3; do
+  OUTPUT="$(create)"
+  STATUS=$?
+
+  if [ $STATUS -eq 0 ]; then
+    echo "  created"
+    break
+  fi
+
   if gcloud firestore databases list --format='value(name)' 2>/dev/null | grep -q .; then
     echo "  a database already exists in this project, which is fine"
-  else
-    echo "  could not create the database"
-    exit 1
+    break
   fi
-fi
+
+  # "Please retry in 178 seconds." -- the API tells us how long to wait.
+  SECONDS_LEFT="$(printf '%s' "$OUTPUT" | sed -n 's/.*retry in \([0-9][0-9]*\) second.*/\1/p' | head -1)"
+
+  if [ -n "$SECONDS_LEFT" ] && [ "$attempt" -lt 3 ]; then
+    WAIT=$((SECONDS_LEFT + 5))
+    echo "  the name is still reserved from a database that was deleted here"
+    echo "  waiting ${WAIT}s for it to be released, then trying again"
+    sleep "$WAIT"
+    continue
+  fi
+
+  echo "$OUTPUT" | tail -3
+  echo "  could not create the database"
+  exit 1
+done
 
 echo
 echo "You chose a region. You did not choose a machine size, a disk, a password,"
