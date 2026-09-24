@@ -2,8 +2,6 @@ author: Christina Lin
 authors: Christina Lin
 summary: Take a small game from a laptop to Google Cloud — a project, a region, a managed database, a hosted model, and a serverless deployment — guided by the interactive Cloud 101 Workbench.
 id: cloud-foundation-one
-categories: cloud,gcp,ai
-environments: Web
 status: Published
 feedback link: https://github.com/gca-americas/cloud-foundation-one/issues
 
@@ -85,15 +83,15 @@ Running `./scripts/start.sh` provisions and launches a self-contained learning e
 - **Single-port reverse proxy (`localhost:4800`)**: The FastAPI server binds to port `4800` to serve the workbench UI and API. Whenever you run the DinoQuest game server (`app/main.py` on port `8080`), the workbench reverse-proxies requests under `/app/*` to the student application process. This same-origin proxy allows you to preview and play DinoQuest directly inside the workbench browser tab while exposing only port `4800` through Cloud Shell Web Preview.
 - **Live Google Cloud verification engine**: Because the FastAPI backend runs inside your authenticated Cloud Shell session, it shares your active `gcloud` CLI configuration and Application Default Credentials (ADC). When you complete a task and click **Verify**, the workbench runs live, read-only inspections against Google Cloud APIs to confirm your project configuration, billing linkage, budget alerts, enabled APIs, Firestore documents, Gemini credentials, and Cloud Run deployment in real time.
 
-Positive
-: **You no longer need this codelab once the Cloud 101 Workbench opens in your browser.** Because the workbench provides the reading material, interactive simulators, live DinoQuest preview (`/app`), and real-time Google Cloud verification checks in a single browser tab, you will complete the remainder of the workshop directly inside the **Cloud 101 Workbench** on port `4800`. You can use the final page of this codelab as a conceptual reference and architectural summary.
+<aside class="special">
+<p><strong>You no longer need this codelab once the Cloud 101 Workbench opens in your browser.</strong> Because the workbench provides the reading material, interactive simulators, live DinoQuest preview (<code>/app</code>), and real-time Google Cloud verification checks in a single browser tab, you will complete the remainder of the workshop directly inside the <strong>Cloud 101 Workbench</strong> on port <code>4800</code>. You can use the final page of this codelab as a conceptual reference and architectural summary.</p>
+</aside>
 
 ## Summary
 
-Positive
-: **Work directly in the Cloud 101 Workbench (`http://localhost:4800`) to complete all hands-on exercises.**
-The **Cloud 101 Workbench** tab you opened in the previous step guides you step by step through running DinoQuest, provisioning your Google Cloud project and billing guardrails, creating a Firestore database, integrating Gemini sprite generation, and deploying to Cloud Run. Each module in the workbench includes interactive concepts, guided exercises, and live read-only checks against your Google Cloud account.
-Use the sections below as a comprehensive conceptual reference and summary of the architectural principles covered in the workbench.
+<aside class="special">
+<p><strong>Work directly in the Cloud 101 Workbench (<code>http://localhost:4800</code>) to complete all hands-on exercises.</strong> The <strong>Cloud 101 Workbench</strong> tab you opened in the previous step guides you step by step through running DinoQuest, provisioning your Google Cloud project and billing guardrails, creating a Firestore database, integrating Gemini sprite generation, and deploying to Cloud Run. Each module in the workbench includes interactive concepts, guided exercises, and live read-only checks against your Google Cloud account. Use the sections below as a comprehensive conceptual reference and summary of the architectural principles covered in the workbench.</p>
+</aside>
 
 ### Local processes versus cloud infrastructure
 
