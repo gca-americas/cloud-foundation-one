@@ -1,6 +1,8 @@
 :::section kicker="Background" headline="Owned hardware versus rented capacity"
 Operating a public web application requires continuously available compute hardware, public network connectivity, physical data center management, and cost governance.
 
+![Owned hardware versus rented cloud capacity](/img/owned-hardware.jpeg)
+
 Historically, organizations satisfied these requirements by purchasing physical servers and operating them in private data centers. Cloud computing replaces upfront hardware ownership with on-demand infrastructure provisioned over the network.
 
 :::key
