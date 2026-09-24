@@ -767,14 +767,14 @@ function ThreeTraits() {
 
 function RentThree() {
   const rented = [
-    ["a machine", "step 7"],
-    ["storage", "step 5"],
-    ["a model", "step 6"],
+    ["Compute", "Cloud Run"],
+    ["Database storage", "Firestore"],
+    ["Foundation model", "Gemini"],
   ];
   return (
     <svg viewBox="0 0 520 130" role="img"
-         aria-label="Three things you rent across the course: compute, storage, and a model">
-      <text x="16" y="26" style={faint}>you rent</text>
+         aria-label="Three layers consumed on demand across the course: compute, database storage, and a foundation model">
+      <text x="16" y="26" style={faint}>rent</text>
       {rented.map(([what, when], index) => (
         <g key={what}>
           <rect x={16 + index * 168} y="38" width="152" height="54" rx="9"
@@ -785,7 +785,7 @@ function RentThree() {
         </g>
       ))}
       <text x="16" y="116" style={faint}>
-        same idea three times: rent it, do not own it
+        One consumption model across compute, storage, and AI: provision on demand rather than owning hardware
       </text>
     </svg>
   );
