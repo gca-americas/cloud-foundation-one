@@ -68,8 +68,17 @@ To open the workbench UI in your browser:
 1. Click **Web Preview** in the top-right corner of the Cloud Shell toolbar.
 2. Select **Change port**, enter **4800**, and click **Change and Preview**.
 
+### How the Cloud 101 Workbench is set up
+
+Running `./scripts/start.sh` provisions and launches a self-contained learning environment inside your Cloud Shell instance:
+
+- **Python environment and dependencies (`uv`)**: The startup script creates an isolated Python virtual environment (`.venv`) and runs `uv sync` to install the workbench backend (FastAPI and Uvicorn) alongside the libraries used by the DinoQuest application (`google-cloud-firestore` and `google-genai`).
+- **Interactive frontend build (`web/dist`)**: On its first run, the script installs Node.js packages and compiles the React and Vite single-page application into `web/dist`, bundling the interactive architecture diagrams, cost and latency simulators, and step-by-step course curriculum from `content/`.
+- **Single-port reverse proxy (`localhost:4800`)**: A FastAPI server (`server.main:app`) binds to port `4800` to serve the workbench UI and API. Whenever you run the DinoQuest game server (`app/server.py` on port `8080`), the workbench reverse-proxies requests under `/app/*` to the student application process. This same-origin proxy allows you to preview and play DinoQuest directly inside the workbench browser tab while exposing only port `4800` through Cloud Shell Web Preview.
+- **Live Google Cloud verification engine**: Because the FastAPI backend runs inside your authenticated Cloud Shell session, it shares your active `gcloud` CLI configuration and Application Default Credentials (ADC). When you complete a task and click **Verify**, the workbench runs live, read-only inspections against Google Cloud APIs to confirm your project configuration, billing linkage, budget alerts, enabled APIs, Firestore documents, Gemini credentials, and Cloud Run deployment in real time.
+
 Positive
-: **You no longer need this codelab once the Cloud 101 Workbench opens in your browser.** The workbench is completely self-contained: all reading material, architectural diagrams, interactive simulators, terminal sessions, code updates, live game previews, and real-time Google Cloud verification checks take place directly inside the **Cloud 101 Workbench** tab. You can complete the entire course inside the workbench and use the next page of this codelab as a conceptual reference and architectural summary.
+: **You no longer need this codelab once the Cloud 101 Workbench opens in your browser.** Because the workbench provides the reading material, interactive simulators, live DinoQuest preview (`/app`), and real-time Google Cloud verification checks in a single browser tab, you will complete the remainder of the workshop directly inside the **Cloud 101 Workbench** on port `4800`. You can use the final page of this codelab as a conceptual reference and architectural summary.
 
 ## Summary
 
