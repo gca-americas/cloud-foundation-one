@@ -20,97 +20,97 @@ type Question = {
 const QUESTIONS: Question[] = [
   {
     scenario:
-      "A shop in Chicago. Everyone who uses the site lives in and around Chicago.",
-    places: [{ name: "Chicago", lon: -87.6, lat: 41.9, note: "shop and customers" }],
+      "A retail application based in Chicago where the entire user base resides in the US Midwest.",
+    places: [{ name: "Chicago", lon: -87.6, lat: 41.9, note: "business and users" }],
     options: [
       {
         label: "us-central1 · Iowa",
         region: "us-central1",
         right: true,
-        why: "The nearest region to both you and your users. When they are in the same place, this is the whole decision.",
+        why: "Correct. us-central1 (Iowa) is the closest Google Cloud region to users in the US Midwest, minimizing round-trip network latency.",
       },
       {
         label: "us-east4 · Virginia",
         region: "us-east4",
-        why: "It works, and every request crosses most of a continent it did not need to.",
+        why: "While functional, routing Midwest traffic to Northern Virginia adds unnecessary geographic distance and round-trip latency.",
       },
       {
         label: "europe-west1 · Belgium",
         region: "europe-west1",
-        why: "An ocean away from everyone who uses it.",
+        why: "Routing US Midwest users across the Atlantic introduces significant transoceanic network latency.",
       },
     ],
   },
   {
     scenario:
-      "You are in London. You built a game, and almost all the players are in Japan.",
+      "Your engineering team is based in London, and you are deploying a mobile game whose player base is located in Japan.",
     places: [
-      { name: "London", lon: -0.1, lat: 51.5, note: "you" },
-      { name: "Tokyo", lon: 139.7, lat: 35.7, note: "the players" },
+      { name: "London", lon: -0.1, lat: 51.5, note: "engineering team" },
+      { name: "Tokyo", lon: 139.7, lat: 35.7, note: "player base" },
     ],
     options: [
       {
         label: "asia-northeast1 · Tokyo",
         region: "asia-northeast1",
         right: true,
-        why: "Close to the players, not to you. You deploy once and wait a few seconds; they wait on every request, all day.",
+        why: "Correct. Always select the region closest to your end users (Tokyo) rather than the region closest to the engineering team.",
       },
       {
         label: "europe-west2 · London",
         region: "europe-west2",
-        why: "This is the common mistake: choosing the region nearest the developer. Your latency is not the one that matters.",
+        why: "Selecting the region nearest the developer rather than the user base forces every player request from Japan to traverse half the globe.",
       },
       {
         label: "us-west1 · Oregon",
         region: "us-west1",
-        why: "A halfway house that is far from both of you.",
+        why: "Deploying in an intermediate region introduces high latency for both the engineering team and the players in Japan.",
       },
     ],
   },
   {
     scenario:
-      "A German health service. The law says patient records may not leave Germany.",
-    places: [{ name: "Germany", lon: 10.4, lat: 51.2, note: "patients, and the law" }],
+      "A healthcare application in Germany subject to strict national data residency laws requiring patient records to remain within Germany.",
+    places: [{ name: "Germany", lon: 10.4, lat: 51.2, note: "regulated data residency" }],
     options: [
       {
         label: "europe-west3 · Frankfurt",
         region: "europe-west3",
         right: true,
-        why: "Residency is not a preference you trade against latency. When it applies, it decides, and everything else is chosen inside that constraint.",
+        why: "Correct. Legal and regulatory data residency requirements take precedence over all other factors; europe-west3 (Frankfurt) keeps all data within Germany.",
       },
       {
         label: "europe-west1 · Belgium",
         region: "europe-west1",
-        why: "Closer to some users, and in the wrong country. Fast and illegal is not a trade-off.",
+        why: "Although Belgium is geographically close, storing regulated records outside Germany violates national data residency requirements.",
       },
       {
         label: "us-central1 · Iowa",
         region: "us-central1",
-        why: "Cheaper, and the records are in the wrong continent.",
+        why: "Storing German healthcare records in the United States violates both national data residency requirements and adds transatlantic latency.",
       },
     ],
   },
   {
     scenario:
-      "A company with a lot of users in Europe, a lot in North America, and a few everywhere else.",
+      "A SaaS platform serving large active user populations across both Europe and North America, with smaller user groups in Asia-Pacific.",
     places: [
-      { name: "Europe", lon: 9.0, lat: 50.0, note: "a lot of users" },
-      { name: "North America", lon: -90.0, lat: 40.0, note: "a lot of users" },
-      { name: "Singapore", lon: 103.8, lat: 1.4, note: "a few" },
+      { name: "Europe", lon: 9.0, lat: 50.0, note: "primary user base" },
+      { name: "North America", lon: -90.0, lat: 40.0, note: "primary user base" },
+      { name: "Singapore", lon: 103.8, lat: 1.4, note: "secondary user base" },
     ],
     options: [
       {
-        label: "Run in more than one region",
+        label: "Deploy across multiple regions",
         right: true,
-        why: "Nobody can be close to everyone from one place. Two regions, users sent to the nearer one. It costs more and it is more to look after — which is why you only do it once the users are real.",
+        why: "Correct. When large user populations span multiple continents, deploying in multiple regions behind a global load balancer routes each user to the nearest region.",
       },
       {
-        label: "One region, in the middle of the Atlantic",
-        why: "There is no region there, and even if there were it would be mediocre for everyone rather than good for anyone.",
+        label: "Single region in the middle of the Atlantic",
+        why: "No data center region exists in the mid-Atlantic, and a midpoint region would deliver suboptimal latency to both continents.",
       },
       {
-        label: "One region, wherever the head office is",
-        why: "The most common way this gets decided, and it optimises for the org chart rather than the users.",
+        label: "Single region near corporate headquarters",
+        why: "Selecting a single region based on headquarters location penalizes users on other continents with high cross-continental latency.",
       },
     ],
   },

@@ -9,9 +9,9 @@ import { Figure } from "../illustrations";
    turning into a stack of bars. */
 
 const CALLOUT = {
-  key: { label: "The point", color: "var(--accent)" },
-  note: { label: "Worth knowing", color: "var(--fg-faint)" },
-  warn: { label: "Careful", color: "var(--amber)" },
+  key: { label: "Key concept", color: "var(--accent)" },
+  note: { label: "Note", color: "var(--fg-faint)" },
+  warn: { label: "Caution", color: "var(--amber)" },
 } as const;
 
 function Callout({ variant, html }: { variant: keyof typeof CALLOUT; html: string }) {

@@ -3,7 +3,7 @@ title: What cloud computing is
 kicker: Cloud fundamentals
 part: understand
 color: sky
-summary: Renting computing resources instead of owning them.
+summary: Evaluate the economics of on-demand cloud infrastructure compared with owned hardware, and create your Google Cloud project.
 
 parts:
   - id: a
@@ -13,18 +13,14 @@ parts:
     exercise:
       title: Compare owning and renting
       intro: >
-        Nothing to install for this one. Two sliders: how much traffic you
-        serve, and how much busier your busiest hour is than the average. Watch
-        what each way of paying costs as you grow.
+        Use the interactive cost simulator to compare fixed hardware capacity against consumption-based cloud pricing across different traffic levels and peak-to-average ratios.
       tasks:
         - kind: widget
           id: cost
           title: Evaluate workload patterns
           widget: cost-curve
           explain: >
-            Red is running it yourself, blue is renting. Start at the far left,
-            where you have no users at all, then drag right and watch what has
-            to be bought on each side.
+            Adjust the average traffic and peak-to-average ratio sliders to observe how owned hardware step-functions compare with elastic cloud billing.
 
   - id: b
     label: Cost and trade-offs
@@ -33,8 +29,7 @@ parts:
     exercise:
       title: Create a Google Cloud project
       intro: >
-        Everything you build from here needs somewhere to put it, and a command
-        line that knows which account and which project it is working with.
+        All Google Cloud resources must belong to a project. Create a dedicated project for this course and verify that the Google Cloud CLI is configured to use it.
       tasks:
         - kind: placeholder
           id: diagram-billing
@@ -44,10 +39,7 @@ parts:
           id: create-project
           title: Create the project
           explain: >
-            Everything you create in this course lives in a project. Make one
-            in the Google Cloud console with the name below, then press
-            "I made it" and the workbench will go and look for it. If you would
-            rather not, press "Do it for me" and it will be created for you.
+            Create a new project in the Google Cloud console using the suggested project ID and click "I made it", or click "Do it for me" to provision and configure the project automatically.
         - kind: terminal
           id: auth
           title: Verify the active project
@@ -55,34 +47,24 @@ parts:
             - gcloud auth list
             - gcloud config get-value project
           explain: >
-            The console and the command line reach the same resources. The
-            first command shows which account the command line is using; the
-            second shows which project your commands will apply to. In Cloud
-            Shell you are signed in already, so neither of these signs you in —
-            they report. If no account is listed, run `gcloud auth login` in a
-            Cloud Shell tab of your own: it waits for a code to be pasted back,
-            which this terminal has no way to do.
+            Run `gcloud auth list` to verify the active authenticated account, then run `gcloud config get-value project` to confirm the active project ID configured for the CLI.
     checks:
       - id: signed-in
-        label: You're signed in to Google Cloud
+        label: Authenticated with a Google Cloud account
         probe: gcloud config get-value account
         assert: nonempty
         hint: >
-          Run the sign-in command in the terminal above. If it completed and
-          this still fails, run `gcloud auth list` to see which accounts the
-          CLI recognises.
+          Verify your active account in the terminal using `gcloud auth list`.
       - id: project-exists
-        label: Your project exists
+        label: The Google Cloud project exists
         probe: gcloud projects list --filter=projectId:$PROJECT_NAME* --format=value(projectId)
         assert: nonempty
         hint: >
-          Create it in the console and press "I made it", or press "Do it for
-          me".
+          Create the project in the console and click "I made it", or click "Do it for me".
       - id: project-recorded
-        label: Its id is recorded for the rest of the course
+        label: The project ID is saved for subsequent steps
         probe: cat ~/project_id.txt
         assert: contains
         value: $PROJECT_NAME
         hint: >
-          Press "I made it" or "Do it for me" — that is what writes the id to
-          ~/project_id.txt.
+          Click "I made it" or "Do it for me" in the project setup card to record the project ID in `~/project_id.txt`.

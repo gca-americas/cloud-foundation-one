@@ -1,37 +1,33 @@
 :::section kicker="Economics" headline="When renting costs less"
-Cloud computing is a pricing model, and the result depends on your pattern of
-demand.
+Whether cloud infrastructure reduces total cost of ownership depends on the shape and predictability of your workload demand.
 
 :::columns
-**Renting costs less when**
+**Cloud infrastructure is more cost-effective when**
 
-Demand is variable, uncertain, or small. This describes most projects you are
-likely to start.
+Workload demand is variable, spiky, uncertain, or starting at a small scale. Dynamic scaling avoids paying for idle hardware during low-traffic periods.
 ---
-**Owning can cost less when**
+**Owned hardware can be more cost-effective when**
 
-Demand is large, steady, and predictable. Some organizations move specific
-workloads back onto hardware they own for this reason.
+Workload demand is large, continuous, and highly predictable over multi-year horizons where hardware utilization remains consistently high.
 :::
 :::
 
 :::section kicker="Trade-offs" headline="Provider dependency"
-The more managed services you use, the more of your design is expressed in one
-provider's products.
+Adopting higher-level managed services reduces operational overhead, allowing engineering teams to focus on application logic. However, deeper integration with provider-specific APIs increases architectural coupling to that cloud platform.
 
 :::key
-Choose cloud computing because your requirements change, not because it is
-current practice.
+Select managed cloud services when elastic scaling and reduced operational toil outweigh the cost of managing infrastructure yourself.
 :::
 :::
 
 :::section kicker="Scope" headline="Resources used in this course"
-:::figure id="rent-three" caption="The same model applied to compute, storage, and a model."
+:::figure id="rent-three" caption="On-demand provisioning applied across compute, database storage, and foundation models."
 :::
 
-- **Compute**: time on a computer that runs your code.
-- **Storage**: space for files, and for records your app reads and writes.
-- **A model**: machine intelligence you call rather than train.
+Throughout this course, you apply the cloud consumption model across three layers of the stack:
+- **Compute**: Serverless container execution on **Cloud Run**.
+- **Database storage**: Managed document persistence in **Firestore**.
+- **Foundation models**: Managed generative AI inference with **Gemini**.
 
-Before you can create any of them, Google Cloud has to know who you are.
+Before provisioning these resources, you must authenticate with Google Cloud and create a project container.
 :::

@@ -3,7 +3,7 @@ title: Deploy to Cloud Run
 kicker: Serverless deployment
 part: ship
 color: emerald
-summary: "Serverless: your container runs, scales, and costs nothing while idle."
+summary: Package the application into a container image with Cloud Build, configure IAM service account permissions, and deploy a public serverless service on Cloud Run.
 
 parts:
   - id: a
@@ -13,16 +13,14 @@ parts:
     exercise:
       title: Deploy the service to Cloud Run
       intro: >
-        One request, then a few minutes of building and deploying, then an address anyone can
-        open.
+        Deploy DinoQuest from source to Cloud Run, verify the public HTTPS endpoint, and confirm that the deployed container connects to Firestore and Gemini.
       tasks:
         - kind: deploy
           id: deploy-app
           title: Deploy the container
           example: Deploy DinoQuest to Cloud Run so anyone can play it
           prompt: >
-            DinoQuest only runs while your terminal is open. Describe what you
-            want done about that.
+            Describe how you want to deploy the application so it is publicly accessible on serverless container infrastructure.
           expect:
             goal: Deploy the app to Cloud Run.
             requires:
@@ -31,65 +29,56 @@ parts:
             rejects:
               - [virtual machine, vm, compute engine, server for me]
             feedback:
-              missing_0: Not enough to act on — say what should happen to the app.
+              missing_0: Specify the deployment action (for example: deploy or publish the application).
               missing_1: >-
-                Say where it should end up — on Cloud Run, online, somewhere
-                anyone can reach.
+                Specify the target serverless runtime (for example: deploy to Cloud Run).
               rejected: >
-                A virtual machine is a machine you keep. This is a container
-                that runs when asked and costs nothing when it is not.
+                Virtual machines require ongoing operating system management and incur hourly charges while idle. Request a serverless Cloud Run deployment instead.
               accepted: >
-                Building the container and creating the service. The first
-                deployment takes a few minutes.
+                Granting IAM roles, building the container image via Cloud Build, and deploying the service to Cloud Run. Initial deployment takes two to three minutes.
           stages:
             - title: Permission
-              note: roles granted
+              note: IAM roles granted
               at: Granting the service account
             - title: Upload
-              note: app/ sent off
+              note: source uploaded
               at: Deploying dinoquest
             - title: Build
-              note: into a container
+              note: container image built
               at: Building|Uploading
             - title: Running
-              note: with an address
+              note: HTTPS URL assigned
               at: Service URL
           command: python3 scripts/deploy_app.py
           explain: >
-            The log is hidden because almost none of it is worth reading. Open
-            it if the deployment stops, or if you want to watch the stages
-            go by.
+            Expand the build log if you want to inspect the IAM policy bindings (`roles/datastore.user` and `roles/aiplatform.user`), the Cloud Build container packaging output, and the `gcloud run deploy` command.
         - kind: reflect
           id: same-app
           title: Verify the public deployment
           prompt: >
-            Open the address and play a round. The leaderboard is the same
-            Firestore database your laptop was writing to, and the dino is drawn
-            by the same model. Nothing about the code changed to make that work.
+            Open the deployed `.run.app` HTTPS URL in a new browser tab. Play a round, verify that the leaderboard displays the existing scores from your Firestore database, and generate a custom dinosaur sprite.
           checklist:
-            - The game loads at the public address
-            - A score you set there survives a reload
-            - A generated dino appears
+            - Opened the public Cloud Run HTTPS URL
+            - Confirmed leaderboard scores persist in Firestore across reloads
+            - Generated a custom dinosaur sprite on the deployed service
 
     checks:
       - id: service-live
-        label: The app has a public URL
+        label: The Cloud Run service is deployed with a public HTTPS URL
         probe: gcloud run services describe dinoquest --region=$REGION --format=value(status.url)
         assert: contains
         value: run.app
         hint: >
-          Complete the deploy task. If it stopped, open the log — the reason is
-          in there.
+          Complete the "Deploy the container" task above and wait for `gcloud run deploy` to finish.
       - id: service-answers
-        label: The URL answers
+        label: The Cloud Run service revision is healthy and ready to serve traffic
         probe: gcloud run services describe dinoquest --region=$REGION --format=value(status.conditions[0].status)
         assert: contains
         value: "True"
-        hint: Give it a few seconds after the deployment finishes, then check again.
+        hint: Wait a few seconds after deployment completes, then run the check again.
       - id: scales-to-zero
-        label: It is set to cost nothing while idle
+        label: The service is configured to scale down to zero instances when idle
         probe: gcloud run services describe dinoquest --region=$REGION --format=value(spec.template.metadata.annotations)
         assert: succeeds
         hint: >
-          Cloud Run scales to zero by default. Nothing to do here — this check
-          is showing you where that setting lives.
+          Cloud Run scales to zero by default (`min-instances=0`), ensuring you pay no compute charges when idle.

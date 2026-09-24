@@ -1,61 +1,49 @@
 :::section kicker="Background" headline="Owned hardware versus rented capacity"
-Running a public application requires a server that stays on, a public address, an
-operator for the building, and someone to pay.
+Operating a public web application requires continuously available compute hardware, public network connectivity, physical data center management, and cost governance.
 
-For decades, companies met those requirements by buying computers and putting
-them in a room they owned. Cloud computing is the result of providers offering
-the same thing as a rental service.
+Historically, organizations satisfied these requirements by purchasing physical servers and operating them in private data centers. Cloud computing replaces upfront hardware ownership with on-demand infrastructure provisioned over the network.
 
 :::key
-Cloud computing means renting computing resources instead of owning them.
+Cloud computing is the on-demand delivery of compute, storage, and platform services over the internet with pay-as-you-go pricing.
 :::
 :::
 
 :::section kicker="Capacity" headline="Sizing for peak traffic"
-Suppose your app is busy at midday and quiet at 3 AM. If you own a computer,
-you buy one large enough for midday. You also own that computer at 3 AM.
+When you own physical servers, you must provision enough hardware to handle your highest expected traffic volume. During off-peak hours, that capacity remains idle while still incurring capital and operational costs.
 
-:::figure id="rent-vs-own" caption="Owned capacity is fixed at peak demand, including the hours when demand is low."
+:::figure id="rent-vs-own" caption="Owned infrastructure is provisioned for peak demand, leaving capacity idle during low-traffic periods."
 :::
 
-You also buy for next year's peak, because ordering hardware takes weeks.
+Because procuring and racking physical hardware takes weeks or months, on-premises capacity must also be sized well ahead of projected growth.
 :::
 
 :::section kicker="Comparison" headline="Comparing ownership and rental"
-| Owning | Renting |
+| Owned Infrastructure | Cloud Infrastructure |
 |---|---|
-| You buy for peak demand | You pay for current demand |
-| Adding capacity takes weeks | Adding capacity takes seconds |
-| You plan a year ahead | You change capacity the same day |
-| You replace failed hardware | The provider replaces it |
-| You pay in advance | You pay for what you used |
+| Provisioned upfront for peak demand | Scaled dynamically to match current demand |
+| Adding capacity requires weeks of procurement | Adding capacity completes in seconds |
+| Capacity planned months or years in advance | Capacity adjusted automatically in real time |
+| Your team replaces failed hardware | The cloud provider manages hardware maintenance |
+| Upfront capital expenditure (CapEx) | Consumption-based operating expense (OpEx) |
 :::
+
 :::section kicker="Definition" headline="Characteristics of cloud computing"
-Renting is the idea. These properties are what make a service a cloud service rather
-than a traditional rental agreement.
+A cloud service is defined by three core operational characteristics:
 
-:::figure id="three-traits" caption="A service is a cloud service when it has these characteristics."
+:::figure id="three-traits" caption="Core attributes of a managed cloud service."
 :::
 
-**On demand.** You request a resource and receive it in seconds, without a
-purchase order or an approval step.
+**On-demand self-service.** You provision compute, storage, or AI resources programmatically in seconds without manual procurement workflows.
 
-**Pay for what you use.** You are billed by the second, the gigabyte, or the
-request. When you stop using a resource, you stop paying for it. When you
-delete it, the charge ends.
+**Consumption-based billing.** Resources are metered by the second, gigabyte, or API request. When you scale a resource down or delete it, billing for that resource stops.
 
-**The provider operates it.** The building, the power, the cooling, the
-network, failed hardware, and security updates. You rent the result rather than
-the equipment.
+**Provider-managed infrastructure.** Google Cloud operates the physical data centers, power, cooling, networking, hardware lifecycle, and host security patching.
 :::
 
 :::section kicker="Distinction" headline="Server hosting versus cloud computing"
-A rented server in 2005 had none of those characteristics. You signed an annual
-contract, paid monthly whether you used the server or not, and applied updates
-yourself.
+Traditional dedicated server hosting differs fundamentally from cloud computing. With traditional hosting, you sign a fixed-term lease for a specific machine, pay a flat monthly fee regardless of utilization, and manage operating system maintenance yourself.
 
 :::note
-The difference between hosting and cloud computing is not where the hardware
-is. It is what you are buying.
+Cloud computing is distinguished not just by running workloads off-premises, but by elastic provisioning, consumption-based metering, and managed operations.
 :::
 :::

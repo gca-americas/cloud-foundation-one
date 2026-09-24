@@ -3,7 +3,7 @@ title: Persist data with Firestore
 kicker: Managed services
 part: grow
 color: fuchsia
-summary: A managed database, in the region you chose, with no server to run.
+summary: Provision a regional Firestore database and update the application to persist leaderboard scores across server restarts.
 
 parts:
   - id: a
@@ -13,26 +13,20 @@ parts:
     exercise:
       title: Configure Firestore persistence
       intro: >
-        Complete the tasks below in order. Where a box
-        asks for a request, describe the outcome you want in your own words —
-        the way you would put it to an assistant — and the workbench works out
-        the command.
+        Complete the tasks below to observe how in-memory state is lost on restart, provision a regional Firestore database, and update the application storage layer.
       tasks:
         - kind: app
           id: lose-it
           title: Observe in-memory state reset
           appTitle: DinoQuest
           explain: >
-            Start the app and play a round so there is a score on the board.
-            Then press Stop, then Start again, and look at the leaderboard.
-            It is empty. The score was in the process, and the process ended.
+            Start the local server, play a round to record a score on the leaderboard, and then click Stop followed by Start. Notice that the leaderboard resets to empty because `SCORES` is stored in process memory.
         - kind: provision
           id: create-db
           title: Create the Firestore database
           example: Set up a Firestore database in my region to keep the scores
           prompt: >
-            You just watched the leaderboard empty itself. Describe what you
-            want set up so that stops happening.
+            Describe the managed database resource you need to provision so leaderboard scores persist when the server stops.
           expect:
             goal: Create a Firestore database in the student's region.
             requires:
@@ -42,15 +36,12 @@ parts:
               - [bucket, file storage, object storage]
             feedback:
               missing_0: >
-                Not enough to act on — name the kind of thing that should hold
-                the scores.
-              missing_1: "Say what should happen to it: create it, set it up, add one."
+                Specify the type of storage resource required to hold structured leaderboard records (for example, a Firestore database).
+              missing_1: "Specify the action to take (for example: create or set up the database)."
               rejected: >
-                A bucket holds files you hand back whole. A leaderboard is
-                records — rows you read, sort and add to.
+                Cloud Storage buckets store unstructured files as opaque blobs. Because leaderboard entries are structured records that must be queried and sorted, request a Firestore database instead.
               accepted: >
-                Creating a Firestore database in your region. This takes a
-                minute or two.
+                Provisioning a Firestore database in your configured region (`gcloud firestore databases create`). This operation takes approximately one minute.
           command: bash scripts/create_database.sh
         - kind: files
           id: connect
@@ -64,60 +55,51 @@ parts:
               - [firestore, database, db]
               - [use, connect, write, save, store, point, switch, change, instead]
             feedback:
-              missing_0: Not enough to act on — name what the app should be talking to.
+              missing_0: Specify the target database service the application should use (Firestore).
               missing_1: >-
-                Say what should change — connect it, point it at the database,
-                save there instead.
+                Specify the code update required (for example: update the app to store scores in Firestore).
               accepted: >
-                Rewriting the store section of app/main.py and installing the
-                client library. Watch the file on the right change.
+                Updating the `store` section of `app/main.py` to use `firestore.Client()` and installing `google-cloud-firestore`. Inspect the highlighted changes in the file viewer.
           command: python3 scripts/connect_firestore.py
           explain: >
-            The database exists, and the app still does not know about it. Read
-            what changes — it is one section of one file, and the game is not
-            part of it.
+            Now that the Firestore database exists, update `app/main.py` so `add_score()` and `leaderboard()` read and write documents in the `scores` collection rather than the in-memory Python list.
         - kind: reflect
           id: keep-it
           title: Verify score persistence
           linkTo: lose-it
-          linkLabel: Back to DinoQuest, at the top of this exercise
+          linkLabel: Return to the DinoQuest preview panel above
           prompt: >
-            Go back to the same panel you used at the start. Start the app,
-            play a round, then Stop and Start again. This time the leaderboard
-            is still there — nothing about the game changed, only where the
-            score went.
+            Return to the DinoQuest preview panel, restart the server, record a score, and then click Stop and Start again. Verify that your leaderboard score persists across the restart.
           checklist:
-            - You set a score
-            - You stopped and started the app
-            - The score is still on the board
+            - Recorded a score on the leaderboard
+            - Stopped and restarted the Python server process
+            - Confirmed the score remained on the leaderboard after restart
     checks:
       - id: firestore-db
-        label: A Firestore database exists
+        label: A Firestore database is provisioned in the project
         probe: gcloud firestore databases list --format=value(name)
         assert: nonempty
         hint: >
-          Complete the "Ask for somewhere to keep it" task. If it failed, open
-          the log — the reason will be in there.
+          Complete the "Create the Firestore database" task above.
       - id: db-region
-        label: It is in the region you chose
+        label: The Firestore database is deployed in a configured region
         probe: gcloud firestore databases list --format=value(locationId)
         assert: nonempty
-        hint: A database lives somewhere, like everything else.
+        hint: Verify that `gcloud firestore databases list` returns a valid `locationId`.
       - id: app-uses-firestore
-        label: The app writes to Firestore, not to a list
+        label: The application storage layer uses the Firestore client library
         probe: cat app/main.py
         assert: contains
         value: firestore.Client()
-        hint: Complete the "Now point the app at it" task.
+        hint: Complete the "Update the storage code" task above.
       - id: app-reports-firestore
-        label: The running app agrees
+        label: The running server reports Firestore as its active storage backend
         probe: curl -s http://127.0.0.1:8080/api/health
         assert: contains
         value: in Firestore
         hint: >
-          Start the app again after the change — it has to be restarted to pick
-          up new code.
+          Restart the local server in the DinoQuest panel so `app/main.py` loads the updated Firestore code.
     after:
       action: stop-app
       label: Stop the app
-      note: Step 7 gives it a home that does not depend on your terminal.
+      note: Stop the local server process before proceeding to the next section.

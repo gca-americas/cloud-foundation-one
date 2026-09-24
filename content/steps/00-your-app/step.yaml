@@ -3,7 +3,7 @@ title: Run the application locally
 kicker: Cloud fundamentals
 part: understand
 color: sky
-summary: The app this course puts on the internet, and why nobody else can reach it yet.
+summary: Inspect the local application architecture, start the Python HTTP server, and evaluate why a local terminal process cannot serve external users.
 
 parts:
   - id: a
@@ -13,8 +13,7 @@ parts:
     exercise:
       title: Run the application
       intro: >
-        Read the app before you start it. Then start it the way you would on
-        any machine: by typing the command.
+        Inspect the application source files, start the local HTTP server from the terminal, and test the game in the preview panel.
       tasks:
         - kind: files
           id: look
@@ -22,10 +21,7 @@ parts:
           start: app
           open: app/main.py
           explain: >
-            This is everything the app is made of. `main.py` is open on the
-            right — the server and the leaderboard are both in it, and it is
-            short. Click anything else you are curious about. Nothing here can
-            be edited yet.
+            Review the project files in the explorer. `app/main.py` contains the HTTP server and the in-memory leaderboard implementation (`SCORES`). You can also inspect `app/requirements.txt`, `app/Procfile`, and `app/static/`.
         - kind: terminal
           id: start
           title: Start the local server
@@ -33,30 +29,25 @@ parts:
             - cd app
             - python3 main.py
           explain: >
-            Move into the app folder, then run the file you just read. Two
-            commands: `cd app`, then `python3 main.py`. `ls` and `cat` work
-            too, if you want to look around from here instead.
+            Change into the `app` directory and start the Python server by running `cd app` followed by `python3 main.py`.
         - kind: app
           id: play
           title: Play DinoQuest
           appTitle: DinoQuest
           explain: >
-            Once it is running it appears here. Space or a click jumps. Put a
-            name in the field if you want your score labelled, and turn the
-            sound on.
+            When the server starts on port 8080, the live application loads below. Press Space or click to jump, enter a player name, and record a score on the leaderboard.
     checks:
       - id: app-answers
-        label: The app is running and answering
+        label: The local server is running and responding on port 8080
         probe: curl -s -o /dev/null -w %{http_code} http://127.0.0.1:8080/api/health
         assert: contains
         value: "200"
-        hint: Start the app from the terminal above.
+        hint: Start `python3 main.py` in the terminal panel above.
     after:
       action: stop-app
       label: Stop the app
       note: >
-        It keeps running until you stop it. Leaving it on costs nothing here,
-        but the habit is worth having.
+        Stop the local server process when you finish testing to release port 8080.
 
   - id: b
     label: Requirements for a public app
@@ -64,10 +55,9 @@ parts:
     body: b-requirements.md
     checks:
       - id: gcloud-present
-        label: The Google Cloud CLI is available
+        label: The Google Cloud CLI is installed and available
         probe: gcloud version
         assert: contains
         value: Google Cloud SDK
         hint: >
-          In Cloud Shell the CLI is already installed. If you're running this
-          workbench on your own computer, install the Google Cloud CLI first.
+          Cloud Shell includes the Google Cloud CLI by default. If you are running locally, install the Google Cloud SDK before continuing.

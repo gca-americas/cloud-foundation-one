@@ -3,7 +3,7 @@ title: Core cloud services
 kicker: Core services
 part: menu
 color: amber
-summary: Core categories of cloud services, and the architecture of the application you are building.
+summary: Organize Google Cloud products into five core architectural categories and map the services required for DinoQuest.
 
 parts:
   - id: a

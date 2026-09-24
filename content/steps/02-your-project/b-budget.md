@@ -1,42 +1,30 @@
 :::section kicker="Behavior" headline="How budget alerts work"
-A budget alert is a threshold on a billing account. When spending for the month
-passes the amount, it sends email.
+A **Cloud Billing budget alert** defines a monthly spending threshold on a billing account or project and sends email notifications when actual or forecasted costs cross configured percentages (such as 50%, 90%, and 100%).
 
-:::figure id="budget-alert" caption="A budget alert sends notification. Spending continues."
+:::figure id="budget-alert" caption="A budget alert sends notifications when thresholds are exceeded; it does not terminate running resources."
 :::
 
 :::warn
-A budget alert does not cap spending and does not stop resources. It sends
-notification only. It is common to assume the opposite.
+A budget alert does not cap spending or automatically shut down running resources. It sends notifications only while services continue to run.
 :::
 :::
 
 :::section kicker="Timing" headline="Billing reporting delays"
-A budget alert is checked against your billing data, and that data does not
-arrive as you spend it. Services report usage in batches: some within an hour
-or two, some only once a day. The figure the alert quotes is whatever had been
-reported by the time it was checked, not what you have actually spent.
+Budget alerts evaluate usage data reported to Cloud Billing. Because Google Cloud services report consumption metrics in asynchronous batches—ranging from an hour to twenty-four hours—the spend total evaluated by a budget alert reflects only usage reported up to that point.
 
 :::warn
-An alert can arrive hours after the spending that triggered it, and the amount
-it names can already be out of date. Something expensive left running
-overnight can spend a great deal before anything is sent.
+Because usage reporting is batched, a budget notification can arrive several hours after the resource consumption that triggered it. High-capacity resources left running unattended can accumulate significant charges before an alert is delivered.
 :::
 
-So a budget alert is an early warning, not a brake. Good operational habits cover what it
-cannot:
-
-- **Set the threshold low**, low enough that the lag does not matter. You want
-  to hear about $5, not $500.
-- **Delete what you stopped using**, rather than relying on being told about
-  it. Every section in this course that starts something also stops it.
+To mitigate reporting latency, follow two operational practices:
+- **Configure a low threshold** (such as $5 or $10) on development projects so threshold alerts trigger early.
+- **Deprovision unused resources immediately** after testing rather than relying solely on billing alerts.
 :::
 
 :::section kicker="Practice" headline="Setting a budget alert"
-Set one on every project, on the day the project is created. It is free, and it
-is the earliest warning that something costs more than expected.
+Configure a budget alert whenever you create a new Google Cloud project and link a billing account. Creating a budget alert is free and provides early visibility into unexpected usage.
 
 :::key
-Set a budget alert before creating resources that cost money.
+Always configure a budget alert before provisioning billable cloud resources.
 :::
 :::

@@ -1,66 +1,41 @@
 :::section kicker="Infrastructure" headline="Data centers and regions"
-Cloud resources run in specific physical places.
+Google Cloud resources run in physical facilities distributed around the world:
 
-**A data center is a building.** Thousands of computers in rows, a lot of
-electricity arriving, a lot of heat leaving.
+- **Data center**: A physical facility housing compute servers, storage arrays, power distribution systems, and cooling infrastructure.
+- **Region**: A specific geographic location containing multiple data centers connected by high-speed, low-latency fiber networks (for example, `us-central1` in Iowa or `asia-northeast1` in Tokyo).
 
-**A region is a group of those buildings** in one part of the world, close
-enough together to behave as one place. `us-central1` is a region, in Iowa.
-`asia-northeast1` is a region, in Tokyo.
-
-When you create something in Google Cloud, you choose its region. That is the
-decision this section is about.
+When you provision regional resources such as a Firestore database or a Cloud Run service, you specify the region where those resources execute and store data.
 :::
 
 :::section kicker="Network" headline="Global fiber network"
-:::figure id="globe" caption="Each dot is a region. The lines between them are Google's own network, not the public internet."
+:::figure id="globe" caption="Google Cloud regions interconnected by Google's private global fiber network."
 :::
 
-Drag the globe. The dots are regions, scattered so that most of the world has
-one within a few thousand kilometres.
+You can rotate the interactive globe above to inspect Google Cloud's regional footprint.
 
-The lines matter as much as the dots. Traffic between regions travels mostly
-over the provider's private network, including its undersea cables. That is why
-a request from London to Tokyo behaves better than the distance suggests — it
-is not taking the public internet's route.
+Traffic between Google Cloud regions travels across Google's private backbone network—including dedicated subsea fiber cables—rather than traversing the public internet. This architecture provides consistent cross-region throughput and lower packet loss.
 :::
 
 :::section kicker="Performance" headline="Distance and network latency"
-Light travels through fibre at roughly 200,000 kilometres per second. That is a
-limit no hardware raises.
+Optical signals travel through fiber at approximately 200,000 kilometers per second. Physical distance therefore sets a hard lower bound on network round-trip time (RTT) regardless of server performance.
 
-London to Sydney is about 17,000 kilometres, so a round trip is about 170
-milliseconds before any computer does anything at all. Real paths are not
-straight lines, so the real figure is higher.
-
-| User | App | Round trip |
+| Client Location | Application Region | Approximate Round-Trip Latency |
 |---|---|---|
-| London | London | about 5 ms |
-| London | Virginia | about 80 ms |
-| London | Sydney | about 250 ms |
+| London | London (`europe-west2`) | ~5 ms |
+| London | Northern Virginia (`us-east4`) | ~80 ms |
+| London | Sydney (`australia-southeast1`) | ~250 ms |
 
-Your code runs at the same speed in all three. The only thing that changed is
-how far the request had to go.
+Application code executes at the same speed in each region; the difference in response time is determined by the physical distance between the client and the target region.
 :::
 
 :::section kicker="Selection" headline="Criteria for selecting a region"
 :::key
-Choose the region nearest the people who will use the thing — not the region
-nearest you.
+Select the region closest to your primary users to minimize network latency, rather than the region closest to your development machine.
 :::
 
-That sounds obvious and it is the mistake almost everyone makes. You feel your
-own latency every time you deploy, and you never feel your users'.
+Two architectural constraints can take precedence over user proximity:
+- **Data residency and compliance**: Regulatory or legal requirements may mandate that data be stored and processed within a specific country or jurisdiction.
+- **Service and product availability**: Certain hardware accelerators, foundation models, or preview services are available only in specific regions.
 
-Specific constraints can override it:
-
-- **Data residency.** Some data is legally required to stay in a country. When
-  that applies, it decides, and you choose inside that constraint.
-- **Service availability.** Not every service exists in every region. If
-  something refuses to deploy somewhere, check this before looking for anything
-  more complicated.
-
-And when your users are genuinely everywhere, no single region is close to them
-all. The answer is more than one region, which costs more and is more to look
-after — so it waits until the users are real.
+When an application serves a globally distributed audience, teams deploy across multiple regions behind a global load balancer. Because multi-region architectures increase cost and operational complexity, start with a single primary region near your initial user base.
 :::

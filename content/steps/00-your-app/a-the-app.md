@@ -1,37 +1,26 @@
 :::section kicker="Overview" headline="DinoQuest"
-A dinosaur runs, cactuses come at it, and pressing space or clicking jumps.
-When the dino hits one, the run ends and the score goes on a leaderboard.
+**DinoQuest** is a web-based runner game with a score leaderboard. Players jump over obstacles to accumulate points, and completed runs are recorded on the leaderboard.
 
-In the exercise you look through the project files, start the app by typing the
-command, and play a round. All of it happens on this page: the app runs in
-Cloud Shell as its own process, and the workbench shows it here.
+In this exercise, you inspect the application source files, start the local HTTP server from the terminal, and test the application in the embedded preview pane. The application runs as a standalone Python process in Cloud Shell.
 :::
 
 :::section kicker="Architecture" headline="How the application works"
-:::figure id="app-shape" caption="One Python file serves the page and keeps the scores."
+:::figure id="app-shape" caption="A single Python process serves static assets and handles score API requests in memory."
 :::
 
-The whole app is `app/main.py`, and it does two things: it hands the browser
-the files that make up the game, and it answers two requests about scores —
-one to read the leaderboard, one to add to it.
-
-Everything it serves lives in `app/static/`: the page, the game, the dino
-sprite, and the audio. Open them in the file browser below.
+The backend server is implemented in `app/main.py` and performs two primary functions:
+- Serves static frontend assets (`index.html`, `game.js`, `dino.png`, and audio files) from `app/static/`.
+- Exposes REST endpoints (`GET /api/scores` and `POST /api/scores`) to read and update the top ten leaderboard scores.
 
 :::note
-`app/static/game.js` is the game itself. You never have to read it — it is not
-what this course is about — but it is there if you are curious.
+`app/static/game.js` contains the client-side game loop and rendering logic. You do not need to modify any frontend files during this course.
 :::
 :::
 
 :::section kicker="Environment" headline="About Cloud Shell"
-Cloud Shell is a Linux machine that Google Cloud gives you in the browser, with
-the command-line tools already installed. It is where the app runs and where
-every command in this course runs.
+Google Cloud Shell provides a browser-accessible Linux environment preconfigured with the Google Cloud CLI (`gcloud`), Python, and standard development tools. You use Cloud Shell to run the local application and execute Google Cloud commands throughout this course.
 
 :::note
-Starting the app from the workbench is the same as typing
-`python3 app/main.py` in a terminal. It is a separate process either way, and
-stopping it stops the app.
+Starting the application from the workbench terminal runs `python3 main.py` as an independent operating system process. Stopping the process terminates the local web server.
 :::
 :::

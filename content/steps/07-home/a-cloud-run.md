@@ -1,112 +1,81 @@
 :::section kicker="Limitations" headline="Why a local terminal is not production"
-DinoQuest has run on your machine during development. Close the terminal and it
-stops. Nobody else can reach it. Nothing restarts it if it crashes, and if
-many players arrive at once there is only one process to serve them all.
+Running DinoQuest in a local Cloud Shell process has four operational limitations: the process terminates when the session closes, the local loopback port is unreachable by external users, no supervisor restarts the server if it crashes, and a single process cannot scale horizontally under concurrent load.
 
-:::figure id="four-problems" caption="Operational limitations of a local terminal process."
+:::figure id="four-problems" caption="Operational limitations of running a web service in a local terminal session."
 :::
 
-Cloud Run addresses these requirements using the same serverless model: you do not own the machine, and you are not the one keeping it alive.
+**Cloud Run** resolves these limitations by executing your application in managed, auto-scaling containers on Google Cloud infrastructure.
 :::
 
 :::section kicker="Runtime" headline="Serverless containers"
-Cloud Run runs containers and gives each one a public address. You hand it a
-container; it starts copies when requests arrive, stops them when they stop,
-and charges for the time they were running.
+**Cloud Run** is a fully managed serverless platform for containerized applications. You deploy a container image or source directory, and Cloud Run provisions an HTTPS endpoint, scales container instances up to handle incoming requests, and scales down to zero instances when traffic stops.
 
 :::key
-There is no machine to choose, no operating system to patch, and nothing
-running when nobody is asking.
+With Cloud Run, you do not provision virtual machines or patch host operating systems, and you incur zero compute charges when your service is idle.
 :::
 
-That last part is worth reading twice. A server you rent bills for every hour
-it exists. A Cloud Run service with no traffic bills for nothing.
+Unlike virtual machines that bill hourly while running, a Cloud Run service with `min-instances=0` bills only for the CPU and memory consumed while processing requests.
 :::
 
 :::section kicker="Packaging" headline="Container images"
-A container is your code, the language runtime it needs, and its dependencies,
-sealed together into one image. Everything the app needs to start is inside;
-nothing about the machine underneath is.
+A **container image** packages your application source code, language runtime, and library dependencies into an immutable, self-contained artifact. Because the image includes every dependency required to start the server, the container runs identically across local development and cloud regions.
 
-:::figure id="container-unit" caption="Sealed together, so the machine underneath stops mattering."
+:::figure id="container-unit" caption="A container image bundles application code, runtime, and dependencies into a portable unit."
 :::
 
-That seal is why "it works on my machine" stops being a sentence anyone says.
-The image that runs in your region is byte for byte the image that was built,
-and it does not care what is installed on the host.
-
 :::note
-DinoQuest has no Dockerfile, and you will not write one. The build reads
-`app/requirements.txt` to know what to install and `app/Procfile` to know how
-to start, and works out the rest.
+You do not need to write a `Dockerfile` for DinoQuest. Google Cloud buildpacks automatically inspect `app/requirements.txt` to install Python dependencies and read `app/Procfile` (`web: python3 main.py`) to configure the container entrypoint.
 :::
 :::
 
 :::section kicker="Deployment" headline="Deploying the service"
-One request turns source into a running service. The deployment pipeline runs through distinct stages,
-and it is worth knowing which is which when one of them fails.
+Deploying from source (`gcloud run deploy --source app/`) executes four automated stages:
 
-:::figure id="deploy-pipeline" caption="Source in, address out. Building and storing the image are why the first deployment takes longer."
+:::figure id="deploy-pipeline" caption="Source-based deployment pipeline using Cloud Build, Artifact Registry, and Cloud Run."
 :::
 
-1. **Upload.** The contents of `app/` are sent to Cloud Build.
-2. **Build.** Cloud Build inspects the source, installs the dependencies and
-   produces a container image.
-3. **Store.** The image is kept in Artifact Registry, so starting another copy
-   later does not mean building again.
-4. **Run.** Cloud Run creates a service from that image and returns an HTTPS
-   address.
+1. **Upload**: The contents of the `app/` directory are uploaded to **Cloud Build**.
+2. **Build**: **Cloud Build** runs Google Cloud buildpacks to install dependencies from `app/requirements.txt` and assemble a container image.
+3. **Store**: The resulting container image is pushed to **Artifact Registry** in your project.
+4. **Run**: **Cloud Run** creates a new service revision from that image and assigns a public HTTPS `.run.app` URL.
 
-The first deployment takes a few minutes, almost all of it during the build. Later ones
-are faster because the build has less to redo.
+The initial deployment takes two to three minutes while Cloud Build constructs the base image layers; subsequent deployments reuse cached layers and complete faster.
 :::
 
 :::section kicker="Scaling" headline="Cold starts and revisions"
-**Scaling to zero has a cost, and it is time.** When no copy is running, the
-first request has to wait for one to start. That pause is a cold start. It is
-the price of not paying for idle capacity, and for most applications it is a
-good trade.
+**Cold starts.** When a service has scaled down to zero instances, the first incoming request waits briefly while Cloud Run starts a new container instance. This initial startup latency—called a *cold start*—is the trade-off for paying zero compute cost while idle.
 
-:::figure id="cold-start" caption="Only the request that arrives to an idle service waits."
+:::figure id="cold-start" caption="A request arriving at an idle service triggers a container cold start."
 :::
 
-**Every deployment creates a revision.** The old one does not disappear. Traffic
-moves to the new revision, and if the new one is wrong, traffic can be moved
-back — a rollback is a change of routing, not a rebuild.
+**Immutable revisions.** Every deployment to Cloud Run creates a new, immutable **revision**. Traffic shifts atomically to the new revision once health checks pass, while previous revisions remain available. Rolling back a deployment simply redirects traffic to an earlier revision without rebuilding the container image.
 
-:::figure id="revisions" caption="The old revisions are still there, which is what makes going back quick."
+:::figure id="revisions" caption="Cloud Run retains immutable revisions, enabling instant traffic rollbacks."
 :::
 
 :::note
-This is why deploying often is safer than deploying rarely. A small change is
-easy to undo, and you can see which revision introduced a problem.
+Because each deployment creates an isolated revision, deploying small, frequent updates simplifies troubleshooting and makes rollbacks immediate.
 :::
 
-:::console url="https://console.cloud.google.com/run" label="Open Cloud Run" note="Your service, then the Revisions tab. Every deployment you make shows up there."
+:::console url="https://console.cloud.google.com/run" label="Open Cloud Run" note="Inspect your deployed service and view the Revisions tab to see each immutable deployment."
 :::
 :::
 
 :::section kicker="Security" headline="Service accounts and runtime configuration"
-Running on your machine, the app called Firestore and Gemini as **you**, and
-you already had access to both. Deployed, it runs as a **service account** — an
-identity that belongs to the service rather than to a person, and that has been
-granted nothing by default.
+Moving an application from Cloud Shell to Cloud Run changes two operational contexts:
 
-:::figure id="what-changes-deployed" caption="The app is the same in both columns."
+:::figure id="what-changes-deployed" caption="Comparison of runtime identity and environment configuration between Cloud Shell and Cloud Run."
 :::
 
-The settings move too. `app/.env` is a local file and is not inside the
-container. The same values have to be set on the service itself.
+1. **Runtime identity**: In Cloud Shell, the application executes under your personal Google user credentials. On Cloud Run, the container executes as a dedicated **IAM service account** (`PROJECT_NUMBER-compute@developer.gserviceaccount.com`), which requires explicit IAM roles (`roles/datastore.user` for Firestore and `roles/aiplatform.user` for Gemini).
+2. **Environment variables**: Because local configuration files such as `app/.env` are excluded from the container build, runtime settings (`GOOGLE_GENAI_USE_VERTEXAI`, `GOOGLE_CLOUD_LOCATION`, and `DINO_MODEL`) must be configured directly on the Cloud Run service using `--set-env-vars`.
 
 :::key
-A file you deliberately did not commit cannot be the thing that configures
-production. Settings for a deployed service live on the service.
+Never bundle local `.env` files into container images. Configure environment variables and secrets directly on the Cloud Run service definition.
 :::
 
-The deployment in this section handles both: it grants the service account the
-roles it needs, and carries the settings across. Watch the log if you want to
-see it happen.
+The deployment script (`scripts/deploy_app.py`) grants the required IAM roles to the runtime service account and passes the environment variables to `gcloud run deploy`.
 
-:::console url="https://console.cloud.google.com/run" label="Open Cloud Run" note="Your service: Variables and Secrets holds the settings, Security names the identity it runs as."
+:::console url="https://console.cloud.google.com/run" label="Open Cloud Run" note="Inspect the Variables & Secrets tab for environment variables and the Security tab for the runtime service account."
 :::
 :::

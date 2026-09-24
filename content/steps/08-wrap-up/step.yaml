@@ -3,7 +3,7 @@ title: Cost and cleanup
 kicker: Operations and cleanup
 part: run
 color: rose
-summary: The tools that build this for you, and taking what you made back down.
+summary: Review AI-assisted Google Cloud developer workflows, analyze the billing dimensions of your architecture, and deprovision project resources.
 
 parts:
   - id: a
@@ -18,9 +18,7 @@ parts:
     exercise:
       title: Clean up project resources
       intro: >
-        Optional. Leave the project in place if you want to keep playing with
-        it — the app costs nothing while nobody is using it, and your budget
-        alert is still watching. Do this when you are finished.
+        When you are finished testing your deployed application, shut down the Google Cloud project to delete all provisioned compute, storage, and container resources at once.
       tasks:
         - kind: console
           id: delete-project
@@ -28,31 +26,25 @@ parts:
           url: https://console.cloud.google.com/iam-admin/settings
           assist: delete-project
           explain: >
-            Check the project name at the top of the console before you do
-            this. Choose Shut down, type the project id to confirm, and
-            everything inside it goes with it — the service, the image, the
-            database. The button beside the link does the same thing, for
-            anyone who would rather not.
+            Open IAM & Admin Settings in the Google Cloud console, verify the active project ID, click Shut down, and enter the project ID to confirm—or click "Do it for me" to run `gcloud projects delete` automatically.
           checklist:
-            - You checked you are in the right project
-            - You chose Shut down and confirmed with the project id
-            - The console says the project is scheduled for deletion
+            - Verified the target project ID before deletion
+            - Confirmed project shutdown in the console or via the workbench action
+            - Confirmed the project lifecycle state changed to DELETE_REQUESTED
         - kind: reflect
           id: what-survives
           title: Verify billing account status
           prompt: >
-            Identify what resources set up earlier remain after project deletion,
-            and why they are not inside the project.
+            Identify which financial resource configured earlier in the course remains active after the project is deleted, and explain why it is unaffected by project deletion.
           checklist:
-            - You named your billing account
-            - You can say why it belongs to you rather than to the project
+            - Identified the Cloud Billing account
+            - Explained that the billing account exists outside the project boundary and can be linked to multiple projects
 
     checks:
       - id: project-going
-        label: The project is scheduled for deletion
+        label: The project is scheduled for deletion (DELETE_REQUESTED)
         probe: gcloud projects describe $PROJECT --format=value(lifecycleState)
         assert: not_contains
         value: ACTIVE
         hint: >
-          This check only passes once the project is gone. Skip it if you are
-          keeping the project — nothing later depends on it.
+          This check passes once the project lifecycle state transitions from ACTIVE to DELETE_REQUESTED. Skip this check if you choose to keep your deployment running.

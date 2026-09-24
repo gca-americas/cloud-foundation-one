@@ -1,77 +1,49 @@
 :::section kicker="Overview" headline="AI developer tools"
-You built each piece deliberately, one at a time. Most of it can now be done
-for you — and the reason to have built it by hand is that when a tool does it,
-you can tell what it made and whether it is right.
+In this course, you provisioned and connected each cloud component—project, billing, region, Firestore, Gemini, and Cloud Run—step by step to understand how the underlying architecture operates. In day-to-day development, AI-assisted developer platforms can scaffold and deploy these same Google Cloud resources automatically. Because you understand the role of each component, you can review, audit, and govern what automated tools provision.
 :::
 
 :::section kicker="Prototyping" headline="Google AI Studio"
-AI Studio is where you try a model without writing anything. Its **Build mode**
-goes further: describe an application and it writes one, then deploys it.
+**Google AI Studio** provides an interactive environment for prototyping with Gemini models. Its **Build mode** generates full-stack web applications from natural-language specifications and deploys them directly to Google Cloud.
 
-:::figure id="ai-studio-to-cloud" caption="The same pieces this course built, provisioned for you."
+:::figure id="ai-studio-to-cloud" caption="Google AI Studio Build mode provisions Cloud Run and managed databases using the same architecture built in this course."
 :::
 
-What happens when you press deploy is the thing to notice:
-
-- **A Cloud Run service.** Each deployment creates one. The same serverless
-  hosting you used earlier, with the same scaling to zero.
-- **A database, if the app needs one.** The agent works out that it needs to
-  store something and offers to set it up — **Firestore** with Firebase
-  Authentication, or **Cloud SQL for PostgreSQL**, provisioned and wired in.
-- **Somewhere to put it.** On the free Starter Tier, Google creates and runs
-  the project for you — you never see it, and there is no billing account. To
-  go further you point it at **your own project**, with billing enabled, and it
-  deploys there instead.
+When you deploy an application from Google AI Studio, it provisions the exact architectural components you configured manually:
+- **Cloud Run service**: Packages the generated application into a container and deploys it as an auto-scaling Cloud Run service.
+- **Managed database**: Provisions **Firestore** (with Firebase Authentication) or **Cloud SQL for PostgreSQL** when the application requires persistent data storage.
+- **Project and billing boundary**: Runs initial prototypes in a Google-managed Starter Tier environment, and lets you attach your own Google Cloud project and billing account when moving to production.
 
 :::note
-Your API key stays server-side on Cloud Run rather than being shipped to the
-browser. That is worth checking in anything that generates code for you, not
-assuming.
+When deploying generated applications, always verify that API credentials and model calls execute server-side on Cloud Run rather than exposing keys in client-side browser code.
 :::
-
-The Starter Tier has limits worth knowing before a workshop: a couple of
-services, a single region, and accounts that already have Google Cloud billing
-are not eligible for it.
 :::
 
 :::section kicker="Development" headline="Google Antigravity"
-Antigravity is an agent platform for writing software, offering a desktop app, CLI, IDE, and SDK over a single agent.
+**Google Antigravity** is an agentic software development platform that operates across a desktop application, CLI, IDE integration, and SDK using a unified reasoning agent.
 
-:::figure id="antigravity-stack" caption="A desktop app, a CLI, an IDE and an SDK, over one agent."
+:::figure id="antigravity-stack" caption="Google Antigravity interfaces connected to documentation and project skills via MCP."
 :::
 
-Key capabilities matter for cloud engineering work:
-
-**It can read the documentation properly.** Through **MCP**, an open protocol
-for connecting agents to tools and data, it can use the **Google Developer
-Knowledge MCP server** — the official documentation for Google Cloud, Android
-and Firebase, re-indexed within a day of any change. That is the difference
-between an agent recalling what a flag did last year and one reading what it
-does now. You add it from the MCP store, or by naming it in the agent's
-configuration.
-
-**It can be taught your way of working.** An **agent skill** is a folder with a
-`SKILL.md` describing when to use it, plus any scripts and examples it needs.
-Drop one into a project and every agent working there follows it.
+Two extensibility mechanisms make agentic coding reliable for Google Cloud engineering:
+- **Authoritative documentation via MCP**: Using the open **Model Context Protocol (MCP)**, Antigravity connects to the **Google Developer Knowledge MCP server**, giving the agent real-time access to current Google Cloud, Firebase, and Android documentation rather than relying on static training cutoffs.
+- **Reusable engineering standards (`SKILL.md`)**: Teams codify architectural patterns, security rules, and deployment scripts inside an agent skill directory (`SKILL.md` plus supporting scripts). Any agent working in the repository automatically follows those instructions.
 
 :::key
-Both of these do what you just did by hand. Knowing what a Cloud Run service,
-a Firestore database and a service account are is what makes their output
-reviewable rather than magic.
+AI development tools accelerate provisioning and code generation, while your understanding of projects, IAM service accounts, Firestore, and Cloud Run enables you to verify and operate the resulting system safely.
 :::
 :::
 
 :::section kicker="Next steps" headline="Further Google Cloud topics"
-Each of these topics builds on the foundation from this course.
+To build on the foundations covered in this course, explore the following Google Cloud topics next:
 
-| Topic | Why, and when you will need it |
+| Topic | Architectural Role and When to Adopt |
 |---|---|
-| **Identity and access** | Service accounts, roles and least privilege. The deploy granted the roles for you. The first thing to learn next. |
-| **Failure and resilience** | Zonal, regional and multi-regional. Redundancy is bought deliberately; most projects should not buy it. |
-| **Containers in depth** | Images, layers and writing a Dockerfile. The buildpack did it for you. |
-| **Infrastructure as code** | Terraform. Genuinely the next thing after this course. |
-| **Networking** | VPCs, load balancers, private connectivity. The defaults were right for you. |
-| **GKE** | When one container is not enough, and what a cluster costs. |
-| **The data platform** | BigQuery and pipelines — a different course and a whole career. |
-| **CI/CD** | Deploying from a repository rather than from a terminal. |
+| **Identity and Access Management (IAM)** | Deepen least-privilege access control using custom service accounts, IAM conditions, and Workload Identity Federation. |
+| **High availability and multi-region resilience** | Architect zonal, regional, and multi-regional deployments when uptime SLAs justify the additional cost. |
+| **Custom container images (`Dockerfile`)** | Write explicit multi-stage Dockerfiles when applications require OS-level packages or custom build steps beyond buildpacks. |
+| **Infrastructure as Code (Terraform)** | Define projects, APIs, IAM bindings, databases, and Cloud Run services declaratively in version-controlled Terraform configurations. |
+| **Virtual Private Cloud (VPC) and Cloud Load Balancing** | Configure private networking, Cloud Armor WAF policies, custom domains, and global load balancers. |
+| **Google Kubernetes Engine (GKE)** | Orchestrate multi-container microservice architectures when workloads outgrow single-service containers. |
+| **Data analytics with BigQuery** | Stream operational events into BigQuery for petabyte-scale SQL analytics and reporting. |
+| **Continuous Integration and Delivery (CI/CD)** | Trigger automated Cloud Build testing and Cloud Run deployments directly from Git commits. |
 :::

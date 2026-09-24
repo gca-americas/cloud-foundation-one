@@ -1,74 +1,54 @@
 :::section kicker="Integration" headline="Generating sprites with Gemini"
-DinoQuest runs the same character every time, because the character is a file:
-`app/static/dino.png`. Replacing that file replaces the dino, and the game
-does not need to know how it got there.
+DinoQuest renders its player character from a static sprite sheet at `app/static/dino.png`. Replacing that PNG file updates the character in the game without requiring any changes to the client-side game loop.
 
-So the work is narrow. Ask Gemini to describe a small picture, turn the
-description into a PNG, write it over the file. The game is not touched.
+To generate custom characters rapidly and deterministically, the backend prompts **Gemini** (`gemini-3.5-flash`) to return a structured JSON object containing a 6-color hex palette and a 24×24 character grid, and then encodes that grid directly into `app/static/dino.png`.
 
-:::figure id="grid-to-sprite" caption="The model returns letters and colours. Your code turns them into the file the game already loads."
+:::figure id="grid-to-sprite" caption="Gemini returns a structured character grid and color palette that the backend converts into dino.png."
 :::
 
 :::key
-A model that returns text can still produce a picture, if the code around it
-knows how to read the text. Asking for a grid of letters is more reliable, and
-far cheaper, than asking for an image.
+Enforcing a structured JSON response schema (`response_schema`) allows a language model to return deterministic, machine-readable data structures—such as pixel grids and hex color palettes—that application code can parse reliably.
 :::
 :::
 
 :::section kicker="Configuration" headline="Environment configuration"
-Key settings must be configured before any call can be made: that the request
-goes to Google Cloud rather than to the Gemini Developer API, which project
-pays for it, and which endpoint answers.
+Before calling the Gemini API on Google Cloud, the application requires four environment settings specifying the authentication mode, project ID, endpoint location, and model name. These settings are stored in `app/.env` rather than hardcoded in `app/main.py`.
 
-None of those belong in `main.py`. They change from machine to machine, and one
-of them is specific to you.
-
-:::figure id="settings-not-code" caption="The file is read once at startup. The code names neither the project nor the endpoint."
+:::figure id="settings-not-code" caption="Runtime environment variables loaded at startup from app/.env."
 :::
 
-| Setting | What it decides |
+| Environment Variable | Purpose |
 |---|---|
-| `GOOGLE_GENAI_USE_VERTEXAI` | Use Google Cloud credentials, not an API key |
-| `GOOGLE_CLOUD_PROJECT` | Which project is billed, and whose quota is spent |
-| `GOOGLE_CLOUD_LOCATION` | Which endpoint answers |
-| `DINO_MODEL` | Which model in Model Garden to call |
+| `GOOGLE_GENAI_USE_VERTEXAI` | Directs the SDK to authenticate using Google Cloud IAM credentials rather than an API key |
+| `GOOGLE_CLOUD_PROJECT` | Specifies the Google Cloud project ID used for billing and quota enforcement |
+| `GOOGLE_CLOUD_LOCATION` | Specifies the regional or `global` endpoint that serves the model request |
+| `DINO_MODEL` | Specifies the Model Garden model identifier (`gemini-3.5-flash`) |
 
 :::note
-There is no API key anywhere in this exercise. The SDK signs each request with
-the credentials Cloud Shell already has.
+When `GOOGLE_GENAI_USE_VERTEXAI=True`, no static API keys are required. The Google Gen AI SDK automatically signs requests using Application Default Credentials (ADC) provided by Cloud Shell or Cloud Run.
 :::
 :::
 
 :::section kicker="Routing" headline="The global endpoint"
-`GOOGLE_CLOUD_LOCATION` is set to `global` in this course, and that is not what
-a production service would do.
+In this course, `GOOGLE_CLOUD_LOCATION` is configured to use the `global` endpoint rather than a single regional endpoint.
 
-:::figure id="global-endpoint" caption="A named region serves the request in one place. The global endpoint serves it wherever there is room."
+:::figure id="global-endpoint" caption="A regional endpoint pins processing to one location; the global endpoint routes requests dynamically to available capacity."
 :::
 
-A named region is the normal choice: it
-says where the request is handled, and it is the only way to promise anything
-about data locality. The global endpoint gives up that control and gets capacity in
-return — the request goes wherever the model has room right now.
+In production workloads with data residency requirements, you specify a regional endpoint (such as `us-central1`) to guarantee that prompts and responses remain within that geographic region. The `global` endpoint trades geographic pinning for higher availability and quota capacity by dynamically routing requests to whichever region has immediate accelerator capacity.
 
 :::note
-A classroom is the one setting where capacity is the thing most likely to fail:
-many people calling the same model in the same region at the same time. That
-is why this course uses `global`, and why it is worth knowing it is a trade-off
-rather than a default.
+In workshop and classroom environments where many developers call the same model concurrently, using the `global` endpoint prevents single-region rate-limit contention.
 :::
 :::
 
 :::section kicker="SDK" headline="The Google Gen AI SDK"
-`google-genai` is the current client library for Gemini. One SDK reaches both
-the Gemini Developer API and the Gemini API on Gemini Enterprise Agent
-Platform; the `vertexai=True` flag is what chooses the second.
+The **Google Gen AI SDK** (`google-genai`) provides a unified client library for calling Gemini models across both the Gemini Developer API and the Gemini Enterprise Agent Platform (`vertexai=True`).
 
-:::figure id="sdk-call" caption="One call out, one JSON answer back."
+:::figure id="sdk-call" caption="Calling client.models.generate_content() with a structured response schema."
 :::
 
-A call has the same shape every time:
+A standard inference call using `google-genai` follows this structure:
 
 ```python
 from google import genai
@@ -88,16 +68,7 @@ answer = client.models.generate_content(
 print(answer.text)
 ```
 
-Four things go in — which model, what you are asking, how it should behave, and
-how much to vary — and text comes back on `answer.text`. The code this step
-adds is that call with one addition: it asks for JSON in a fixed shape instead
-of a sentence.
-
-Two parts of the call are worth naming:
-
-- **A system instruction** — standing directions for the model, separate from
-  the request. Here it describes the pixel format the code can read.
-- **A response schema** — the shape the answer has to take. The model is held
-  to it, so the code can read the reply without checking whether the model felt
-  like cooperating this time.
+To generate sprite data, `app/main.py` passes two additional parameters in `GenerateContentConfig`:
+- **`system_instruction`**: Defines the model's role and specifies the exact character-to-pixel mapping rules (`a`–`f` for palette indices and `.` for transparent pixels).
+- **`response_mime_type="application/json"` and `response_schema=SHAPE`**: Constrains the model's output decoder so the response is guaranteed to match the required JSON schema (`palette` array of 6 hex colors and `rows` array of 24 strings).
 :::

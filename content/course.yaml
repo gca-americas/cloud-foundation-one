@@ -1,14 +1,12 @@
 title: Cloud Foundation - One
-subtitle: Your first app on Google Cloud
+subtitle: Building and deploying your first application on Google Cloud
 tagline: Google Cloud foundations
-credit: Brought to you by Google Cloud Americas' Advocacy team
+credit: Google Cloud Developer Relations
 
-# The one idea the course is built to leave behind. Named in step 1, proved in
-# step 6, and referred to by name in between.
 thesis: >
-  The cloud is renting instead of owning. You rent the machine, you rent the
-  storage, and at the end you rent the intelligence.
-
+  Cloud computing provides on-demand access to managed infrastructure. You provision
+  compute, persistent storage, and foundation models over the network and pay only
+  for the resources you consume.
 
 parts:
   - id: understand

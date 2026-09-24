@@ -3,7 +3,7 @@ title: Projects and billing
 kicker: Project setup
 part: corner
 color: violet
-summary: The container for cloud resources, the account that pays for them, and budget alerts.
+summary: Understand Google Cloud project boundaries, link a Cloud Billing account, configure a budget alert, and enable required service APIs.
 
 parts:
   - id: a
@@ -13,26 +13,21 @@ parts:
     exercise:
       title: Link a billing account
       intro: >
-        The project already exists. What it does not have
-        yet is an account to charge things to.
+        Link your Google Cloud project to an active Cloud Billing account so you can provision managed services.
       tasks:
         - kind: billing
           id: link-billing
           title: Link a billing account
           explain: >
-            A billing account is a separate resource, so a project has to be
-            linked to one. This uses the credit you claimed for this session if
-            you have one, and whichever open account you already have if you do
-            not.
+            A Cloud Billing account is a separate resource linked to your project. Click "Do it for me" to link your open workshop billing account automatically, or link it in the Google Cloud console and click "I linked it".
     checks:
       - id: billing-linked
-        label: A billing account is linked
+        label: An active billing account is linked to the project
         probe: gcloud billing projects describe $PROJECT --format=value(billingEnabled)
         assert: contains
         value: "True"
         hint: >
-          Press "Do it for me". If it says there is no open billing account,
-          claim your credit first — claiming it is what creates the account.
+          Click "Do it for me" above. If no open billing account is found, ensure you have redeemed your workshop credit first.
 
   - id: b
     label: Budget alerts
@@ -47,23 +42,20 @@ parts:
           url: https://console.cloud.google.com/billing/budgets
           assist: budget
           explain: >
-            Create a budget on your billing account. Pick a small amount:
-            billing data arrives in batches, so a low threshold is what makes
-            up for an alert that can be hours behind.
+            Create a monthly budget alert on your billing account scoped to your project. Set a low threshold (such as $5 or $10) so notifications trigger early despite batched billing updates.
           checklist:
-            - The budget is scoped to your project
-            - A low amount, such as 5 or 10 — low enough that a late alert still helps
-            - You kept the default alert thresholds
-            - Your email address is on the alert
+            - The budget is scoped to your active project
+            - The target amount is set to a low threshold ($5 or $10)
+            - Default threshold rules (50%, 90%, 100%) are enabled
+            - Email notifications are enabled
     checks:
       - id: budget-set
-        label: A budget alert exists
+        label: A budget alert is configured on the billing account
         probe: python3 scripts/probe_budget.py
         assert: matches
         value: BUDGETS=[1-9]
         hint: >
-          Budgets belong to the billing account rather than the project, which
-          is why you set them on a different console page.
+          Create a budget in the Cloud Billing console or click "Do it for me" in the task card above.
 
   - id: c
     label: Enabling services
@@ -72,8 +64,7 @@ parts:
     exercise:
       title: Enable required APIs
       intro: >
-        Switch on everything the course needs, then verify the result from
-        the command line.
+        Enable the Google Cloud APIs required to build, store, and deploy DinoQuest, then verify the enabled services from the command line.
       tasks:
         - kind: console
           id: enable-console
@@ -81,48 +72,42 @@ parts:
           url: https://console.cloud.google.com/apis/library
           assist: services
           explain: >
-            Search for each service below and press **Enable**. It is a switch
-            on this project and nothing else, and enabling one costs nothing —
-            you are charged for what you use. If searching individually is more clicking
-            than you want, the second button does the same thing.
+            Enable each service below in the Google Cloud API Library, or click "Do it for me" to enable all required APIs on your project using `gcloud services enable`.
           checklist:
-            - "Cloud Run — somewhere to run your code"
-            - "Cloud Build — turns your source into a container"
-            - "Artifact Registry — stores the built container"
-            - "Firestore — the leaderboard database"
-            - "Gemini Enterprise Agent Platform — the hosted model"
+            - "Cloud Run API (run.googleapis.com)"
+            - "Cloud Build API (cloudbuild.googleapis.com)"
+            - "Artifact Registry API (artifactregistry.googleapis.com)"
+            - "Cloud Firestore API (firestore.googleapis.com)"
+            - "Vertex AI / Gemini Enterprise Agent Platform API (aiplatform.googleapis.com)"
         - kind: terminal
           id: list-services
           title: List enabled services
           expect:
             - gcloud services list --enabled --format=value(config.name)
           explain: >
-            The console shows this too, one page at a time. One command shows
-            the lot. If something is missing, go back and enable it — this is
-            also the command to come back to whenever a later step reports that
-            an API is not enabled.
+            Run `gcloud services list --enabled --format=value(config.name)` in the terminal to verify all enabled APIs on your active project.
     checks:
       - id: run-enabled
-        label: Cloud Run is enabled
+        label: Cloud Run API is enabled
         probe: gcloud services list --enabled --filter=run.googleapis.com --format=value(config.name)
         assert: contains
         value: run.googleapis.com
-        hint: Complete the "Request the services this course uses" task.
+        hint: Enable the required APIs in the task above.
       - id: build-enabled
-        label: Cloud Build and Artifact Registry are enabled
+        label: Cloud Build and Artifact Registry APIs are enabled
         probe: gcloud services list --enabled "--filter=cloudbuild.googleapis.com OR artifactregistry.googleapis.com" --format=value(config.name)
         assert: contains
         value: artifactregistry.googleapis.com
-        hint: These two are what turn your source into something Cloud Run can run.
+        hint: Cloud Build and Artifact Registry are required to build and store your container image.
       - id: firestore-enabled
-        label: Firestore is enabled
+        label: Cloud Firestore API is enabled
         probe: gcloud services list --enabled --filter=firestore.googleapis.com --format=value(config.name)
         assert: contains
         value: firestore.googleapis.com
-        hint: Step 5 gives the leaderboard somewhere to live.
+        hint: Enable the Cloud Firestore API (`firestore.googleapis.com`).
       - id: ai-enabled
-        label: The AI platform is enabled
+        label: Vertex AI API (aiplatform.googleapis.com) is enabled
         probe: gcloud services list --enabled --filter=aiplatform.googleapis.com --format=value(config.name)
         assert: contains
         value: aiplatform.googleapis.com
-        hint: Step 6 uses this to draw a new dino.
+        hint: Enable `aiplatform.googleapis.com` to allow Gemini API calls.

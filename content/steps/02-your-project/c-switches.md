@@ -1,33 +1,25 @@
 :::section kicker="Defaults" headline="Service API switches"
-In a new project, each service is disabled. The first attempt to use one fails
-with an error naming the API and explaining how to enable it.
+In a newly created Google Cloud project, almost all service APIs are disabled by default. Calling a service before enabling its API returns a `SERVICE_DISABLED` (`403 PERMISSION_DENIED`) error that identifies the required API endpoint and project ID.
 
-:::figure id="api-switches" caption="Services are enabled per project, one at a time."
+:::figure id="api-switches" caption="Service APIs are enabled per project and remain isolated from other projects."
 :::
 
-The exercise triggers that error deliberately, because reading the error is
-more useful than avoiding it.
+Requiring explicit API enablement prevents accidental resource creation in unintended projects and gives administrators visibility into which services a project uses.
 :::
 
 :::section kicker="Diagnostics" headline="Diagnosing disabled API errors"
-:::figure id="error-anatomy" caption="The error names the problem, the service, and the project."
+:::figure id="error-anatomy" caption="Standard Google Cloud error responses specify the failure reason, service endpoint, and target project."
 :::
 
 :::note
-A new project can also return permission errors for a minute or two after
-creation, while the change propagates. Wait and try again before investigating
-further.
+After enabling a service API, IAM and service management metadata can take up to two minutes to propagate globally. If a request immediately after enablement returns a permission error, wait briefly and retry.
 :::
 :::
 
 :::section kicker="Pricing" headline="Cost of enabling APIs"
-You are charged for what you use, not for what is switched on. So rather than
-coming back here every time a later section needs something, the exercise turns on
-the whole set at once: somewhere to run code, the build service and registry
-behind it, a database, a model, and the logs and metrics to watch it all.
+Enabling a Google Cloud API incurs no charge; you are billed only when you provision resources or make billable API requests. In the exercise below, you enable all APIs required for this course in a single step: **Cloud Run**, **Cloud Build**, **Artifact Registry**, **Firestore**, **Vertex AI / Gemini Enterprise Agent Platform**, **Cloud Logging**, and **Cloud Monitoring**.
 
 :::note
-All required services can be enabled with a single command. If a later task ever fails with "API not enabled",
-this is the page to come back to.
+You can enable multiple APIs simultaneously using `gcloud services enable`. If a later step reports that an API is disabled, verify your enabled services with `gcloud services list --enabled`.
 :::
 :::

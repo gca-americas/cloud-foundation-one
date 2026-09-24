@@ -1,96 +1,63 @@
 :::section kicker="Overview" headline="Organizing cloud products"
-Google Cloud has more than two hundred products. The list exists because the
-same platform serves banks, hospitals, game studios and you, and most of it is
-not addressed to you at all.
+Google Cloud offers more than two hundred products serving specialized enterprise, analytics, networking, and security workloads. To design an application architecture, evaluate requirements by functional service category rather than memorizing individual product names.
 
 :::key
-Do not learn products. Learn which category a problem belongs to, and then find
-the product in that category. Products get renamed and replaced. The categories
-have not moved in twenty years.
+Identify the foundational service category your workload requires first—such as serverless compute or document storage—and then select the appropriate managed product within that category.
 :::
 :::
 
 :::section kicker="Categories" headline="Core service categories"
-:::figure id="categories" caption="Every service belongs to one of these core categories."
+:::figure id="categories" caption="Google Cloud services grouped into five foundational architectural categories."
 :::
 
-**Somewhere to run code.** You have a program; something has to execute it.
-
-**Somewhere to keep files.** Things you hand back whole: photos, uploads,
-video. You do not look inside them, you fetch them. DinoQuest never needs this,
-for a reason worth knowing — see below.
-
-**Somewhere to keep records.** Things your app reads and writes as it runs:
-users, scores, messages. You look these up, filter them, change one field.
-
-**Something to connect it.** Addresses, names, who may reach what. The
-defaults are right for an app like this one, so the course never opens it.
-
-**Something to make it smart.** Models you call, rather than machines you
-train.
+Most cloud applications rely on five core service categories:
+- **Compute**: Environments that execute application code (such as **Cloud Run**, **Google Kubernetes Engine**, and **Compute Engine**).
+- **Object Storage**: Durable storage for unstructured binary files such as images, videos, backups, and static archives (**Cloud Storage**).
+- **Databases**: Managed systems for storing, indexing, querying, and updating structured application records (**Firestore**, **Cloud SQL**, **Spanner**, **Bigtable**).
+- **Networking**: Virtual networks, DNS routing, firewall rules, and load balancers that control traffic flow (**Virtual Private Cloud**, **Cloud Load Balancing**).
+- **AI and Machine Learning**: Managed foundation models, training infrastructure, and agent runtimes (**Gemini** on the **Gemini Enterprise Agent Platform**).
 :::
 
 :::section kicker="Storage" headline="Object storage versus databases"
-A **file** is opaque. You put it in, you get it back, and the storage never
-looks inside. A **record** is structured: you ask questions of it, and change
-one part without rewriting the whole thing.
+Distinguishing between **object storage** and **databases** is a critical design decision:
+- **Object storage (files)** treats each item as an opaque binary blob. You upload and retrieve the entire file as a single unit without querying or modifying individual fields inside it.
+- **Databases (records)** store structured data with fields that your application can index, filter, sort, and update individually.
 
-The leaderboard is a list of records, so DinoQuest needs a database.
-
-The dino sprite is a file — and DinoQuest still does not need a bucket for it,
-because that file never changes and travels inside the container. A bucket
-earns its place the moment files arrive that you did not ship: things people
-upload, or things your app generates and has to keep.
+Because DinoQuest's leaderboard stores `{name, score}` records that must be sorted in descending order and queried on every game run, it requires a **database** (**Firestore**) rather than an object storage bucket. By contrast, `app/static/dino.png` is a static asset packaged inside the application container and does not require external bucket storage.
 
 :::note
-Beginners force one into the other: photos in a database, user accounts in a
-folder of files. Both work briefly, and both hurt later.
+Storing structured application records in flat files or storing large binary media blobs inside database rows degrades performance and increases operational complexity as traffic grows.
 :::
 :::
 
 :::section kicker="Architecture" headline="Mapping services to DinoQuest"
-:::figure id="architecture" caption="How the cloud services fit together for DinoQuest."
+:::figure id="architecture" caption="End-to-end Google Cloud architecture for DinoQuest."
 :::
 
-Read it as a sentence. A player's browser reaches **Cloud Run**, which is
-running your game. Cloud Run reads and writes the leaderboard in
-**Firestore**, and asks **Gemini** for a dino. Your code got there because
-**Cloud Build** turned it into a container and **Artifact Registry** kept it.
-
-All of it sits inside one project — one bill, one set of permissions.
+The production DinoQuest deployment combines three runtime services and two build-pipeline services inside a single Google Cloud project:
+- **Cloud Run** serves the HTTP application and frontend game assets over HTTPS.
+- **Firestore** persists and orders player leaderboard records.
+- **Gemini** generates custom dinosaur sprites via structured JSON output.
+- **Cloud Build** packages the application source code into a container image, and **Artifact Registry** stores the image for deployment.
 
 :::key
-A few core categories and managed services are all that is needed to put a real
-application on the internet.
+A complete production web application typically requires only a focused subset of managed compute, database, build, and AI services within a single project boundary.
 :::
 :::
 
 :::section kicker="Compute" headline="Comparing compute models"
-There is more than one way to run the same app, and the difference is how much
-of the machine is yours to worry about.
+Google Cloud provides three primary compute models that differ in how much underlying infrastructure you manage:
 
-:::figure id="how-much-machine" caption="The coloured parts are yours to look after. The grey parts are somebody else's problem."
+:::figure id="how-much-machine" caption="Division of operational responsibility across virtual machines, Kubernetes clusters, and serverless containers."
 :::
 
-**A virtual machine** is one computer, rented. You get total control and you
-also get the operating system, the patches, and a pager when a disk fills up at
-3am.
+- **Compute Engine (Virtual Machines)**: You provision dedicated virtual machines and manage the guest operating system, security patches, disk volumes, and scaling policies.
+- **Google Kubernetes Engine (GKE)**: You orchestrate multi-container workloads across a managed cluster of nodes when applications require custom networking or complex microservice topologies.
+- **Cloud Run (Serverless Containers)**: You provide a container image or source directory; Google Cloud manages all underlying infrastructure, automatically scales instances from zero to match incoming HTTP traffic, and bills only for active request processing.
 
-**GKE**, Google Kubernetes Engine, runs many containers across many machines.
-It is genuinely excellent at that, and it hands you a cluster to run as well as
-an app.
-
-**Cloud Run** takes your container and runs it. There is no machine in the
-picture for you, and nothing to patch.
-
-This course uses Cloud Run.
+This course deploys DinoQuest to **Cloud Run** to eliminate server management and idle compute costs.
 :::
 
 :::section kicker="Scope" headline="Additional platform services"
-GKE, load balancers, VPC design, data warehouses, message queues,
-buckets, and the whole of logging and monitoring. All real, all excellent, none
-of them yours yet.
-
-Knowing what you are ignoring is the difference between a beginner and someone
-who is lost. The final section comes back to this and explains when each one is needed.
+Enterprise workloads often incorporate additional Google Cloud services—including custom VPC topologies, global external load balancers, **BigQuery** analytical warehouses, **Pub/Sub** event streams, and **Terraform** infrastructure-as-code pipelines. For a single-service web application, Cloud Run's default HTTPS routing and managed project defaults provide a complete production foundation.
 :::

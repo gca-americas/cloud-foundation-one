@@ -1,50 +1,47 @@
 :::section kicker="Structure" headline="What a project contains"
-Resources need a container, and costs need somewhere to be
-reported. In Google Cloud that container is a project, and every resource
-belongs to exactly one.
+Every Google Cloud resource must belong to a **project**. A project serves as the foundational organizational entity for provisioning, configuring, and governing cloud resources.
 :::
 
 :::section kicker="Boundaries" headline="Project boundaries"
-:::figure id="project-box" caption="Core boundaries a project defines for whatever is inside it."
+:::figure id="project-box" caption="Administrative and operational boundaries defined by a Google Cloud project."
 :::
 
-Costs report out of it, which is why teams keep development and production in
-separate projects. Access granted on it reaches everything inside. Services are
-off until switched on here. Quota is counted here. And deleting it takes the
-contents and the bill with it — the most reliable cleanup there is.
+A Google Cloud project defines five primary boundaries:
+- **Billing aggregation**: Resource usage is metered and reported per project, enabling teams to isolate development, staging, and production costs.
+- **Identity and Access Management (IAM)**: Permissions granted at the project level apply to all resources contained within the project.
+- **Service API enablement**: Google Cloud APIs are disabled by default and must be explicitly enabled per project.
+- **Quotas and rate limits**: Resource allocations and API request quotas are enforced at the project boundary.
+- **Lifecycle management**: Deleting a project permanently deletes all compute services, container images, and databases inside it.
 
 :::key
-When something does not work in Google Cloud, check the active project, whether
-the service is enabled, and permissions.
+When troubleshooting an issue in Google Cloud, verify three settings in order: the active project ID, whether the target service API is enabled, and the caller's IAM permissions.
 :::
 :::
+
 :::section kicker="Identifiers" headline="Project identifiers"
-A project has a display name, a project ID, and a project number, and they serve different purposes.
+Each Google Cloud project is identified by three attributes:
 
-:::figure id="three-names" caption="The project ID is the identifier that commands and URLs use."
+:::figure id="three-names" caption="The project ID is the globally unique identifier used in CLI commands and SDK configurations."
 :::
 
-The project ID is unique across all of Google Cloud, so the ID you want might
-be unavailable. This is why the console suggests an ID with digits appended.
+- **Project Name**: A human-readable display label that can be modified at any time.
+- **Project ID**: A globally unique string identifier (for example, `my-dinoquest-4821`) used in `gcloud` commands, client libraries, and resource URLs.
+- **Project Number**: A system-generated numeric identifier used internally by IAM policies and Google-managed service accounts.
 
 :::warn
-A project ID cannot be changed after the project is created. Choose an ID that
-can stay, or accept the suggested one.
+A project ID is permanent and cannot be modified after creation. If a requested project ID is already taken globally, the Google Cloud console appends a numeric suffix automatically.
 :::
 :::
 
 :::section kicker="Billing" headline="Billing accounts"
-A billing account is not part of a project. It is a separate resource, and a
-project is linked to it.
+A **Cloud Billing account** is an organization-level or user-level financial resource that exists outside individual projects. You link one or more projects to a billing account to pay for resource consumption.
 
-:::figure id="billing-link" caption="One billing account can pay for many projects."
+:::figure id="billing-link" caption="A single Cloud Billing account can be linked to multiple Google Cloud projects."
 :::
 
-A project without a linked billing account can exist and hold resources, but
-most services do not work until billing is enabled.
+While a project can be created without a billing account, most Google Cloud services require an active linked billing account before resources can be provisioned.
 
 :::note
-This separation lets an organization allow engineers to create projects while
-keeping every project linked to a central billing account.
+Separating billing accounts from projects allows organizations to let engineering teams create isolated projects while consolidating invoices under a central billing account.
 :::
 :::

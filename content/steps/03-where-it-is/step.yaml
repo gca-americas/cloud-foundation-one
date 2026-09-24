@@ -3,7 +3,7 @@ title: Choose a region
 kicker: Project setup
 part: corner
 color: violet
-summary: Where cloud resources physically run, and how to choose a place for yours.
+summary: Understand Google Cloud regions, physical network latency, and how to select an optimal region for your workload.
 
 parts:
   - id: a
@@ -13,12 +13,11 @@ parts:
     exercise:
       title: Select a region
       intro: >
-        Evaluate the following deployment scenarios to select the appropriate region.
+        Evaluate each deployment scenario below and select the region that satisfies user latency, data residency, and service availability requirements.
       tasks:
         - kind: widget
           id: quiz
           title: Region selection scenarios
           widget: region-quiz
           explain: >
-            Select the best region for each deployment scenario. Read why the wrong ones are
-            wrong — that is where the lesson is.
+            Choose the optimal region for each scenario and review the architectural rationale for each option.

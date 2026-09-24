@@ -1,53 +1,35 @@
 :::section kicker="Architecture" headline="Completed system architecture"
-Every component in the final architecture serves a specific purpose.
+Your deployed application integrates five managed Google Cloud services within a single project boundary:
 
-:::figure id="architecture" caption="How the deployed components work together."
+:::figure id="architecture" caption="Complete production architecture of DinoQuest on Google Cloud."
 :::
 
-Read it as a sentence: a player's browser reaches **Cloud Run**, which is
-running your game. Cloud Run reads and writes the leaderboard in **Firestore**,
-and asks **Gemini** for a dino. Your code got there because **Cloud Build**
-turned it into a container and **Artifact Registry** kept it. All of it sits
-inside one project — one bill, one set of permissions.
+Player browsers connect over HTTPS to **Cloud Run**, which executes the containerized Python application. Cloud Run reads and writes leaderboard documents in **Firestore** and calls **Gemini** on the **Gemini Enterprise Agent Platform** to generate custom character sprites. **Cloud Build** packages the source directory into a container image, and **Artifact Registry** stores the image for deployment. All resources share a single Google Cloud project, billing account link, and IAM policy boundary.
 :::
 
 :::section kicker="Billing" headline="Understanding the bill"
-Cloud billing is determined by several distinct usage dimensions:
-
-- **Compute time** — the container, while it is running. Nothing while idle.
-- **Storage** — the database and the stored container image, whether or not
-  anyone asks for them.
-- **Requests** — per call, including every call to the model.
-- **Egress** — data leaving Google's network. This is the one nobody expects.
+Cloud Billing meters your deployed architecture across four primary dimensions:
+- **Compute duration**: CPU and memory seconds consumed by **Cloud Run** while actively processing HTTP requests ($0 while scaled to zero).
+- **Persistent storage**: Gigabytes stored in **Firestore** (documents and indexes) and **Artifact Registry** (container image layers), which are billed continuously regardless of request traffic.
+- **API requests and tokens**: Document reads and writes in **Firestore**, plus input and output tokens processed by **Gemini**.
+- **Network egress**: Data transferred out of Google Cloud's network to external internet clients.
 
 :::note
-Scaling to zero is not the same as costing zero. The Cloud Run service is free
-when nobody is playing; the image in Artifact Registry and the rows in
-Firestore are not.
+Scaling compute to zero (`min-instances=0`) eliminates idle CPU charges on Cloud Run, but persistent storage in Artifact Registry and Firestore continues to accrue storage usage until deleted.
 :::
 
-:::console url="https://console.cloud.google.com/billing" label="Open billing" note="Find your own numbers. A line for Cloud Run, a line for Firestore, and which one would grow if the game became popular."
+:::console url="https://console.cloud.google.com/billing" label="Open Cloud Billing" note="Inspect your cost breakdown by service (Cloud Run, Firestore, Artifact Registry, and Vertex AI)."
 :::
 :::
 
 :::section kicker="Cleanup" headline="Shutting down the project"
-A project is the container everything goes in: one bill, one set of
-permissions, one namespace. That is what makes cleanup simple.
-
-Deleting the project deletes the Cloud Run service, the container image, the
-Firestore database and everything else inside it, in one action. There is no
-list to work through and nothing to forget.
+Because every resource you created—the Cloud Run service, the Artifact Registry container image, and the Firestore database—resides inside your Google Cloud project, **deleting the project** deprovisions all resources and stops all future billing in a single operation.
 
 :::warn
-This is the one thing in the course that cannot be undone from the workbench.
-A service, a database or an image can be made again; a project id cannot be
-reused, and after 30 days the contents are gone for good. Do this when you have
-finished — not before.
+Deleting a Google Cloud project permanently deprovisions all resources inside it after a 30-day recovery window, and its Project ID can never be reused. Only delete the project after you have finished testing your deployed application.
 :::
 
-The 30 days are a grace period, not a backup. A deleted project is marked for
-deletion and can be restored during that window, and then it is gone.
+When you shut down a project, Google Cloud immediately suspends serving and marks the project for deletion. During the 30-day grace period, an administrator can restore the project if needed; after 30 days, all data and resources are permanently erased.
 
-What is not deleted: your **billing account**, which belongs to you rather than
-to the project, and any other project you own.
+Deleting a project does **not** delete your **Cloud Billing account** or any other projects linked to that billing account, because the billing account is an independent resource outside the project boundary.
 :::
