@@ -64,8 +64,7 @@ export function BudgetAssist({ label = "Create it for me" }: { label?: string })
           {failed && (
             <>
               {" "}
-              The console route works when this does not — budgets live on the
-              billing account, and not every login may change one.
+              If automated creation fails due to billing account permissions, configure the budget directly in the Google Cloud console.
             </>
           )}
         </p>

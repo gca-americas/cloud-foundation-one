@@ -118,10 +118,8 @@ export function ProjectTask({ task, color }: { task: Task; color: string }) {
 
         {ready && (
           <p className="mt-3 text-sm" style={{ color: "var(--fg-muted)" }}>
-            The id is <code className="font-mono">{status?.project}</code>, not{" "}
-            <code className="font-mono">{status?.name}</code>. Project ids have to
-            be unique across all of Google Cloud, so the name you asked for and
-            the id you get are two different things. Step 3 comes back to this.
+            Your globally unique project ID is <code className="font-mono">{status?.project}</code> (with display name{" "}
+            <code className="font-mono">{status?.name}</code>). Because project IDs must be unique across all of Google Cloud, a numeric suffix is appended to distinguish the immutable project ID from the human-readable project name.
           </p>
         )}
       </div>

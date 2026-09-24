@@ -90,9 +90,7 @@ export function BillingTask({ task, color }: { task: Task; color: string }) {
 
         {enabled && (
           <p className="mt-3 text-sm" style={{ color: "var(--fg-muted)" }}>
-            The account and the project are still two separate things. Unlink
-            them and the project keeps every resource in it — it just stops being
-            able to do much.
+            The Cloud Billing account remains independent of the project boundary. If you unlink the billing account, the project retains its configuration, while billable services are suspended until billing is re-enabled.
           </p>
         )}
       </div>
