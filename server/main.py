@@ -50,6 +50,9 @@ async def student_app(request: Request, path: str = "") -> Response:
     return Response(content=payload, status_code=status, headers=headers)
 
 
+if (config.ROOT / "img").exists():
+    app.mount("/img", StaticFiles(directory=config.ROOT / "img"), name="img")
+
 if config.WEB_DIST.exists():
     app.mount("/assets", StaticFiles(directory=config.WEB_DIST / "assets"), name="assets")
 

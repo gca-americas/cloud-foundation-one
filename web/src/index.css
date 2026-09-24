@@ -218,6 +218,13 @@ img { max-width: 100%; }
 .prose ol { list-style: decimal; }
 
 .prose a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+.prose img {
+  border-radius: 1rem;
+  border: 1px solid var(--hairline);
+  margin: 1.25rem 0;
+  display: block;
+  width: 100%;
+}
 
 .prose code {
   font-family: ui-monospace, "SF Mono", Menlo, monospace;

@@ -1,6 +1,8 @@
 :::section kicker="Overview" headline="DinoQuest"
 **DinoQuest** is a web-based runner game with a score leaderboard. Players jump over obstacles to accumulate points, and completed runs are recorded on the leaderboard.
 
+![DinoQuest gameplay and leaderboard](/img/the-game.png)
+
 In this exercise, you inspect the application source files, start the local HTTP server from the terminal, and test the application in the embedded preview pane. The application runs as a standalone Python process in Cloud Shell.
 :::
 
