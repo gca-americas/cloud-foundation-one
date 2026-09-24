@@ -34,7 +34,10 @@ sprite.src = "dino.png";
 
 /* ── sound ───────────────────────────────────────────────────────────────── */
 
-let soundOn = false;
+// On by default. The music cannot actually start until the player interacts
+// with the page -- browsers refuse audio before a gesture -- so it begins on
+// the first press rather than at load.
+let soundOn = true;
 const effects = {
   jump: new Audio("audio/jump.mp3"),
   bump: new Audio("audio/bump.mp3"),
@@ -51,12 +54,15 @@ function play(name) {
   clip.play().catch(() => {});
 }
 
+function startMusic() {
+  if (soundOn) music.play().catch(() => {});
+}
+
 soundButton.addEventListener("click", () => {
   soundOn = !soundOn;
   soundButton.textContent = soundOn ? "sound on" : "sound off";
   soundButton.setAttribute("aria-pressed", String(soundOn));
-  // Browsers only allow audio to start from a gesture, so this click is it.
-  if (soundOn) music.play().catch(() => {});
+  if (soundOn) startMusic();
   else music.pause();
 });
 
@@ -96,6 +102,7 @@ function start() {
   reset();
   running = true;
   overlay.hidden = true;
+  startMusic();          // the press that got here is the gesture audio needs
   requestAnimationFrame(tick);
 }
 
