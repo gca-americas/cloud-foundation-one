@@ -56,11 +56,12 @@ cd cloud-foundation-one
 ./scripts/start.sh
 ```
 
-When the startup script completes, it outputs the local workbench address on port **4800**:
+When the startup script completes, it launches the workbench server in the background (returning your Cloud Shell prompt immediately) and outputs the local workbench address on port **4800**:
 
 ```console
-  Cloud 101 Workbench
+  Cloud 101 Workbench (running in background, PID 12345)
   http://localhost:4800
+  Stop anytime with: ./scripts/stop.sh
 ```
 
 To open the workbench UI in your browser:
@@ -68,13 +69,20 @@ To open the workbench UI in your browser:
 1. Click **Web Preview** in the top-right corner of the Cloud Shell toolbar.
 2. Select **Change port**, enter **4800**, and click **Change and Preview**.
 
+If you ever need to stop the background workbench server (and any running DinoQuest game process), run:
+
+```bash
+./scripts/stop.sh
+```
+
 ### How the Cloud 101 Workbench is set up
 
-Running `./scripts/start.sh` provisions and launches a self-contained learning environment inside your Cloud Shell instance:
+Running `./scripts/start.sh` provisions and launches a self-contained learning environment in the background of your Cloud Shell instance:
 
 - **Python environment and dependencies (`uv`)**: The startup script creates an isolated Python virtual environment (`.venv`) and runs `uv sync` to install the workbench backend (FastAPI and Uvicorn) alongside the libraries used by the DinoQuest application (`google-cloud-firestore` and `google-genai`).
 - **Interactive frontend build (`web/dist`)**: On its first run, the script installs Node.js packages and compiles the React and Vite single-page application into `web/dist`, bundling the interactive architecture diagrams, cost and latency simulators, and step-by-step course curriculum from `content/`.
-- **Single-port reverse proxy (`localhost:4800`)**: A FastAPI server (`server.main:app`) binds to port `4800` to serve the workbench UI and API. Whenever you run the DinoQuest game server (`app/server.py` on port `8080`), the workbench reverse-proxies requests under `/app/*` to the student application process. This same-origin proxy allows you to preview and play DinoQuest directly inside the workbench browser tab while exposing only port `4800` through Cloud Shell Web Preview.
+- **Background daemon and process management (`runs/`)**: The script launches the FastAPI server (`server.main:app`) in the background, writes its process ID to `runs/workbench.pid` and logs to `runs/workbench.log`, and waits until `localhost:4800` is accepting connections before returning control of your terminal. Running `./scripts/stop.sh` terminates both the background workbench server and any spawned DinoQuest process (`runs/app.pid`).
+- **Single-port reverse proxy (`localhost:4800`)**: The FastAPI server binds to port `4800` to serve the workbench UI and API. Whenever you run the DinoQuest game server (`app/main.py` on port `8080`), the workbench reverse-proxies requests under `/app/*` to the student application process. This same-origin proxy allows you to preview and play DinoQuest directly inside the workbench browser tab while exposing only port `4800` through Cloud Shell Web Preview.
 - **Live Google Cloud verification engine**: Because the FastAPI backend runs inside your authenticated Cloud Shell session, it shares your active `gcloud` CLI configuration and Application Default Credentials (ADC). When you complete a task and click **Verify**, the workbench runs live, read-only inspections against Google Cloud APIs to confirm your project configuration, billing linkage, budget alerts, enabled APIs, Firestore documents, Gemini credentials, and Cloud Run deployment in real time.
 
 Positive

@@ -191,7 +191,8 @@ and reversible.
 Requires `uv`, Node 18+, and the `gcloud` CLI signed in.
 
 ```bash
-scripts/start.sh          # builds if needed, serves on http://localhost:4800
+scripts/start.sh          # builds if needed, serves in the background on http://localhost:4800
+scripts/stop.sh           # stops the background workbench (and any running student app process)
 scripts/dev.sh            # API on 4800, Vite with hot reload on 5273
 ```
 
