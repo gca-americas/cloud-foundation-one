@@ -84,13 +84,13 @@ Running `./scripts/start.sh` provisions and launches a self-contained learning e
 - **Live Google Cloud verification engine**: Because the FastAPI backend runs inside your authenticated Cloud Shell session, it shares your active `gcloud` CLI configuration and Application Default Credentials (ADC). When you complete a task and click **Verify**, the workbench runs live, read-only inspections against Google Cloud APIs to confirm your project configuration, billing linkage, budget alerts, enabled APIs, Firestore documents, Gemini credentials, and Cloud Run deployment in real time.
 
 <aside class="special">
-<p><strong>You no longer need this codelab once the Cloud 101 Workbench opens in your browser.</strong> Because the workbench provides the reading material, interactive simulators, live DinoQuest preview (<code>/app</code>), and real-time Google Cloud verification checks in a single browser tab, you will complete the remainder of the workshop directly inside the <strong>Cloud 101 Workbench</strong> on port <code>4800</code>. You can use the final page of this codelab as a conceptual reference and architectural summary.</p>
+<p><strong>We recommend staying in the Cloud 101 Workbench (<code>http://localhost:4800</code>) for the rest of the hands-on workshop.</strong> The workbench provides all reading material, interactive simulators, the live DinoQuest preview (<code>/app</code>), and real-time Google Cloud verification checks in a single browser tab. Whenever you want a quick conceptual review or are ready to clean up your resources at the end of the workshop, return to the <strong>Summary</strong> step of this codelab.</p>
 </aside>
 
 ## Summary
 
 <aside class="special">
-<p><strong>Work directly in the Cloud 101 Workbench (<code>http://localhost:4800</code>) to complete all hands-on exercises.</strong> The <strong>Cloud 101 Workbench</strong> tab you opened in the previous step guides you step by step through running DinoQuest, provisioning your Google Cloud project and billing guardrails, creating a Firestore database, integrating Gemini sprite generation, and deploying to Cloud Run. Each module in the workbench includes interactive concepts, guided exercises, and live read-only checks against your Google Cloud account. Use the sections below as a comprehensive conceptual reference and summary of the architectural principles covered in the workbench.</p>
+<p><strong>Complete the hands-on exercises in the Cloud 101 Workbench (<code>http://localhost:4800</code>).</strong> The <strong>Cloud 101 Workbench</strong> tab you opened in the previous step guides you step by step through running DinoQuest, provisioning your Google Cloud project and billing guardrails, creating a Firestore database, integrating Gemini sprite generation, and deploying to Cloud Run. Use the sections below as a conceptual reference while working in the workbench, and follow the <strong>Clean up your environment</strong> section at the bottom of this page when you finish.</p>
 </aside>
 
 ### Local processes versus cloud infrastructure
@@ -258,3 +258,28 @@ When evaluating the monthly Cloud Billing invoice for a serverless architecture,
 4. **Network egress**: Data transferred out of Google Cloud's network to clients on the public internet.
 
 Because all compute services, databases, and container registries created during this course reside inside a single Google Cloud project boundary, **shutting down the project** deletes every provisioned resource at once and stops all ongoing storage and compute charges—while leaving your external **Cloud Billing account** intact for future projects.
+
+### Clean up your environment
+
+When you have finished exploring DinoQuest and the **Cloud 101 Workbench**, complete the following steps to stop your local background processes, remove the workshop files from Cloud Shell, and delete your Google Cloud project so no ongoing storage or compute charges accrue.
+
+1. **Stop the workbench and application instances in Cloud Shell**:
+   In your Cloud Shell terminal, stop the background workbench server and any running local DinoQuest process:
+   ```bash
+   cd ~/cloud-foundation-one
+   ./scripts/stop.sh
+   ```
+
+2. **Delete the workshop folder from Cloud Shell**:
+   Return to your home directory and remove the cloned repository folder:
+   ```bash
+   cd ~
+   rm -rf ~/cloud-foundation-one
+   ```
+
+3. **Delete your Google Cloud project**:
+   Shutting down the project permanently deletes the **Cloud Run** service (`dinoquest`), the **Artifact Registry** container repository (`cloud-run-source-deploy`), and the **Firestore** database (`(default)`), while leaving your **Cloud Billing account** intact:
+   - Open the [Manage resources page in the Google Cloud console](https://console.cloud.google.com/cloud-resource-manager).
+   - Select your workshop project (for example, `my-dinoquest-...`) from the resource list.
+   - Click **Delete** in the top toolbar, type your project ID to confirm, and click **Shut down**.
+
