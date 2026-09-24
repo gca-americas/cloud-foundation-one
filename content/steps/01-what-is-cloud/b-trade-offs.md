@@ -12,14 +12,6 @@ Workload demand is large, continuous, and highly predictable over multi-year hor
 :::
 :::
 
-:::section kicker="Trade-offs" headline="Provider dependency"
-Adopting higher-level managed services reduces operational overhead, allowing engineering teams to focus on application logic. However, deeper integration with provider-specific APIs increases architectural coupling to that cloud platform.
-
-:::key
-Select managed cloud services when elastic scaling and reduced operational toil outweigh the cost of managing infrastructure yourself.
-:::
-:::
-
 :::section kicker="Scope" headline="Resources used in this course"
 :::figure id="rent-three" caption="On-demand provisioning applied across compute, database storage, and foundation models."
 :::

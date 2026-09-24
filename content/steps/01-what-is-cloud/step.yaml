@@ -23,8 +23,8 @@ parts:
             Adjust the average traffic and peak-to-average ratio sliders to observe how owned hardware step-functions compare with elastic cloud billing.
 
   - id: b
-    label: Cost and trade-offs
-    headline: Cost and trade-offs
+    label: Cloud economics and scope
+    headline: Cloud economics and scope
     body: b-trade-offs.md
     exercise:
       title: Create a Google Cloud project
