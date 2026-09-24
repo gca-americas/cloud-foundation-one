@@ -124,6 +124,20 @@ export function ProvisionTask({ slug, task, color }: {
         </p>
       )}
 
+      {task.url && (
+        <div className="mt-3 flex flex-wrap items-center gap-3">
+          <a
+            href={task.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-lg border px-3 py-1.5 text-sm font-medium"
+            style={{ borderColor: color, color }}
+          >
+            {task.linkLabel ?? "Open in the console"} ↗
+          </a>
+        </div>
+      )}
+
       {!started && (
         <div className="mt-3">
           <textarea

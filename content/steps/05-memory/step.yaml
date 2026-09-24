@@ -24,6 +24,8 @@ parts:
         - kind: provision
           id: create-db
           title: Create the Firestore database
+          url: https://console.cloud.google.com/firestore/databases?cloudshell=true
+          linkLabel: Open Firestore in the console
           example: Set up a Firestore database in my region to keep the scores
           prompt: >
             Describe the managed database resource you need to provision so leaderboard scores persist when the server stops.
