@@ -5,6 +5,7 @@ import { AppPanel } from "./AppPanel";
 import { FileExplorer } from "./FileExplorer";
 import { Terminal } from "./Terminal";
 import { ProjectTask } from "./ProjectTask";
+import { watchRun } from "../lib/watchRun";
 import { DeployTask } from "./DeployTask";
 import { HelpMe } from "./HelpMe";
 import { StagedRun } from "./StagedRun";
@@ -115,6 +116,16 @@ function useRunStream() {
     setCode(null);
     setState("running");
   }, []);
+
+  // The stream is the fast path; this is the one that cannot be missed.
+  useEffect(() => {
+    if (state !== "running" || !token.current) return;
+    return watchRun(token.current, (code, log) => {
+      setState("done");
+      setCode(code);
+      setLines(log.split("\n").filter(Boolean));
+    });
+  }, [state]);
 
   const fail = useCallback((message: string) => {
     setState("done");

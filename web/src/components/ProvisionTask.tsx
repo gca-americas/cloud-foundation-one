@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { api, onRunEvent, type Task } from "../lib/api";
+import { watchRun } from "../lib/watchRun";
 import { HelpMe } from "./HelpMe";
 
 /* Asking for something to be built, and watching it happen.
@@ -73,7 +74,15 @@ export function ProvisionTask({ slug, task, color }: {
   const [showLog, setShowLog] = useState(false);
   const [busy, setBusy] = useState(false);
   const token = useRef<string | null>(null);
+  const settled = useRef(false);
   const tail = useRef<HTMLDivElement>(null);
+
+  const finish = useCallback((code: number, log?: string) => {
+    if (settled.current) return;
+    settled.current = true;
+    setState(code === 0 ? "done" : "failed");
+    if (log !== undefined) setLines(log.split("\n").filter(Boolean));
+  }, []);
 
   useEffect(
     () =>
@@ -81,15 +90,21 @@ export function ProvisionTask({ slug, task, color }: {
         if (event.token !== token.current) return;
         if (event.type === "run.line") setLines((previous) => [...previous, event.line]);
         if (event.type === "run.done") {
-          setState(event.code === 0 ? "done" : "failed");
+          finish(event.code);
           api
             .runStatus(event.token)
             .then((status) => setLines(status.log.split("\n").filter(Boolean)))
             .catch(() => {});
         }
       }),
-    [],
+    [finish],
   );
+
+  // The stream can be missed; the record cannot.
+  useEffect(() => {
+    if (state !== "running" || !token.current) return;
+    return watchRun(token.current, finish);
+  }, [state, finish]);
 
   useEffect(() => {
     if (showLog) tail.current?.scrollIntoView({ block: "nearest" });
@@ -104,6 +119,7 @@ export function ProvisionTask({ slug, task, color }: {
       setVerdict({ ok: response.ok, feedback: response.feedback });
       if (response.ok && response.token) {
         token.current = response.token;
+        settled.current = false;
         setLines([]);
         setState("running");
       }

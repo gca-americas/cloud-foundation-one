@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { api, onRunEvent, type Task } from "../lib/api";
+import { watchRun } from "../lib/watchRun";
 import { HelpMe } from "./HelpMe";
 import { StagePipeline, stageFromLog } from "./StagePipeline";
 
@@ -27,6 +28,15 @@ export function DeployTask({ slug, task, color }: {
   const [busy, setBusy] = useState(false);
   const [url, setUrl] = useState("");
   const token = useRef<string | null>(null);
+  const settled = useRef(false);
+
+  const finish = useCallback((code: number, log?: string) => {
+    if (settled.current) return;
+    settled.current = true;
+    setState(code === 0 ? "done" : "failed");
+    if (log !== undefined) setLines(log.split("\n").filter(Boolean));
+    if (code === 0) api.serviceUrl().then((r) => setUrl(r.url)).catch(() => {});
+  }, []);
 
   useEffect(
     () =>
@@ -34,16 +44,21 @@ export function DeployTask({ slug, task, color }: {
         if (event.token !== token.current) return;
         if (event.type === "run.line") setLines((previous) => [...previous, event.line]);
         if (event.type === "run.done") {
-          setState(event.code === 0 ? "done" : "failed");
+          finish(event.code);
           api
             .runStatus(event.token)
             .then((status) => setLines(status.log.split("\n").filter(Boolean)))
             .catch(() => {});
-          if (event.code === 0) api.serviceUrl().then((r) => setUrl(r.url)).catch(() => {});
         }
       }),
-    [],
+    [finish],
   );
+
+  // A deployment runs for minutes, which is plenty of time to lose the stream.
+  useEffect(() => {
+    if (state !== "running" || !token.current) return;
+    return watchRun(token.current, finish);
+  }, [state, finish]);
 
   async function send() {
     if (!utterance.trim() || busy || state === "running") return;
@@ -53,6 +68,7 @@ export function DeployTask({ slug, task, color }: {
       const response = await api.submitIntent(slug, task.id, utterance);
       if (response.ok && response.token) {
         token.current = response.token;
+        settled.current = false;
         setLines([]);
         setState("running");
       } else {
