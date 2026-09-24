@@ -10,7 +10,7 @@ Cloud Run answers all four, and the answer is the same shape as every other
 step: you do not own the machine, and you are not the one keeping it alive.
 :::
 
-:::section kicker="Definition" headline="What Cloud Run is"
+:::section kicker="Definition" headline="Serverless containers"
 Cloud Run runs containers and gives each one a public address. You hand it a
 container; it starts copies when requests arrive, stops them when they stop,
 and charges for the time they were running.
@@ -43,7 +43,7 @@ to start, and works out the rest.
 :::
 :::
 
-:::section kicker="The process" headline="What deploying does"
+:::section kicker="The process" headline="Deploying the service"
 One request turns source into a running service. Four things happen, in order,
 and it is worth knowing which is which when one of them fails.
 
@@ -87,7 +87,7 @@ easy to undo, and you can see which revision introduced a problem.
 :::
 :::
 
-:::section kicker="Two things that change" headline="What is different once it is deployed"
+:::section kicker="Two things that change" headline="Service accounts and runtime settings"
 Running on your machine, the app called Firestore and Gemini as **you**, and
 you already had access to both. Deployed, it runs as a **service account** — an
 identity that belongs to the service rather than to a person, and that has been

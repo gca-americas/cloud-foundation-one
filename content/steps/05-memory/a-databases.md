@@ -1,4 +1,4 @@
-:::section kicker="Definition" headline="What a database is"
+:::section kicker="Definition" headline="Process memory versus databases"
 A database is a program whose whole job is to keep records safe and hand them
 back when asked. It runs somewhere other than your app, on its own storage,
 and it survives everything your app does — including stopping.
@@ -53,7 +53,7 @@ Cloud SQL would work too, and it would also hand you an instance to size, patch
 and remember to delete. For a leaderboard, that is a machine you did not need.
 :::
 
-:::section kicker="What changes" headline="What has to happen to DinoQuest"
+:::section kicker="What changes" headline="Provisioning and connecting Firestore"
 Two things, and only two.
 
 :::figure id="two-changes" caption="One thing gets created, and one section of one file gets rewritten."

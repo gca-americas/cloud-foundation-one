@@ -10,7 +10,7 @@ have not moved in twenty years.
 :::
 :::
 
-:::section kicker="The menu" headline="The five categories"
+:::section kicker="The menu" headline="Five service categories"
 :::figure id="categories" caption="Every service belongs to one of these. This course uses three."
 :::
 
@@ -30,7 +30,7 @@ defaults are right for an app like this one, so the course never opens it.
 train.
 :::
 
-:::section kicker="Files or records" headline="The distinction nobody explains"
+:::section kicker="Files or records" headline="Files versus records"
 A **file** is opaque. You put it in, you get it back, and the storage never
 looks inside. A **record** is structured: you ask questions of it, and change
 one part without rewriting the whole thing.
@@ -67,7 +67,7 @@ application on the internet.
 :::
 :::
 
-:::section kicker="How much to manage" headline="How much machine you think about"
+:::section kicker="How much to manage" headline="Compute options"
 There is more than one way to run the same app, and the difference is how much
 of the machine is yours to worry about.
 

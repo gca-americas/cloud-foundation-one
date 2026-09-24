@@ -1,4 +1,4 @@
-:::section kicker="The goal" headline="A dino drawn on request"
+:::section kicker="The goal" headline="Generating sprites with Gemini"
 DinoQuest runs the same character every time, because the character is a file:
 `app/static/dino.png`. Replacing that file replaces the dino, and the game
 does not need to know how it got there.
@@ -16,7 +16,7 @@ far cheaper, than asking for an image.
 :::
 :::
 
-:::section kicker="Configuration" headline="Settings belong outside the code"
+:::section kicker="Configuration" headline="Environment configuration"
 Three things have to be known before any call can be made: that the request
 goes to Google Cloud rather than to the Gemini Developer API, which project
 pays for it, and which endpoint answers.

@@ -1,15 +1,14 @@
 slug: home
-title: Give your app a home
-kicker: Step 7
+title: Deploy to Cloud Run
+kicker: Put your app on the cloud
 part: ship
-minutes: 30
 color: emerald
 summary: "Serverless: your container runs, scales, and costs nothing while idle."
 
 parts:
   - id: a
-    label: Cloud Run
-    headline: Somewhere to run
+    label: Serverless containers
+    headline: Serverless containers
     body: a-cloud-run.md
     exercise:
       title: Put it on the cloud

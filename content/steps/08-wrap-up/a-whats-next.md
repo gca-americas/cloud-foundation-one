@@ -1,4 +1,4 @@
-:::section kicker="The tools" headline="Doing this without doing it by hand"
+:::section kicker="The tools" headline="AI developer tools"
 You built each piece deliberately, one at a time. Most of it can now be done
 for you — and the reason to have built it by hand is that when a tool does it,
 you can tell what it made and whether it is right.

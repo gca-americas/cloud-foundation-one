@@ -25,7 +25,7 @@ a request from London to Tokyo behaves better than the distance suggests — it
 is not taking the public internet's route.
 :::
 
-:::section kicker="Distance" headline="Why the choice matters"
+:::section kicker="Distance" headline="Distance and latency"
 Light travels through fibre at roughly 200,000 kilometres per second. That is a
 limit no hardware raises.
 
@@ -43,7 +43,7 @@ Your code runs at the same speed in all three. The only thing that changed is
 how far the request had to go.
 :::
 
-:::section kicker="Choosing" headline="Close to your users"
+:::section kicker="Choosing" headline="Selecting a region"
 :::key
 Choose the region nearest the people who will use the thing — not the region
 nearest you.

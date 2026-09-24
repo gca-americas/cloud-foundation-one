@@ -1,20 +1,19 @@
 slug: wrap-up
-title: Review and cleanup
-kicker: Step 8
+title: Cost and cleanup
+kicker: Run it like a professional
 part: run
-minutes: 25
 color: rose
 summary: The tools that build this for you, and taking what you made back down.
 
 parts:
   - id: a
-    label: What's next
-    headline: Tools that build this for you
+    label: AI developer tools
+    headline: AI developer tools
     body: a-whats-next.md
 
   - id: b
-    label: Cleanup
-    headline: What you built, and taking it down
+    label: Understanding the bill
+    headline: Understanding the bill and shutting down
     body: b-cleanup.md
     exercise:
       title: Take it all down

@@ -1,15 +1,14 @@
 slug: what-is-cloud
-title: Cloud computing
-kicker: Step 1
+title: What cloud computing is
+kicker: Understand it
 part: understand
-minutes: 20
 color: sky
 summary: Renting computing resources instead of owning them.
 
 parts:
   - id: a
-    label: Renting
-    headline: Renting compute instead of owning it
+    label: Renting instead of owning
+    headline: Renting instead of owning
     body: a-renting.md
     exercise:
       title: Compare what each one costs
@@ -28,8 +27,8 @@ parts:
             to be bought on each side.
 
   - id: b
-    label: Cost and setup
-    headline: Cost, trade-offs, and your project
+    label: Cost and trade-offs
+    headline: Cost and trade-offs
     body: b-trade-offs.md
     exercise:
       title: Set up your corner of Google Cloud

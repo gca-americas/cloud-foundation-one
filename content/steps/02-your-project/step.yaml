@@ -1,14 +1,13 @@
 slug: your-project
 title: Projects and billing
-kicker: Step 2
+kicker: Set up your corner
 part: corner
-minutes: 30
 color: violet
 summary: The container for cloud resources, the account that pays for them, and budget alerts.
 
 parts:
   - id: a
-    label: Projects and billing
+    label: Projects, identifiers, and billing accounts
     headline: Projects, identifiers, and billing accounts
     body: a-the-box.md
     exercise:

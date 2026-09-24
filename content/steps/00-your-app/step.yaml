@@ -1,15 +1,14 @@
 slug: your-app
-title: DinoQuest in Cloud Shell
-kicker: Step 0
+title: Run the app where it is
+kicker: Understand it
 part: understand
-minutes: 10
 color: sky
 summary: The app this course puts on the internet, and why nobody else can reach it yet.
 
 parts:
   - id: a
-    label: The app
-    headline: The app this course deploys
+    label: The application
+    headline: The application
     body: a-the-app.md
     exercise:
       title: Look at it, then run it
@@ -60,7 +59,7 @@ parts:
         but the habit is worth having.
 
   - id: b
-    label: Requirements
+    label: Requirements for a public app
     headline: Requirements for a public app
     body: b-requirements.md
     checks:

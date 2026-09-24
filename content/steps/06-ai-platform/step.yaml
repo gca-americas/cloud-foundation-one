@@ -1,19 +1,18 @@
 slug: ai-platform
 title: The AI platform
-kicker: Step 6
+kicker: Make it do more
 part: grow
-minutes: 35
 color: fuchsia
 summary: Google hosts the models. Calling one is the same arrangement as everything else.
 
 parts:
   - id: a
-    label: The platform
-    headline: Renting a model
+    label: Hosted models and Model Garden
+    headline: Hosted models and Model Garden
     body: a-platform.md
   - id: b
-    label: Your turn
-    headline: A dino drawn by Gemini
+    label: Generating sprites with Gemini
+    headline: Generating sprites with Gemini
     body: b-generate.md
     exercise:
       title: Let a model draw the dino

@@ -11,7 +11,7 @@ turned it into a container and **Artifact Registry** kept it. All of it sits
 inside one project — one bill, one set of permissions.
 :::
 
-:::section kicker="The bill" headline="What you are charged for"
+:::section kicker="The bill" headline="Understanding the bill"
 Four things, and everyone is surprised by exactly one of them.
 
 - **Compute time** — the container, while it is running. Nothing while idle.
@@ -30,7 +30,7 @@ Firestore are not.
 :::
 :::
 
-:::section kicker="Cleanup" headline="Deleting the box, not the contents"
+:::section kicker="Cleanup" headline="Shutting down the project"
 Step 2 said a project is the box everything goes in: one bill, one set of
 permissions, one namespace. That is what makes cleanup simple.
 

@@ -1,13 +1,12 @@
 slug: the-menu
 title: What's on the menu
-kicker: Step 4
+kicker: Learn what's available
 part: menu
-minutes: 15
 color: amber
 summary: Five categories of service, and the shape of the thing you are about to build.
 
 parts:
   - id: a
-    label: The menu
-    headline: Five categories, and what you are building
+    label: Five service categories
+    headline: Five service categories
     body: a-menu.md

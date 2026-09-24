@@ -1,14 +1,13 @@
 slug: where-it-is
-title: Regions
-kicker: Step 3
+title: Choose a region
+kicker: Set up your corner
 part: corner
-minutes: 20
 color: violet
 summary: Where cloud resources physically run, and how to choose a place for yours.
 
 parts:
   - id: a
-    label: Regions
+    label: Data centers and regions
     headline: Data centers and regions
     body: a-regions.md
     exercise:

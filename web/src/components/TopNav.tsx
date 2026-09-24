@@ -138,7 +138,7 @@ export function TopNav({
                       color: isActive ? "var(--stage)" : "inherit",
                     }}
                   >
-                    {done ? "✓" : index}
+                    {done ? "✓" : index + 1}
                   </span>
                   {isActive && <span className="pr-1 font-semibold">{step.title}</span>}
                 </NavLink>
@@ -176,10 +176,6 @@ export function TopNav({
                     color: isActive ? accent : "var(--fg-muted)",
                   }}
                 >
-                  <span className="font-mono font-semibold">
-                    {active.order}
-                    {part.id}
-                  </span>
                   <span className={isActive ? "font-medium" : ""}>{part.label}</span>
                 </NavLink>
               );

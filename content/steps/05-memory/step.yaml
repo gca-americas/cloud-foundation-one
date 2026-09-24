@@ -1,15 +1,14 @@
 slug: memory
-title: Give your app a memory
-kicker: Step 5
+title: Give the app a memory
+kicker: Make it do more
 part: grow
-minutes: 30
 color: fuchsia
 summary: A managed database, in the region you chose, with no server to run.
 
 parts:
   - id: a
-    label: Databases
-    headline: Where records live
+    label: Process memory versus databases
+    headline: Process memory versus databases
     body: a-databases.md
     exercise:
       title: Lose the leaderboard, then keep it

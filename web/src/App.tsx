@@ -107,8 +107,7 @@ function StepPage({ course }: { course: CoursePayload }) {
           <>
             <div className="px-2 pt-16 pb-4 text-center">
               <div className="kicker" style={{ color: accent }}>
-                {step.kicker}
-                {manyParts && part.id ? part.id : ""}
+                {step.title}
                 {manyParts && part.label ? ` · ${part.label}` : ""}
               </div>
 
@@ -125,14 +124,14 @@ function StepPage({ course }: { course: CoursePayload }) {
                 </p>
               )}
 
-              <div
-                className="mt-6 flex items-center justify-center gap-3 text-[0.7rem]"
-                style={{ color: "var(--fg-faint)" }}
-              >
-                {group && <span className="kicker">{group.title}</span>}
-                <span>·</span>
-                <span>{step.minutes} min</span>
-              </div>
+              {group && (
+                <div
+                  className="mt-6 flex items-center justify-center gap-3 text-[0.7rem]"
+                  style={{ color: "var(--fg-faint)" }}
+                >
+                  <span className="kicker">{group.title}</span>
+                </div>
+              )}
             </div>
 
             <Content markdown={part.body} />
