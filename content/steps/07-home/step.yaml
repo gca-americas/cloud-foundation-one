@@ -29,7 +29,9 @@ parts:
             rejects:
               - [virtual machine, vm, compute engine, server for me]
             feedback:
-              missing_0: Specify the deployment action (for example: deploy or publish the application).
+              missing_0: >-
+                Specify the deployment action (for example: deploy or publish
+                the application).
               missing_1: >-
                 Specify the target serverless runtime (for example: deploy to Cloud Run).
               rejected: >
