@@ -31,6 +31,42 @@ To resolve these limitations without purchasing or managing servers, you migrate
 - **Hosted models on the Gemini Enterprise Agent Platform**: Authenticate to **Gemini** using Application Default Credentials (ADC) rather than static API keys, understand when to use regional versus global endpoints, and enforce structured JSON outputs to generate custom game sprites.
 - **Serverless containers and production security**: Package application source code into an immutable container image using **Cloud Build** and **Artifact Registry**, assign least-privilege IAM roles to a dedicated **Cloud Run** service account, and deploy a service that scales to zero when idle.
 
+### How this codelab is organized
+
+Hands-on work takes place in the **Cloud 101 Workbench**, a companion web application (`server/` and `web/`) running in Cloud Shell on port **4800**, while this codelab serves as your setup guide, conceptual reference, and architectural summary.
+
+Unlike traditional codelabs where you copy and paste opaque flag strings, the **Cloud 101 Workbench** is built around three interactive mechanisms:
+
+- **Intent-driven exercises**: Exercises ask you to describe the outcome you want in your own words, the way you would instruct an assistant (for example, *"Set up a Firestore database in my region to keep the scores"*). The workbench (`server/services/intent.py`) evaluates your phrasing against required concept groups and misconception filters—explaining why if you ask for a file bucket instead of a database, or an API key instead of IAM credentials—and runs the real command in your Cloud Shell environment. Every prompt includes a **Help me** button if you want a working request filled in.
+- **Scoped code rewrites and embedded live preview**: Each code change rewrites a single marked section of `app/main.py` (`begin store` / `end store` and `begin dino` / `end dino`) and highlights the diff in the workbench file viewer while leaving the game engine and HTTP routes untouched. The workbench (`server/services/appproc.py`) reverse-proxies your local DinoQuest process (`localhost:8080`) at `/app`, allowing you to start, play, stop, and inspect server logs inside the browser over a single Cloud Shell port.
+- **Live account verification**: Nothing in the workbench is simulated. Every check (`server/services/probes.py`) runs a real read-only command (`gcloud`, `curl`, `python3`, or `cat`) against your active Google Cloud account and displays both the output and the exact command that produced it—so every verification check also teaches you how to inspect your cloud resources from a terminal without the workbench.
+
+```
+   ┌──────────────────────────────────────────────────────────────┐
+   │  Browser — Cloud 101 Workbench UI (web/dist)                 │
+   │                                                              │
+   │   reading pane        exercise             checks            │
+   │   markdown + SVG      intent boxes,        live read-only    │
+   │   figures             terminal, widgets,   probe results     │
+   │                       file explorer, app                     │
+   └───────┬──────────────────────┬───────────────────┬───────────┘
+           │ /api/…               │ /events (SSE)     │ /app/…
+   ┌───────▼──────────────────────▼───────────────────▼───────────┐
+   │  Cloud 101 Workbench Server — FastAPI (server/)   port 4800  │
+   │                                                              │
+   │   content     intent      probes       runs      appproc     │
+   │   YAML + md   matcher     read-only    streams   start/stop  │
+   │                           commands     output    + proxy     │
+   └───────┬───────────────────────────────────────────┬──────────┘
+           │ subprocess: gcloud, bash, python3         │ reverse proxy
+           ▼                                           ▼
+   ┌────────────────────────┐              ┌──────────────────────┐
+   │  Your real Google      │              │  DinoQuest (app/)    │
+   │  Cloud project         │              │  a separate process  │
+   └────────────────────────┘              │  on port 8080        │
+                                           └──────────────────────┘
+```
+
 ## Setup
 
 ### Claim your workshop credits
@@ -43,6 +79,8 @@ If you are attending an instructor-led workshop or event, redeem the Google Clou
 
 1. Open the [Google Cloud console](https://console.cloud.google.com/).
 2. Click **Activate Cloud Shell** (the terminal icon in the top navigation bar) to open a terminal session at the bottom of your browser.
+
+![Activate Cloud Shell in the Google Cloud console](img/02-cloud-shell.png)
 
 ### Launch the Cloud 101 Workbench
 
@@ -82,6 +120,41 @@ Running `./scripts/start.sh` provisions and launches a self-contained learning e
 - **Background daemon and process management (`runs/`)**: The script launches the FastAPI server (`server.main:app`) in the background, writes its process ID to `runs/workbench.pid` and logs to `runs/workbench.log`, and waits until `localhost:4800` is accepting connections before returning control of your terminal. Running `./scripts/stop.sh` terminates both the background workbench server and any spawned DinoQuest process (`runs/app.pid`).
 - **Single-port reverse proxy (`localhost:4800`)**: The FastAPI server binds to port `4800` to serve the workbench UI and API. Whenever you run the DinoQuest game server (`app/main.py` on port `8080`), the workbench reverse-proxies requests under `/app/*` to the student application process. This same-origin proxy allows you to preview and play DinoQuest directly inside the workbench browser tab while exposing only port `4800` through Cloud Shell Web Preview.
 - **Live Google Cloud verification engine**: Because the FastAPI backend runs inside your authenticated Cloud Shell session, it shares your active `gcloud` CLI configuration and Application Default Credentials (ADC). When you complete a task and click **Verify**, the workbench runs live, read-only inspections against Google Cloud APIs to confirm your project configuration, billing linkage, budget alerts, enabled APIs, Firestore documents, Gemini credentials, and Cloud Run deployment in real time.
+
+#### Configuration options
+
+The workbench reads optional environment variables at startup (`server/config.py`):
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `CLOUD101_PORT` | `4800` | Port served by the FastAPI workbench (`server/main.py`) |
+| `CLOUD101_APP_PORT` | `8080` | Local port where `app/main.py` runs before reverse-proxying to `/app` |
+| `CLOUD101_PROJECT_NAME` | `my-dinoquest` | Prefix used when creating and checking your Google Cloud project |
+| `CLOUD101_SERVICE` | `dinoquest` | Name of the Cloud Run service deployed to production |
+| `CLOUD101_AGENT_URL` | *(unset)* | Optional external agent endpoint for evaluating open-ended student intents |
+
+If your organization requires you to use an existing Google Cloud project rather than creating a new one, start the workbench with that project's ID or prefix:
+
+```bash
+CLOUD101_PROJECT_NAME=your-existing-project ./scripts/start.sh
+```
+
+### Repository layout
+
+The repository separates the student application, the course curriculum, the automation scripts, and the workbench server:
+
+```text
+cloud-foundation-one/
+├── app/                        # DinoQuest — the student's application
+│   ├── main.py                 # HTTP server, leaderboard store, and Gemini sprite endpoint
+│   ├── requirements.txt        # Python dependencies installed in the container
+│   ├── Procfile                # Process entrypoint read by Cloud Build buildpacks
+│   └── static/                 # Frontend game engine (game.js), HTML, audio, and dino.png sprite
+├── content/                    # Course curriculum (course.yaml and steps/00..08)
+├── scripts/                    # Workbench start/stop scripts, exercise automation, and reset_app.py
+├── server/                     # FastAPI workbench server (intent matcher, probes, reverse proxy)
+└── web/                        # React + Vite frontend UI, SVG illustrations, and interactive widgets
+```
 
 <aside class="special">
 <p><strong>We recommend staying in the Cloud 101 Workbench (<code>http://localhost:4800</code>) for the rest of the hands-on workshop.</strong> The workbench provides all reading material, interactive simulators, the live DinoQuest preview (<code>/app</code>), and real-time Google Cloud verification checks in a single browser tab. Whenever you want a quick conceptual review or are ready to clean up your resources at the end of the workshop, return to the <strong>Summary</strong> step of this codelab.</p>
