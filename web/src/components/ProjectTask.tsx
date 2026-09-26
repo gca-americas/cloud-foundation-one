@@ -88,7 +88,20 @@ export function ProjectTask({ task, color }: { task: Task; color: string }) {
             {ready ? "exists · recorded in ~/project_id.txt" : "not created yet"}
           </span>
 
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex flex-wrap items-center gap-2">
+            {/* Making it yourself is the version worth seeing once: the console
+                is where the billing account, the id and the name are visibly
+                one thing. The two buttons beside it are for anyone who would
+                rather not. */}
+            <a
+              href="https://console.cloud.google.com/projectcreate"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-lg border px-3 py-1.5 text-sm"
+              style={{ borderColor: "var(--accent)", color: "var(--accent)" }}
+            >
+              Create it in the console ↗
+            </a>
             <button
               type="button"
               onClick={confirm}
