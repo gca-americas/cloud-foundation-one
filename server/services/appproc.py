@@ -90,12 +90,23 @@ def start() -> dict[str, Any]:
     log = open(_log_path(), "w", encoding="utf-8")
     # Once the app has dependencies it has a virtual environment to hold them.
     python = str(VENV_PYTHON) if VENV_PYTHON.exists() else "python3"
+
+    # The workbench knows which project the course is using, so tell the app
+    # rather than letting a client library guess. Guessing produces requests
+    # against an empty project and an error that names nothing.
+    from server.services import project as project_service
+
+    extra = {}
+    chosen = project_service.remembered()
+    if chosen:
+        extra["GOOGLE_CLOUD_PROJECT"] = chosen
+
     _process = subprocess.Popen(
         [python, "main.py"],
         cwd=APP_DIR,
         stdout=log,
         stderr=subprocess.STDOUT,
-        env={**os.environ, "PORT": str(APP_PORT), "PYTHONUNBUFFERED": "1"},
+        env={**os.environ, "PORT": str(APP_PORT), "PYTHONUNBUFFERED": "1", **extra},
         start_new_session=True,
     )
     _pid_path().write_text(str(_process.pid))

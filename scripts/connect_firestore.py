@@ -59,10 +59,44 @@ FIRESTORE = '''
 
 from google.cloud import firestore          # noqa: E402
 
-WHERE = "in Firestore"
 COLLECTION = "scores"
 
-_db = firestore.Client()
+
+def _project() -> str:
+    """Which project to write to.
+
+    Named explicitly, and this matters. firestore.Client() with no project
+    falls back to Application Default Credentials, which is a different
+    credential from the one `gcloud config set project` changes and is often a
+    different account altogether. When the two disagree the writes succeed --
+    into somebody else's project -- and nothing here would say so.
+    """
+    named = os.environ.get("GOOGLE_CLOUD_PROJECT", "").strip()
+    if named:
+        return named
+
+    saved = Path.home() / "project_id.txt"
+    if saved.is_file() and saved.read_text().strip():
+        return saved.read_text().strip()
+
+    return ""
+
+
+PROJECT = _project()
+WHERE = f"in Firestore ({PROJECT})" if PROJECT else "in Firestore"
+
+# No project means every request is built against "projects//databases/..."
+# and Firestore rejects it with "Invalid resource field value in the request",
+# which says nothing about the cause. Say it here instead, once, plainly.
+if not PROJECT:
+    print("  no project id: set GOOGLE_CLOUD_PROJECT, or complete step 2 so that",
+          flush=True)
+    print("  ~/project_id.txt exists. Firestore cannot be reached without one.",
+          flush=True)
+
+_db = firestore.Client(project=PROJECT) if PROJECT else firestore.Client()
+
+print(f"  leaderboard: Firestore in project {_db.project!r}", flush=True)
 
 
 def add_score(name: str, score: int) -> list[dict]:
