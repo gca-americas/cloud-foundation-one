@@ -51,6 +51,22 @@ def remember(project_id: str) -> None:
     RECORD.write_text(project_id + "\n")
 
 
+def ensure_recorded() -> str:
+    """Find the course's project and write the id down if it is not already.
+
+    Everything downstream reads ~/project_id.txt -- the deployment, the model
+    settings, and the Firestore client. A student who made the project some
+    other way, or who lost the file, would otherwise carry an empty value all
+    the way to a client library building requests against no project at all.
+
+    Cheap to call: it only writes when the answer changes.
+    """
+    project_id = find()
+    if project_id and project_id != remembered():
+        remember(project_id)
+    return project_id
+
+
 def find() -> str:
     """The student's project, if it exists. Matches on the prefix, because the
     id they end up with carries digits the name does not."""

@@ -52,6 +52,10 @@ def check_step(slug: str, part: str | None = None) -> dict[str, Any]:
     if not found:
         raise HTTPException(404, f"no step named {slug}")
 
+    # Checking is also the moment to make sure the project id is on disk: the
+    # student may have made it a way the workbench did not see.
+    project.ensure_recorded()
+
     substitutions = environment.as_substitutions()
     specs = content.checks_for(slug, part)
     results = [probes.evaluate(spec, substitutions) for spec in specs]
